@@ -47,6 +47,14 @@
   - 测试结果
   - 性能指标
 
+### 👥 团队协作
+- **[TEAM_ROLES.md](TEAM_ROLES.md)** - 团队分工文档
+  - 三位成员职责分配
+  - 各模块功能说明
+  - 工作流程图
+  - 接口规范
+  - 协作指南
+
 ### 📁 组织管理
 - **[ORGANIZATION_GUIDE.md](ORGANIZATION_GUIDE.md)** - 文件组织指南
   - 项目结构规范
@@ -82,6 +90,9 @@
 ### 我想了解项目文件组织
 👉 参考 [ORGANIZATION_GUIDE.md](ORGANIZATION_GUIDE.md)
 
+### 我想了解团队分工和职责
+👉 查看 [TEAM_ROLES.md](TEAM_ROLES.md)
+
 ### 我想验证编译器生成的代码
 👉 查阅 [VERIFICATION_REPORT.md](VERIFICATION_REPORT.md)
 
@@ -97,7 +108,8 @@
 | VERIFICATION_REPORT.md | ~10 | 验证说明 |
 | FINAL_CHECKLIST.md | ~5 | 检查清单 |
 | ORGANIZATION_GUIDE.md | ~12 | 组织指南 |
-| **总计** | **~115** | |
+| TEAM_ROLES.md | ~15 | 团队分工 |
+| **总计** | **~130** | |
 
 ## 🔗 相关资源
 
