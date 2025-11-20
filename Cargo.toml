@@ -1,0 +1,16 @@
+[package]
+name = "riscv_compiler"
+version = "0.1.0"
+edition = "2021"
+authors = ["RISC-V Compiler Contributors"]
+description = "A Rust-based C to RV32I RISC-V compiler for Vivado simulation and hardware synthesis"
+
+[[bin]]
+name = "riscv_compiler"
+path = "src/main.rs"
+
+[dependencies]
+
+[profile.release]
+opt-level = 3
+lto = true
