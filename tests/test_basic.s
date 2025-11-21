@@ -8,9 +8,9 @@ sw a0, 4(sp)
 li a0, 3
 sw a0, 8(sp)
 lw a0, 4(sp)
-sw a0, 16(sp)
+sw a0, 0(sp)
 lw a0, 8(sp)
-lw a1, 16(sp)
+lw a1, 0(sp)
 add a0, a1, a0
 sw a0, 12(sp)
 lw a0, 12(sp)

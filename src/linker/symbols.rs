@@ -55,7 +55,7 @@ impl SymbolTable {
         
         // Find .strtab section for symbol names
         let mut strtab_idx = 0;
-        for (i, sh) in obj.section_headers.iter().enumerate() {
+        for (_i, sh) in obj.section_headers.iter().enumerate() {
             if sh.sh_type == 2 { // SHT_SYMTAB
                 strtab_idx = sh.sh_link as usize;
                 break;

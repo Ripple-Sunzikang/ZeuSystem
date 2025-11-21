@@ -136,6 +136,10 @@ impl Encoder {
                 name: "add".to_string(),
                 operands: vec![instr.operands[0].clone(), instr.operands[1].clone(), "x0".to_string()],
             }, 0x33, 0, 0),
+            "not" => self.encode_r_type(&Instruction {
+                name: "xor".to_string(),
+                operands: vec![instr.operands[0].clone(), instr.operands[1].clone(), "x31".to_string()],
+            }, 0x33, 4, 0),  // xor rd, rs, x31 (all ones)
             "j" => self.encode_j(instr),
             "ret" => self.encode_i_type(&Instruction {
                 name: "jalr".to_string(),

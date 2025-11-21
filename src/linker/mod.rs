@@ -2,13 +2,14 @@ pub mod parser;
 pub mod symbols;
 pub mod relocation;
 pub mod layout;
+pub mod validator;
 
 use std::path::Path;
 use std::fs;
 use std::collections::HashMap;
 use self::symbols::SymbolTable;
 use self::layout::Layout;
-use self::relocation::apply_relocation;
+pub use self::validator::LinkerValidator;
 
 pub struct Linker {
     pub input_files: Vec<String>,
@@ -138,7 +139,7 @@ impl Linker {
                                     if let Ok(relocations) = relocation::parse_relocations(&obj.data, sh, sh.sh_entsize as usize) {
                                         // Find the data for this section
                                         let key = file_idx * 1000 + sec_idx;
-                                        if let Some(data) = section_data.get_mut(&key) {
+                                        if let Some(_data) = section_data.get_mut(&key) {
                                             for reloc in relocations {
                                                 // For now, skip complex relocation processing
                                                 // This would be expanded for full linking support

@@ -101,7 +101,7 @@ impl ElfGenerator {
             name_idx: text_name_idx,
             section_type: SHT_PROGBITS,
             flags: SHF_ALLOC | SHF_EXECINSTR,
-            addr: 0x80000000,
+            addr: 0x10000, // Standard RISC-V text section address
             offset: 0x1000,
             size: code.len() as u32,
             link: 0,
@@ -120,7 +120,7 @@ impl ElfGenerator {
                     name_idx: data_name_idx,
                     section_type: SHT_PROGBITS,
                     flags: SHF_WRITE | SHF_ALLOC,
-                    addr: 0x80000000 + sections[0].size, // Simple consecutive allocation
+                    addr: 0x10000 + sections[0].size, // Simple consecutive allocation
                     offset: 0x2000, // Fixed offset for simplicity, should be dynamic
                     size: data_section.size,
                     link: 0,
@@ -168,14 +168,17 @@ impl ElfGenerator {
             });
         }
 
+        // 计算程序头数量（为.text段创建一个PT_LOAD）
+        let program_header_num = if !sections.is_empty() { 1 } else { 0 };
+        
         let header = ElfHeader {
-            entry: 0x80000000,
-            program_header_offset: 0,
+            entry: 0x10000, // Standard RISC-V entry point
+            program_header_offset: 52, // Program headers immediately follow ELF header
             section_header_offset: 0x100, // Place headers at 0x100
             flags: 0,
             ehdr_size: 52,
             program_header_entry_size: 32,
-            program_header_num: 0,
+            program_header_num: program_header_num,
             section_header_entry_size: 40,
             section_header_num: (sections.len() + 1) as u16, // +1 for Null section
             section_header_string_index: (sections.len()) as u16, // Last section is .shstrtab (index = len, since 0 is Null)
@@ -222,18 +225,41 @@ impl ElfGenerator {
         binary.extend_from_slice(&elf.header.section_header_num.to_le_bytes());
         binary.extend_from_slice(&elf.header.section_header_string_index.to_le_bytes());
 
-        // 2. Section Headers (at 0x100)
+        // 2. Program Headers (if any)
+        // PT_LOAD entry for .text section
+        if elf.header.program_header_num > 0 && !elf.sections.is_empty() {
+            let text_section = &elf.sections[0]; // Assume first section is .text
+            
+            // p_type: PT_LOAD = 1
+            binary.extend_from_slice(&1u32.to_le_bytes());
+            // p_offset
+            binary.extend_from_slice(&text_section.offset.to_le_bytes());
+            // p_vaddr
+            binary.extend_from_slice(&text_section.addr.to_le_bytes());
+            // p_paddr
+            binary.extend_from_slice(&text_section.addr.to_le_bytes());
+            // p_filesz
+            binary.extend_from_slice(&text_section.size.to_le_bytes());
+            // p_memsz
+            binary.extend_from_slice(&text_section.size.to_le_bytes());
+            // p_flags: PF_X | PF_R = 5
+            binary.extend_from_slice(&5u32.to_le_bytes());
+            // p_align
+            binary.extend_from_slice(&0x1000u32.to_le_bytes());
+        }
+
+        // 3. Section Headers (at 0x100)
         // Pad to 0x100
         while binary.len() < elf.header.section_header_offset as usize {
             binary.push(0);
         }
 
-        // 2.1 Null Section Header (Index 0)
+        // 3.1 Null Section Header (Index 0)
         for _ in 0..10 {
             binary.extend_from_slice(&0u32.to_le_bytes());
         }
 
-        // 2.2 Other Section Headers
+        // 3.2 Other Section Headers
         for section in &elf.sections {
             binary.extend_from_slice(&section.name_idx.to_le_bytes()); // sh_name
             binary.extend_from_slice(&section.section_type.to_le_bytes()); // sh_type
@@ -247,7 +273,7 @@ impl ElfGenerator {
             binary.extend_from_slice(&section.entry_size.to_le_bytes()); // sh_entsize
         }
 
-        // 3. Section Data
+        // 4. Section Data
         for section in &elf.sections {
             // Pad to section offset
             while binary.len() < section.offset as usize {

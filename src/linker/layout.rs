@@ -1,4 +1,3 @@
-use crate::linker::parser::SectionHeader;
 
 #[derive(Debug, Clone)]
 pub struct Section {

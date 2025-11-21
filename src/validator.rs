@@ -3,7 +3,6 @@
 
 use std::fs;
 use std::process::Command;
-use std::io::Write;
 
 pub fn verify_assembly(asm_code: &str) -> Result<(), String> {
     // 创建临时文件
@@ -32,7 +31,7 @@ pub fn verify_assembly(asm_code: &str) -> Result<(), String> {
     }
 
     // 尝试链接（可选）
-    let link_output = Command::new("riscv32-unknown-elf-gcc")
+    let _link_output = Command::new("riscv32-unknown-elf-gcc")
         .arg("-march=rv32i")
         .arg("-mabi=ilp32")
         .arg(temp_obj)
@@ -48,10 +47,9 @@ pub fn verify_assembly(asm_code: &str) -> Result<(), String> {
     Ok(())
 }
 
+#[allow(dead_code)]
 pub fn validate_syntax(asm_code: &str) -> Result<(), String> {
     // 基本语法检查
-    let mut label_count = 0;
-    let mut instruction_count = 0;
     let mut error_count = 0;
 
     for line in asm_code.lines() {
@@ -62,7 +60,6 @@ pub fn validate_syntax(asm_code: &str) -> Result<(), String> {
         }
 
         if trimmed.ends_with(':') {
-            label_count += 1;
             continue;
         }
 
@@ -92,11 +89,7 @@ pub fn validate_syntax(asm_code: &str) -> Result<(), String> {
                 // 跳转指令
                 "jal" | "jalr" | "beq" | "bne" | "blt" | "bltu" | "bge" | "bgeu" | "j" | "ret" |
                 // 伪指令
-                "mv" | "neg" | "not" | "nop" |
-                // 其他
-                "nop" => {
-                    instruction_count += 1;
-                }
+                "mv" | "neg" | "not" | "nop" => {}
                 other => {
                     if !other.is_empty() && !other.starts_with('.') {
                         eprintln!("Warning: Unknown instruction: {}", other);
@@ -113,3 +106,4 @@ pub fn validate_syntax(asm_code: &str) -> Result<(), String> {
 
     Ok(())
 }
+

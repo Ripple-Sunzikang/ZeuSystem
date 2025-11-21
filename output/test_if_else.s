@@ -8,9 +8,9 @@ sw a0, 4(sp)
 li a0, 0
 sw a0, 8(sp)
 lw a0, 4(sp)
-sw a0, 0(sp)
+sw a0, 12(sp)
 li a0, 5
-lw a1, 0(sp)
+lw a1, 12(sp)
 slt a0, a0, a1
 beq a0, zero, else_0
 li a0, 1

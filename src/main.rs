@@ -153,6 +153,26 @@ fn assemble(input_file: &str, output_file: &str) {
     }
 
     println!("Generated ELF object file: {}", output_file);
+
+    // 验证生成的 ELF 文件
+    match assembler::AssemblerValidator::verify_elf(output_file) {
+        Ok(_) => {
+            println!("ELF object verification: OK");
+            
+            // 获取并显示 ELF 信息
+            match assembler::AssemblerValidator::get_elf_info(output_file) {
+                Ok(info) => {
+                    println!("  File size: {} bytes", info.file_size);
+                    println!("  Section count: {}", info.section_count);
+                },
+                Err(_) => {},
+            }
+        },
+        Err(e) => {
+            eprintln!("ELF object verification failed: {}", e);
+            std::process::exit(1);
+        }
+    }
 }
 
 fn link(input_files: Vec<String>, output_file: &str) {
@@ -165,11 +185,24 @@ fn link(input_files: Vec<String>, output_file: &str) {
 
     match linker.link() {
         Ok(data) => {
+            // 验证输出数据
+            if let Err(e) = linker::LinkerValidator::verify_output(&data) {
+                eprintln!("Linker output verification failed: {}", e);
+                std::process::exit(1);
+            }
+
             if let Err(e) = linker.write_output(&data) {
                 eprintln!("Error writing output file: {}", e);
                 std::process::exit(1);
             }
+            
             println!("Generated executable: {}", output_file);
+
+            // 获取并显示链接统计信息
+            let stats = linker::LinkerValidator::get_link_stats(&data);
+            println!("Linker verification: OK");
+            println!("  Output size: {} bytes", stats.total_size);
+            println!("  Format: {}", if stats.is_elf { "ELF" } else { "Raw binary" });
         },
         Err(e) => {
             eprintln!("Linker error: {}", e);

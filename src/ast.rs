@@ -1,8 +1,6 @@
 //! 抽象语法树 (AST)
 //! 定义编译器内部表示
 
-use std::collections::HashMap;
-
 #[derive(Debug, Clone, PartialEq)]
 pub enum Type {
     Int,

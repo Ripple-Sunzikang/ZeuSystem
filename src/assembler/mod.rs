@@ -6,12 +6,14 @@ pub mod parser;
 pub mod encoder;
 pub mod elf;
 pub mod symbols;
+pub mod validator;
 
 pub use self::lexer::Lexer;
 pub use self::parser::Parser;
 pub use self::encoder::Encoder;
 pub use self::elf::{ElfGenerator, ElfFile};
 pub use self::symbols::SymbolTable;
+pub use self::validator::AssemblerValidator;
 
 use std::fs;
 use std::path::Path;

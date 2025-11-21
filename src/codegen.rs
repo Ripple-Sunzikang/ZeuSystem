@@ -254,12 +254,12 @@ impl Codegen {
             }
             Expression::BinaryOp { op, left, right } => {
                 self.generate_expression(left)?;
-                self.emit("sw a0, 0(sp)");
-                self.stack_ptr += 4;
+                // 使用固定的临时栈位置，不随后续操作改变
+                let temp_offset = self.stack_ptr;
+                self.emit(&format!("sw a0, {}(sp)", temp_offset));
 
                 self.generate_expression(right)?;
-                self.emit("lw a1, 0(sp)");
-                self.stack_ptr -= 4;
+                self.emit(&format!("lw a1, {}(sp)", temp_offset));
 
                 match op {
                     BinaryOp::Add => self.emit("add a0, a1, a0"),
