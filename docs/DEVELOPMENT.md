@@ -9,7 +9,31 @@
 
 ## 架构概览
 
-编译器采用经典的编译流程架构：
+编译器采用经典的编译流程架构，包含两个主要阶段：
+
+### 完整的编译流程
+
+```
+C源代码 (.c)
+    ↓
+[编译器前端]
+    ├─ Lexer (词法分析)
+    ├─ Parser (语法分析)
+    ├─ Semantic Analyzer (语义分析)
+    └─ Codegen (代码生成)
+    ↓
+RV32I汇编 (.s)
+    ↓
+[汇编器后端]
+    ├─ Assembler Lexer (词法分析)
+    ├─ Parser (语法分析)
+    ├─ Encoder (指令编码)
+    └─ ELF Generator (ELF文件生成)
+    ↓
+ELF目标文件 (.o)
+```
+
+### 前端编译流程
 
 ```
 C源代码 → Lexer → Tokens → Parser → AST → Semantic Analyzer → Codegen → RV32I汇编
@@ -205,6 +229,195 @@ pub struct Codegen {
 **关键方法**:
 - `verify_assembly(asm_code: &str) -> Result<(), String>` - 验证汇编代码
 
+## 后端模块详解
+
+### 7. 汇编器 (Assembler) - Stage 2
+
+**模块位置**: `src/assembler/`
+
+**职责**:
+- 将RV32I汇编代码转换为ELF目标文件
+- 完整的汇编流程：词法分析 → 语法分析 → 指令编码 → ELF生成
+
+**架构**:
+```
+汇编源代码 (.s)
+    ↓ [Lexer]
+Token序列
+    ↓ [Parser]
+指令序列 + 符号表
+    ↓ [Encoder]
+机器码
+    ↓ [ELF Generator]
+ELF目标文件 (.o)
+```
+
+#### 7.1 汇编器词法分析器 (`src/assembler/lexer.rs`)
+
+**职责**: 将汇编源代码转换为Token序列
+
+**支持的Token类型**:
+- 指令助记符: `add`, `addi`, `lw`, `sw`, `beq` 等所有RV32I指令
+- 寄存器: `x0-x31`, 以及别名 `sp`, `ra`, `gp` 等
+- 立即数: 十进制、十六进制 (0x...)、二进制 (0b...)
+- 标签: `main:`, `loop:`
+- 伪指令: `.section`, `.globl`, `.word` 等
+
+**主要结构**:
+```rust
+pub enum Token {
+    Instruction(String),           // 指令
+    Register(u8),                  // 寄存器编号
+    Number(i32),                   // 立即数
+    Label(String),                 // 标签
+    Directive(String),             // 伪指令
+    Comment,
+    EndOfFile,
+}
+```
+
+#### 7.2 汇编器语法分析器 (`src/assembler/parser.rs`)
+
+**职责**: 将Token序列转换为指令序列，并构建符号表
+
+**主要功能**:
+- 指令类型识别 (R型、I型、S型、B型、U型、J型)
+- 操作数验证和解析
+- 标签收集和地址计算
+- 符号表构建
+- 伪指令展开
+
+**输出结构**:
+```rust
+pub struct Instruction {
+    pub opcode: String,         // 指令操作码
+    pub rd: Option<u8>,         // 目的寄存器
+    pub rs1: Option<u8>,        // 源寄存器1
+    pub rs2: Option<u8>,        // 源寄存器2
+    pub imm: Option<i32>,       // 立即数
+    pub label: Option<String>,  // 关联标签
+}
+```
+
+#### 7.3 指令编码器 (`src/assembler/encoder.rs`)
+
+**职责**: 将指令转换为32位机器码
+
+**功能**:
+- RV32I所有指令类型编码
+- 符号解析和地址计算
+- 重定位信息生成
+- 支持所有立即数格式
+
+**编码流程**:
+1. 遍历所有指令
+2. 计算每条指令地址（每条指令4字节）
+3. 解析符号引用和标签
+4. 生成32位机器码
+
+**编码示例**:
+```
+指令: add x1, x2, x3
+R型编码: opcode(7) rd(5) funct3(3) rs1(5) rs2(5) funct7(7)
+        0110011  00001  000      00010   00011  0000000
+机器码: 0x00310133
+```
+
+#### 7.4 ELF生成器 (`src/assembler/elf.rs`)
+
+**职责**: 生成标准ELF目标文件
+
+**生成的ELF结构**:
+```
++─────────────────────+
+│  ELF文件头 (64字节)  │
+├─────────────────────+
+│   程序头表          │
+├─────────────────────+
+│   .text段 (代码)    │
+├─────────────────────+
+│   .data段 (数据)    │
+├─────────────────────+
+│   .symtab (符号表)  │
+├─────────────────────+
+│   .strtab (字符串)  │
+├─────────────────────+
+│   .rel.text (重定位) │
+├─────────────────────+
+│   节头表            │
+└─────────────────────+
+```
+
+**ELF标准兼容**:
+- Machine: EM_RISCV (0xF3)
+- Class: ELFCLASS32
+- Data: ELFDATA2LSB (小端)
+- 符号表、重定位表、调试信息支持
+
+#### 7.5 符号表管理 (`src/assembler/symbols.rs`)
+
+**职责**: 管理符号、标签和重定位信息
+
+**符号类型**:
+- 全局符号 (STB_GLOBAL)
+- 本地符号 (STB_LOCAL)
+- 内部标签
+
+**符号信息结构**:
+```rust
+pub struct Symbol {
+    pub name: String,               // 符号名称
+    pub value: u32,                 // 符号值（地址）
+    pub size: u32,                  // 符号大小
+    pub binding: SymbolBinding,     // 符号绑定类型
+    pub ty: SymbolType,             // 符号类型
+    pub section_idx: u16,           // 所在段索引
+}
+```
+
+#### 7.6 主汇编器接口 (`src/assembler/mod.rs`)
+
+**提供的API**:
+
+```rust
+pub struct Assembler {
+    source: String,
+    symbols: SymbolTable,
+}
+
+impl Assembler {
+    // 从字符串创建汇编器
+    pub fn new(source: &str) -> Self
+    
+    // 从文件加载汇编源代码
+    pub fn from_file<P: AsRef<Path>>(path: P) -> io::Result<Self>
+    
+    // 执行完整的汇编过程
+    pub fn assemble(&mut self) -> Result<ElfFile, String>
+    
+    // 保存ELF文件
+    pub fn save_elf<P: AsRef<Path>>(&self, elf: &ElfFile, path: P) -> io::Result<()>
+}
+```
+
+**使用示例**:
+```rust
+// 方式1: 从字符串
+let mut asm = Assembler::new(r#"
+    .section .text
+    .globl main
+main:
+    addi x1, x0, 10
+    jalr x0, 0(x1)
+"#);
+let elf = asm.assemble()?;
+
+// 方式2: 从文件
+let mut asm = Assembler::from_file("test.s")?;
+let elf = asm.assemble()?;
+asm.save_elf(&elf, "test.o")?;
+```
+
 ## API参考
 
 ### 编译流程
@@ -227,6 +440,50 @@ let asm_code = codegen.generate(&ast)?;
 
 // 5. 验证
 validator::verify_assembly(&asm_code.join("\n"))?;
+```
+
+### 汇编流程
+
+```rust
+use assembler::Assembler;
+
+// 方法1: 从字符串汇编
+let mut assembler = Assembler::new(asm_source);
+let elf_file = assembler.assemble()?;
+assembler.save_elf(&elf_file, "output.o")?;
+
+// 方法2: 从文件汇编
+let mut assembler = Assembler::from_file("input.s")?;
+let elf_file = assembler.assemble()?;
+assembler.save_elf(&elf_file, "output.o")?;
+```
+
+### 完整编译链：C到ELF
+
+```rust
+use lexer::Lexer;
+use parser::Parser;
+use semantic::SemanticAnalyzer;
+use codegen::Codegen;
+use assembler::Assembler;
+
+// 第一阶段：C编译到汇编
+let source = fs::read_to_string("input.c")?;
+let lexer = Lexer::new(&source);
+let mut parser = Parser::new(lexer);
+let ast = parser.parse()?;
+
+let mut semantic = SemanticAnalyzer::new();
+semantic.analyze(&ast)?;
+
+let mut codegen = Codegen::new();
+let asm_lines = codegen.generate(&ast)?;
+let asm_code = asm_lines.join("\n");
+
+// 第二阶段：汇编到ELF
+let mut assembler = Assembler::new(&asm_code);
+let elf_file = assembler.assemble()?;
+assembler.save_elf(&elf_file, "output.o")?;
 ```
 
 ## 扩展指南
