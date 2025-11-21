@@ -21,11 +21,20 @@
 ### 🏗️ 开发指南
 - **[DEVELOPMENT.md](DEVELOPMENT.md)** - 开发者技术指南
   - 架构详解
-  - 模块说明
+  - 编译器前端模块说明
+  - 汇编器后端模块说明
   - API参考
   - 扩展指南
   - 堆栈布局
   - 调试技巧
+
+### 📖 阶段文档
+- **[STAGE_2_assembler_summary.md](STAGE_2_assembler_summary.md)** - 汇编器实现总结
+  - 汇编器各模块详解
+  - 支持的RV32I指令集
+  - API使用示例
+  - 测试结果
+  - 常见问题
 
 ### ✅ 完成报告
 - **[COMPLETION_REPORT.md](COMPLETION_REPORT.md)** - 项目完成总结
@@ -81,6 +90,9 @@
 ### 我想贡献代码或扩展功能
 👉 参考 [DEVELOPMENT.md](DEVELOPMENT.md)
 
+### 我想了解汇编器实现
+👉 查看 [STAGE_2_assembler_summary.md](STAGE_2_assembler_summary.md)
+
 ### 我想了解项目完成情况
 👉 查看 [COMPLETION_REPORT.md](COMPLETION_REPORT.md)
 
@@ -102,14 +114,15 @@
 |---------|------|------|
 | QUICKSTART.md | ~10 | 快速入门 |
 | README.md | ~8 | 项目说明 |
-| DEVELOPMENT.md | ~30 | 技术参考 |
+| DEVELOPMENT.md | ~40 | 技术参考 |
+| STAGE_2_assembler_summary.md | ~20 | 汇编器总结 |
 | COMPLETION_REPORT.md | ~15 | 完成总结 |
 | PROJECT_SUMMARY.md | ~25 | 项目概览 |
 | VERIFICATION_REPORT.md | ~10 | 验证说明 |
 | FINAL_CHECKLIST.md | ~5 | 检查清单 |
 | ORGANIZATION_GUIDE.md | ~12 | 组织指南 |
 | TEAM_ROLES.md | ~15 | 团队分工 |
-| **总计** | **~130** | |
+| **总计** | **~160** | |
 
 ## 🔗 相关资源
 

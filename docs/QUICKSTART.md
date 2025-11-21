@@ -72,6 +72,19 @@ riscvCompiler/
 cat output/test_basic.s
 ```
 
+### 5. 使用汇编器 (Assembler)
+
+可以直接将 `.s` 汇编文件转换为 ELF 目标文件 `.o`：
+
+```bash
+# 将汇编代码转换为目标文件
+./target/debug/riscv_compiler output/test_basic.s output/test_basic.o
+
+# 验证生成的 ELF 文件 (需要安装 riscv32-unknown-elf-objdump)
+# 假设工具链安装在 /opt/riscv32
+/opt/riscv32/bin/riscv32-unknown-elf-objdump -d output/test_basic.o
+```
+
 ## 支持的 C 语言特性
 
 ### 基本类型
@@ -177,7 +190,7 @@ brew install riscv-tools
 which riscv32-unknown-elf-gcc
 
 # 或添加到 PATH
-export PATH=$PATH:/path/to/riscv/bin
+export PATH=$PATH:/opt/riscv32/bin
 ```
 
 ### 问题：编译失败，提示语法错误
