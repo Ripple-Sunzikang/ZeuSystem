@@ -307,10 +307,14 @@ impl Encoder {
             return Err("J requires 1 operand".to_string());
         }
 
-        let _imm = self.parse_immediate(&instr.operands[0])?;
+        // J 指令转换为 jal x0, label
+        // 对于 j label，立即数可能是标签或数字
+        // 如果标签尚未定义，暂时使用占位符
+        let label_or_imm = &instr.operands[0];
+        
         let jal_instr = Instruction {
             name: "jal".to_string(),
-            operands: vec!["x0".to_string(), instr.operands[0].clone()],
+            operands: vec!["x0".to_string(), label_or_imm.clone()],
         };
 
         self.encode_j_type(&jal_instr, 0x6F)

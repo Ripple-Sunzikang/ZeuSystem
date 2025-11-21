@@ -135,6 +135,11 @@ impl Parser {
                     operands.push(id.clone());
                     self.advance();
                 }
+                // 处理指令名称作为标签/操作数（例如 jal ra, add）
+                Some(Token::Instruction(id)) => {
+                    operands.push(id.clone());
+                    self.advance();
+                }
                 Some(Token::Immediate(imm)) => {
                     operands.push(imm.to_string());
                     self.advance();

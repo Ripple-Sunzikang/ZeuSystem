@@ -5,6 +5,7 @@ mod codegen;
 mod validator;
 mod semantic;
 mod assembler;
+mod linker;
 
 use std::fs;
 use lexer::Lexer;
@@ -12,6 +13,7 @@ use parser::Parser;
 use codegen::Codegen;
 use semantic::SemanticAnalyzer;
 use assembler::Assembler;
+use linker::Linker;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -33,6 +35,29 @@ fn main() {
 
         let output_file = &args[2];
         assemble(input_file, output_file);
+    } else if input_file.ends_with(".o") {
+        // 目标文件 -> 可执行文件
+        if args.len() < 3 {
+            eprintln!("Usage: {} <input.o>... <output.elf>", args[0]);
+            std::process::exit(1);
+        }
+        
+        // 收集所有输入文件
+        let mut input_files = Vec::new();
+        let mut output_file = String::from("a.out");
+        
+        let mut i = 1;
+        while i < args.len() {
+            let arg = &args[i];
+            if i == args.len() - 1 {
+                output_file = arg.clone();
+            } else {
+                input_files.push(arg.clone());
+            }
+            i += 1;
+        }
+
+        link(input_files, &output_file);
     } else {
         // C文件 -> 汇编文件
         let output_file = if args.len() > 2 {
@@ -128,5 +153,28 @@ fn assemble(input_file: &str, output_file: &str) {
     }
 
     println!("Generated ELF object file: {}", output_file);
+}
+
+fn link(input_files: Vec<String>, output_file: &str) {
+    let mut linker = Linker::new();
+    for file in input_files {
+        linker.add_input_file(file);
+    }
+    linker.set_output_file(output_file);
+    linker.set_verbose(true);
+
+    match linker.link() {
+        Ok(data) => {
+            if let Err(e) = linker.write_output(&data) {
+                eprintln!("Error writing output file: {}", e);
+                std::process::exit(1);
+            }
+            println!("Generated executable: {}", output_file);
+        },
+        Err(e) => {
+            eprintln!("Linker error: {}", e);
+            std::process::exit(1);
+        }
+    }
 }
 
