@@ -1,0 +1,44 @@
+# 关键不需要推送的文件夹
+node_modules/    # Node.js依赖，通过npm install安装
+node_modules/**/*
+dist/            # 构建输出目录
+build/win-unpacked/  # Windows解压后的构建文件
+
+# 临时文件目录
+temp/            # 临时文件目录
+
+# IDE和编辑器文件
+.idea/           # IntelliJ IDEA配置
+.vscode/         # VS Code配置
+*.suo            # Visual Studio解决方案用户选项
+*.ntvs*          # Visual Studio Node.js工具文件
+*.njsproj        # Visual Studio Node.js项目文件
+*.sln            # Visual Studio解决方案文件
+*.sw?            # Vim交换文件
+
+# 操作系统文件
+.DS_Store        # macOS文件
+Thumbs.db        # Windows缩略图缓存
+
+# 日志文件
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 环境变量文件（如果有敏感信息）
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 包管理相关
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnp.*

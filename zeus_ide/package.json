@@ -1,0 +1,31 @@
+{
+  "name": "zeus_ide",
+  "version": "1.0.0",
+  "description": "Simple IDE for ZEUSYSTEM RISC-V Compiler",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "build": "electron-builder --dir"
+  },
+  "build": {
+    "appId": "com.zeusystem.ide",
+    "productName": "ZEUS IDE",
+    "directories": {
+      "output": "dist"
+    }
+  },
+  "dependencies": {},
+  "keywords": [
+    "ide",
+    "compiler",
+    "riscv",
+    "zeusystem"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.3.3",
+    "electron-builder": "^26.0.12"
+  }
+}

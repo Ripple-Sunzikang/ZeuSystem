@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZEUS IDE</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: #1e1e1e;
+      color: #d4d4d4;
+    }
+
+    .toolbar {
+      display: flex;
+      padding: 10px;
+      background-color: #252526;
+      border-bottom: 1px solid #3e3e42;
+      gap: 10px;
+    }
+
+    .toolbar button {
+      padding: 6px 12px;
+      background-color: #0e639c;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .toolbar button:hover {
+      background-color: #1177bb;
+    }
+
+    .toolbar input[type="text"] {
+      flex: 1;
+      padding: 6px 10px;
+      background-color: #3c3c3c;
+      color: #d4d4d4;
+      border: 1px solid #3e3e42;
+      border-radius: 3px;
+    }
+
+    .main-container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .file-explorer {
+      width: 250px;
+      background-color: #252526;
+      border-right: 1px solid #3e3e42;
+      overflow-y: auto;
+      padding: 10px;
+    }
+
+    .file-item {
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+
+    .file-item:hover {
+      background-color: #3c3c3c;
+    }
+
+    .file-item.directory {
+      font-weight: bold;
+    }
+
+    .editor-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #editor {
+      flex: 1;
+      width: 100%;
+    }
+
+    .output-panel {
+      height: 200px;
+      background-color: #1e1e1e;
+      border-top: 1px solid #3e3e42;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .output-tabs {
+      display: flex;
+      background-color: #252526;
+    }
+
+    .output-tab {
+      padding: 8px 16px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+
+    .output-tab.active {
+      border-bottom: 2px solid #0e639c;
+    }
+
+    #output-content {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 14px;
+    }
+
+    .status-bar {
+      padding: 4px 10px;
+      background-color: #252526;
+      border-top: 1px solid #3e3e42;
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+    }
+
+    .compiler-config {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    .compiler-config label {
+      font-size: 12px;
+    }
+
+    .compiler-config input[type="text"] {
+      padding: 4px 8px;
+      background-color: #3c3c3c;
+      color: #d4d4d4;
+      border: 1px solid #3e3e42;
+      border-radius: 3px;
+      font-size: 12px;
+      width: 300px;
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button id="new-file">新建文件</button>
+    <button id="open-file">打开文件</button>
+    <button id="save-file">保存文件</button>
+    <button id="format-code">格式化</button>
+    <button id="compile">编译</button>
+    <input type="text" id="file-path-display" readonly placeholder="无标题文件">
+  </div>
+
+  <div class="main-container">
+    <div class="file-explorer">
+      <h3 style="margin-bottom: 10px;">文件浏览器</h3>
+      <div id="file-list">
+        <!-- 文件列表将通过JavaScript动态生成 -->
+      </div>
+    </div>
+
+    <div class="editor-container">
+      <div id="editor"></div>
+      
+      <div class="output-panel">
+        <div class="output-tabs">
+          <div class="output-tab active" data-tab="output">输出</div>
+          <div class="output-tab" data-tab="errors">错误</div>
+        </div>
+        <div id="output-content">
+          <!-- 输出内容将通过JavaScript动态生成 -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="status-bar">
+    <div id="status-message">就绪</div>
+    <div class="compiler-config">
+      <label for="compiler-path">编译器路径:</label>
+      <input type="text" id="compiler-path" value="../ZeuSystem-main/target/release/riscv_compiler.exe" placeholder="输入编译器路径">
+      <button id="select-compiler" style="margin-left: 5px; padding: 4px 8px; font-size: 12px; background-color: #0e639c; color: white; border: none; border-radius: 3px; cursor: pointer;">浏览</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.js"></script>
+  <script>
+    // 初始化Monaco Editor
+    require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' }});
+    require(['vs/editor/editor.main'], function() {
+      // 创建编辑器实例
+      const editor = monaco.editor.create(document.getElementById('editor'), {
+        value: '// ZEUS IDE - 输入您的代码\n\nint main() {\n    int a = 10;\n    int b = 20;\n    int c = a + b;\n    return 0;\n}',
+        language: 'c',
+        theme: 'vs-dark',
+        automaticLayout: true,
+        minimap: { enabled: true },
+        fontSize: 14,
+        tabSize: 4,
+        insertSpaces: true,
+        // 启用自动检测语法错误
+        scrollBeyondLastLine: false,
+        // 启用行号显示
+        lineNumbers: 'on',
+        glyphMargin: true, // 启用字形边距（用于显示断点等）
+        lineDecorationsWidth: 10, // 行装饰宽度
+        lineNumbersMinChars: 3, // 行号最小字符数
+        renderLineHighlight: 'line' // 高亮当前行
+      });
+      
+      // 存储当前的标记和错误信息
+      let currentMarkers = [];
+      let errorMessages = [];
+      
+      // 简单的C语言语法检查函数
+      function checkSyntax(content) {
+        const markers = [];
+        const errorMessages = [];
+        const lines = content.split('\n');
+        let braceCount = 0;
+        
+        // 检查括号匹配
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          const lineNumber = i + 1;
+          
+          // 检查括号平衡
+          for (let j = 0; j < line.length; j++) {
+            if (line[j] === '{') braceCount++;
+            if (line[j] === '}') braceCount--;
+          }
+          
+          // 检查未闭合的字符串
+          const quoteCount = (line.match(/"/g) || []).length;
+          if (quoteCount % 2 !== 0) {
+            markers.push({
+              severity: monaco.MarkerSeverity.Error,
+              startLineNumber: lineNumber,
+              startColumn: line.length + 1,
+              endLineNumber: lineNumber,
+              endColumn: line.length + 1,
+              message: '未闭合的字符串'
+            });
+            errorMessages.push(`第${lineNumber}行: 未闭合的字符串`);
+          }
+          
+          // 检查分号缺失（简单规则）
+          if (!line.trim().startsWith('#') && !line.trim().startsWith('//') && 
+              !line.trim().startsWith('/*') && !line.includes(';') && 
+              line.includes('=') && !line.includes('{') && !line.includes('}') && 
+              !line.trim().endsWith('{') && !line.trim().endsWith(':') && 
+              !line.trim().endsWith('}') && line.trim() !== '') {
+            markers.push({
+              severity: monaco.MarkerSeverity.Error,
+              startLineNumber: lineNumber,
+              startColumn: line.length,
+              endLineNumber: lineNumber,
+              endColumn: line.length + 1,
+              message: '可能缺少分号'
+            });
+            errorMessages.push(`第${lineNumber}行: 可能缺少分号`);
+          }
+          
+          // 检查常见的语法错误
+          if (line.includes('/*') && !line.includes('*/')) {
+            markers.push({
+              severity: monaco.MarkerSeverity.Warning,
+              startLineNumber: lineNumber,
+              startColumn: line.indexOf('/*') + 1,
+              endLineNumber: lineNumber,
+              endColumn: line.indexOf('/*') + 3,
+              message: '可能未闭合的注释块'
+            });
+            errorMessages.push(`第${lineNumber}行: 可能未闭合的注释块`);
+          }
+        }
+        
+        // 检查最终的括号平衡
+        if (braceCount > 0) {
+          markers.push({
+            severity: monaco.MarkerSeverity.Error,
+            startLineNumber: lines.length,
+            startColumn: lines[lines.length - 1].length + 1,
+            endLineNumber: lines.length,
+            endColumn: lines[lines.length - 1].length + 1,
+            message: '有未闭合的左括号'
+          });
+          errorMessages.push(`文件末尾: 有未闭合的左括号`);
+        } else if (braceCount < 0) {
+          markers.push({
+            severity: monaco.MarkerSeverity.Error,
+            startLineNumber: lines.length,
+            startColumn: lines[lines.length - 1].length + 1,
+            endLineNumber: lines.length,
+            endColumn: lines[lines.length - 1].length + 1,
+            message: '有多余的右括号'
+          });
+          errorMessages.push(`文件末尾: 有多余的右括号`);
+        }
+        
+        return { markers, errorMessages };
+      }
+      
+      // 更新编辑器中的错误标记
+      function updateErrorMarkers(markers) {
+        monaco.editor.setModelMarkers(editor.getModel(), 'owner', markers);
+        currentMarkers = markers;
+      }
+      
+      // 显示错误信息到错误标签
+      function displayErrorMessages(messages) {
+        errorMessages = messages;
+        
+        // 如果当前激活的是错误标签，立即更新显示
+        if (document.querySelector('.output-tab[data-tab="errors"]').classList.contains('active')) {
+          const outputContent = document.getElementById('output-content');
+          if (messages.length === 0) {
+            outputContent.textContent = '无语法错误';
+          } else {
+            outputContent.textContent = messages.join('\n');
+          }
+        }
+      }
+      
+      // 实现实时语法检查
+      editor.onDidChangeModelContent(function() {
+        const content = editor.getValue();
+        const { markers, errorMessages } = checkSyntax(content);
+        updateErrorMarkers(markers);
+        displayErrorMessages(errorMessages);
+        
+        // 更新状态栏显示错误数量
+        const errorCount = markers.filter(m => m.severity === monaco.MarkerSeverity.Error).length;
+        const warningCount = markers.filter(m => m.severity === monaco.MarkerSeverity.Warning).length;
+        
+        if (errorCount > 0) {
+          setStatusMessage(`发现 ${errorCount} 个错误, ${warningCount} 个警告`);
+        } else if (warningCount > 0) {
+          setStatusMessage(`发现 ${warningCount} 个警告`);
+        }
+      });
+
+      // 当前打开的文件路径
+      let currentFilePath = null;
+
+      // 设置状态栏消息
+      function setStatusMessage(message) {
+        document.getElementById('status-message').textContent = message;
+      }
+
+      // 更新文件路径显示
+      function updateFilePathDisplay(path) {
+        document.getElementById('file-path-display').value = path || '无标题文件';
+      }
+
+      // 显示输出内容
+      function showOutput(content, isError = false) {
+        const outputContent = document.getElementById('output-content');
+        outputContent.textContent = content;
+        
+        // 如果是错误，切换到错误标签
+        if (isError) {
+          document.querySelectorAll('.output-tab').forEach(tab => {
+            tab.classList.remove('active');
+          });
+          document.querySelector('.output-tab[data-tab="errors"]').classList.add('active');
+        }
+      }
+
+      // 新建文件
+      document.getElementById('new-file').addEventListener('click', () => {
+        editor.setValue('');
+        currentFilePath = null;
+        updateFilePathDisplay(null);
+        setStatusMessage('新建文件');
+      });
+
+      // 打开文件
+      document.getElementById('open-file').addEventListener('click', async () => {
+        try {
+          const result = await window.electronAPI.openFileDialog();
+          if (!result.canceled && result.filePaths.length > 0) {
+            currentFilePath = result.filePaths[0];
+            const fileResult = await window.electronAPI.readFile(currentFilePath);
+            
+            if (fileResult.success) {
+              editor.setValue(fileResult.content);
+              updateFilePathDisplay(currentFilePath);
+              setStatusMessage(`已打开文件: ${currentFilePath}`);
+            } else {
+              showOutput(`错误: 无法读取文件 - ${fileResult.error}`, true);
+              setStatusMessage('读取文件失败');
+            }
+          }
+        } catch (error) {
+          showOutput(`错误: ${error.message}`, true);
+          setStatusMessage('打开文件失败');
+        }
+      });
+
+      // 保存文件
+      document.getElementById('save-file').addEventListener('click', async () => {
+        try {
+          let filePath = currentFilePath;
+          
+          // 如果没有当前文件路径，显示保存对话框
+          if (!filePath) {
+            const result = await window.electronAPI.saveFileDialog('untitled.c');
+            if (result.canceled) return;
+            filePath = result.filePath;
+          }
+          
+          // 保存文件内容
+          const content = editor.getValue();
+          const saveResult = await window.electronAPI.writeFile(filePath, content);
+          
+          if (saveResult.success) {
+            currentFilePath = filePath;
+            updateFilePathDisplay(filePath);
+            setStatusMessage(`已保存文件: ${filePath}`);
+          } else {
+            showOutput(`错误: 无法保存文件 - ${saveResult.error}`, true);
+            setStatusMessage('保存文件失败');
+          }
+        } catch (error) {
+          showOutput(`错误: ${error.message}`, true);
+          setStatusMessage('保存文件失败');
+        }
+      });
+
+      // 编译代码
+      document.getElementById('compile').addEventListener('click', async () => {
+        try {
+          // 确保文件已保存
+          if (!currentFilePath) {
+            showOutput('请先保存文件再编译', true);
+            setStatusMessage('编译失败');
+            return;
+          }
+          
+          // 获取编译器路径
+          const compilerPath = document.getElementById('compiler-path').value;
+          if (!compilerPath) {
+            showOutput('请设置编译器路径', true);
+            setStatusMessage('编译失败');
+            return;
+          }
+          
+          // 生成输出文件路径 - 统一到ZeuSystem-main\output文件夹
+          const fileName = currentFilePath.split('\\').pop().replace(/\.c$/, '.s') || 'output.s';
+          // 由于IDE现在位于ZeuSystem-main内部，使用父目录下的output文件夹
+          const outputDir = window.location.pathname.includes('\\ZeuSystem-main\\zeus_ide\\') 
+            ? '..\\output' 
+            : 'e:\\ZeuSystem-main\\ZeuSystem-main\\output';
+          const outputFile = outputDir + '\\' + fileName;
+          
+          setStatusMessage('正在编译...');
+          showOutput('编译中...');
+          
+          // 执行编译命令
+          const result = await window.electronAPI.compileCode(compilerPath, currentFilePath, outputFile);
+          
+          if (result.success) {
+            showOutput(`编译成功!\n输出文件: ${outputFile}\n\n${result.output}`);
+            setStatusMessage('编译成功');
+          } else {
+            showOutput(`编译失败:\n${result.error}`, true);
+            setStatusMessage('编译失败');
+          }
+        } catch (error) {
+          showOutput(`错误: ${error.message}`, true);
+          setStatusMessage('编译失败');
+        }
+      });
+
+      // 输出标签切换
+      document.querySelectorAll('.output-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.output-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          
+          // 切换显示内容
+          const tabName = tab.getAttribute('data-tab');
+          const outputContent = document.getElementById('output-content');
+          
+          if (tabName === 'errors') {
+            if (errorMessages.length === 0) {
+              outputContent.textContent = '无语法错误';
+            } else {
+              outputContent.textContent = errorMessages.join('\n');
+            }
+          } else if (tabName === 'output') {
+            // 保留原来的输出内容
+          }
+        });
+      });
+      
+      // 初始语法检查
+      const initialContent = editor.getValue();
+      const { markers: initialMarkers, errorMessages: initialErrors } = checkSyntax(initialContent);
+      updateErrorMarkers(initialMarkers);
+      displayErrorMessages(initialErrors);
+      
+      // 实现代码自动补全功能
+      // C语言关键字列表
+      const cKeywords = [
+        'auto', 'break', 'case', 'char', 'const', 'continue', 'default', 'do',
+        'double', 'else', 'enum', 'extern', 'float', 'for', 'goto', 'if',
+        'int', 'long', 'register', 'return', 'short', 'signed', 'sizeof', 'static',
+        'struct', 'switch', 'typedef', 'union', 'unsigned', 'void', 'volatile', 'while'
+      ];
+      
+      // 常用C标准库函数
+      const cFunctions = [
+        { name: 'printf', signature: 'printf(const char *format, ...)', documentation: '格式化输出函数' },
+        { name: 'scanf', signature: 'scanf(const char *format, ...)', documentation: '格式化输入函数' },
+        { name: 'puts', signature: 'puts(const char *s)', documentation: '输出字符串并换行' },
+        { name: 'gets', signature: 'gets(char *s)', documentation: '读取字符串（不安全）' },
+        { name: 'fgets', signature: 'fgets(char *s, int size, FILE *stream)', documentation: '安全地读取字符串' },
+        { name: 'fprintf', signature: 'fprintf(FILE *stream, const char *format, ...)', documentation: '格式化文件输出' },
+        { name: 'fscanf', signature: 'fscanf(FILE *stream, const char *format, ...)', documentation: '格式化文件输入' },
+        { name: 'malloc', signature: 'void *malloc(size_t size)', documentation: '分配内存' },
+        { name: 'calloc', signature: 'void *calloc(size_t nmemb, size_t size)', documentation: '分配并清零内存' },
+        { name: 'realloc', signature: 'void *realloc(void *ptr, size_t size)', documentation: '重新分配内存' },
+        { name: 'free', signature: 'void free(void *ptr)', documentation: '释放内存' },
+        { name: 'memcpy', signature: 'void *memcpy(void *dest, const void *src, size_t n)', documentation: '复制内存' },
+        { name: 'memset', signature: 'void *memset(void *s, int c, size_t n)', documentation: '设置内存' },
+        { name: 'strcpy', signature: 'char *strcpy(char *dest, const char *src)', documentation: '复制字符串' },
+        { name: 'strncpy', signature: 'char *strncpy(char *dest, const char *src, size_t n)', documentation: '安全地复制字符串' },
+        { name: 'strcmp', signature: 'int strcmp(const char *s1, const char *s2)', documentation: '比较字符串' },
+        { name: 'strlen', signature: 'size_t strlen(const char *s)', documentation: '获取字符串长度' },
+        { name: 'strcat', signature: 'char *strcat(char *dest, const char *src)', documentation: '连接字符串' },
+        { name: 'strncat', signature: 'char *strncat(char *dest, const char *src, size_t n)', documentation: '安全地连接字符串' },
+        { name: 'atoi', signature: 'int atoi(const char *nptr)', documentation: '字符串转整数' },
+        { name: 'atof', signature: 'double atof(const char *nptr)', documentation: '字符串转浮点数' },
+        { name: 'itoa', signature: 'char *itoa(int value, char *str, int base)', documentation: '整数转字符串' },
+        { name: 'abs', signature: 'int abs(int j)', documentation: '计算绝对值' },
+        { name: 'fopen', signature: 'FILE *fopen(const char *path, const char *mode)', documentation: '打开文件' },
+        { name: 'fclose', signature: 'int fclose(FILE *stream)', documentation: '关闭文件' },
+        { name: 'fread', signature: 'size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)', documentation: '读取文件' },
+        { name: 'fwrite', signature: 'size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)', documentation: '写入文件' },
+        { name: 'fflush', signature: 'int fflush(FILE *stream)', documentation: '刷新缓冲区' },
+        { name: 'feof', signature: 'int feof(FILE *stream)', documentation: '检查文件结束' },
+        { name: 'ferror', signature: 'int ferror(FILE *stream)', documentation: '检查文件错误' },
+        { name: 'exit', signature: 'void exit(int status)', documentation: '终止程序' },
+        { name: 'system', signature: 'int system(const char *command)', documentation: '执行系统命令' },
+        { name: 'time', signature: 'time_t time(time_t *t)', documentation: '获取当前时间' },
+        { name: 'clock', signature: 'clock_t clock(void)', documentation: '获取程序运行时间' },
+        { name: 'rand', signature: 'int rand(void)', documentation: '生成随机数' },
+        { name: 'srand', signature: 'void srand(unsigned int seed)', documentation: '设置随机数种子' }
+      ];
+      
+      // 常用C数据类型
+      const cTypes = [
+        'char', 'short', 'int', 'long', 'float', 'double', 'void',
+        'unsigned char', 'unsigned short', 'unsigned int', 'unsigned long',
+        'signed char', 'signed short', 'signed int', 'signed long',
+        'size_t', 'ptrdiff_t', 'intptr_t', 'uintptr_t', 'FILE'
+      ];
+      
+      // 注册自定义补全提供程序
+      monaco.languages.registerCompletionItemProvider('c', {
+        provideCompletionItems: function(model, position) {
+          const suggestions = [];
+          const lineContent = model.getValueInRange({
+            startLineNumber: position.lineNumber,
+            startColumn: 1,
+            endLineNumber: position.lineNumber,
+            endColumn: position.column
+          });
+          
+          // 提取当前正在输入的单词
+          const word = model.getWordUntilPosition(position);
+          const wordPrefix = lineContent.substring(lineContent.lastIndexOf(' ') + 1);
+          const isIncludeStatement = lineContent.includes('#include');
+          
+          // 添加关键字补全
+          cKeywords.forEach(keyword => {
+            if (keyword.startsWith(wordPrefix)) {
+              suggestions.push({
+                label: keyword,
+                kind: monaco.languages.CompletionItemKind.Keyword,
+                insertText: keyword,
+                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                documentation: `C语言关键字: ${keyword}`
+              });
+            }
+          });
+          
+          // 添加数据类型补全
+          cTypes.forEach(type => {
+            if (type.startsWith(wordPrefix)) {
+              suggestions.push({
+                label: type,
+                kind: monaco.languages.CompletionItemKind.Type,
+                insertText: type,
+                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                documentation: `C语言数据类型: ${type}`
+              });
+            }
+          });
+          
+          // 添加函数补全
+          cFunctions.forEach(func => {
+            if (func.name.startsWith(wordPrefix)) {
+              suggestions.push({
+                label: func.name,
+                kind: monaco.languages.CompletionItemKind.Function,
+                insertText: func.signature,
+                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                documentation: `${func.documentation}\n\n${func.signature}`
+              });
+            }
+          });
+          
+          // 添加头文件补全
+          if (isIncludeStatement) {
+            const headers = [
+              'stdio.h', 'stdlib.h', 'string.h', 'math.h', 'ctype.h',
+              'time.h', 'limits.h', 'assert.h', 'stdbool.h', 'stdarg.h',
+              'signal.h', 'unistd.h', 'errno.h', 'fcntl.h'
+            ];
+            
+            headers.forEach(header => {
+              if (header.startsWith(wordPrefix)) {
+                suggestions.push({
+                  label: header,
+                  kind: monaco.languages.CompletionItemKind.File,
+                  insertText: header,
+                  insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                  documentation: `C语言标准头文件: ${header}`
+                });
+              }
+            });
+          }
+          
+          return {
+            suggestions: suggestions
+          };
+        },
+        
+        // 触发补全的字符
+        triggerCharacters: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '_', '#']
+      });
+      
+      // 启用括号自动闭合
+      editor.updateOptions({
+        autoClosingBrackets: 'always',
+        autoClosingQuotes: 'always',
+        suggestOnTriggerCharacters: true,
+        quickSuggestions: {
+          other: true,
+          comments: false,
+          strings: false
+        },
+        quickSuggestionsDelay: 100
+      });
+      
+      // 实现代码格式化功能
+      function formatCode() {
+        try {
+          // 获取当前编辑器内容
+          const content = editor.getValue();
+          
+          // 使用简单的C代码格式化算法
+          const formattedContent = formatCCode(content);
+          
+          // 保存当前光标位置比例
+          const model = editor.getModel();
+          const position = editor.getPosition();
+          const cursorPositionRatio = position.lineNumber / model.getLineCount();
+          
+          // 更新格式化后的内容
+          editor.setValue(formattedContent);
+          
+          // 恢复光标位置（近似）
+          const newLineCount = editor.getModel().getLineCount();
+          const newLineNumber = Math.floor(cursorPositionRatio * newLineCount);
+          
+          if (newLineNumber > 0) {
+            const newColumn = editor.getModel().getLineLength(newLineNumber);
+            editor.setPosition({ lineNumber: newLineNumber, column: newColumn });
+          }
+          
+          setStatusMessage('代码格式化完成');
+          showOutput('代码格式化完成');
+        } catch (error) {
+          showOutput(`格式化错误: ${error.message}`, true);
+          setStatusMessage('格式化失败');
+        }
+      }
+      
+      // 简单的C代码格式化函数
+      function formatCCode(code) {
+        const lines = code.split('\n');
+        const formattedLines = [];
+        let indentLevel = 0;
+        const indentSize = 4; // 使用4个空格的缩进
+        
+        // 辅助函数：获取当前缩进
+        const getIndent = () => ' '.repeat(indentLevel * indentSize);
+        
+        // 辅助函数：移除行尾空格
+        const trimTrailingSpaces = (line) => line.replace(/\s+$/, '');
+        
+        // 辅助函数：处理单行注释
+        const isSingleLineComment = (line) => {
+          const trimmedLine = line.trim();
+          return trimmedLine.startsWith('//') || (trimmedLine.includes('//') && !isInString(trimmedLine, trimmedLine.indexOf('//')));
+        };
+        
+        // 辅助函数：检查位置是否在字符串内
+        const isInString = (text, position) => {
+          let inString = false;
+          let inChar = false;
+          let escaped = false;
+          
+          for (let i = 0; i < position; i++) {
+            if (escaped) {
+              escaped = false;
+              continue;
+            }
+            
+            if (text[i] === '\\' && (inString || inChar)) {
+              escaped = true;
+              continue;
+            }
+            
+            if (text[i] === '"' && !inChar) {
+              inString = !inString;
+            }
+            
+            if (text[i] === '\'' && !inString) {
+              inChar = !inChar;
+            }
+          }
+          
+          return inString || inChar;
+        };
+        
+        // 辅助函数：处理预处理器指令（#include, #define等）
+        const isPreprocessorDirective = (line) => {
+          const trimmedLine = line.trim();
+          return trimmedLine.startsWith('#');
+        };
+        
+        // 处理每一行
+        for (let i = 0; i < lines.length; i++) {
+          let line = trimTrailingSpaces(lines[i]);
+          const originalLine = line;
+          line = line.trim();
+          
+          // 空行保持不变
+          if (line === '') {
+            formattedLines.push('');
+            continue;
+          }
+          
+          // 预处理器指令不缩进
+          if (isPreprocessorDirective(line)) {
+            formattedLines.push(line);
+            continue;
+          }
+          
+          // 处理右大括号（先减少缩进）
+          let braceCount = 0;
+          if (line.startsWith('}') || line.startsWith('}') || line.includes('}')) {
+            // 计算行中的右大括号数量
+            braceCount = (line.match(/\}/g) || []).length;
+            // 减少缩进（但不能小于0）
+            indentLevel = Math.max(0, indentLevel - braceCount);
+          }
+          
+          // 添加适当缩进
+          formattedLines.push(getIndent() + line);
+          
+          // 处理左大括号（后增加缩进）
+          braceCount = (line.match(/\{/g) || []).length;
+          indentLevel += braceCount;
+        }
+        
+        // 确保缩进不会为负数
+        indentLevel = Math.max(0, indentLevel);
+        
+        // 合并成格式化后的代码
+        return formattedLines.join('\n');
+      }
+      
+      // 添加格式化按钮事件监听
+      document.getElementById('format-code').addEventListener('click', formatCode);
+      
+      // 添加键盘快捷键支持 (Ctrl+Shift+F)
+      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyF, formatCode);
+      
+      // 添加行号相关的状态栏信息更新
+      editor.onDidChangeCursorPosition(function(e) {
+        const position = editor.getPosition();
+        const lineCount = editor.getModel().getLineCount();
+        const lineText = editor.getModel().getLineContent(position.lineNumber);
+        const columnCount = lineText.length;
+        
+        // 更新状态栏显示当前行号和列号
+        document.getElementById('status-message').textContent = 
+          `行 ${position.lineNumber}, 列 ${position.column} | 共 ${lineCount} 行`;
+      });
+      
+      // 初始化状态栏显示
+      const initialPosition = editor.getPosition();
+      const initialLineCount = editor.getModel().getLineCount();
+      document.getElementById('status-message').textContent = 
+        `行 ${initialPosition.lineNumber}, 列 ${initialPosition.column} | 共 ${initialLineCount} 行`;
+
+      // 编译器路径浏览按钮
+      document.getElementById('select-compiler').addEventListener('click', async () => {
+        try {
+          const result = await window.electronAPI.openFileDialog();
+          if (!result.canceled && result.filePaths.length > 0) {
+            document.getElementById('compiler-path').value = result.filePaths[0];
+            setStatusMessage(`已选择编译器: ${result.filePaths[0]}`);
+          }
+        } catch (error) {
+          showOutput(`错误: ${error.message}`, true);
+          setStatusMessage('选择编译器失败');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

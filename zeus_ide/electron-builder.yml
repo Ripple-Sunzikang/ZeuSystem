@@ -1,0 +1,51 @@
+appId: com.zeusystem.ide
+productName: ZEUS IDE
+copyright: Copyright © 2023 ZEUSYSTEM
+
+# 目录配置
+directories:
+  output: dist
+  buildResources: build
+
+# Windows特定配置
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: build/icon.svg
+  artifactName: ${productName}-Setup-${version}-${arch}.${ext}
+
+# NSIS安装程序配置
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  perMachine: false
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  include: ''
+  script: ''
+
+# 文件配置
+files:
+  - from: .
+    filter:
+      - package.json
+      - main.js
+      - preload.js
+      - index.html
+      - '**/*.js'
+      - '**/*.html'
+      - '**/*.css'
+      - '!node_modules/**/*'
+      - '!dist/**/*'
+      - '!build/**/*'
+      - '!.git/**/*'
+      - '!.github/**/*'
+      - '!.gitignore'
+
+# 其他配置
+compression: maximum
+publish: null
