@@ -158,7 +158,9 @@
     <button id="open-file">打开文件</button>
     <button id="save-file">保存文件</button>
     <button id="format-code">格式化</button>
-    <button id="compile">编译</button>
+    <button id="compile">编译(汇编)</button>
+    <button id="build">构建(完整)</button>
+    <button id="run">运行</button>
     <input type="text" id="file-path-display" readonly placeholder="无标题文件">
   </div>
 
@@ -356,7 +358,40 @@
 
       // 设置状态栏消息
       function setStatusMessage(message) {
-        document.getElementById('status-message').textContent = message;
+        const statusElement = document.getElementById('status-message');
+        if (statusElement) {
+          statusElement.textContent = message;
+          
+          // 3秒后自动清除非错误消息
+          if (!message.includes('失败') && !message.includes('错误')) {
+            setTimeout(() => {
+              const currentStatusElement = document.getElementById('status-message');
+              if (currentStatusElement && currentStatusElement.textContent === message) {
+                currentStatusElement.textContent = '';
+              }
+            }, 3000);
+          }
+        }
+      }
+
+      // 显示可执行文件信息
+      function showExecutableInfo(filePath) {
+        const statusBar = document.getElementById('status-bar');
+        if (statusBar) {
+          const infoElement = document.createElement('span');
+          infoElement.textContent = `可执行文件: ${filePath}`;
+          infoElement.style.marginLeft = '10px';
+          infoElement.className = 'executable-info';
+          
+          // 移除之前的信息
+          const oldInfo = statusBar.querySelector('.executable-info');
+          if (oldInfo) {
+            statusBar.removeChild(oldInfo);
+          }
+          
+          // 添加新信息
+          statusBar.appendChild(infoElement);
+        }
       }
 
       // 更新文件路径显示
@@ -367,14 +402,19 @@
       // 显示输出内容
       function showOutput(content, isError = false) {
         const outputContent = document.getElementById('output-content');
-        outputContent.textContent = content;
+        if (outputContent) {
+          outputContent.textContent = content;
+        }
         
-        // 如果是错误，切换到错误标签
+        // 如果是错误，切换到错误标签 - 添加元素存在性检查
         if (isError) {
           document.querySelectorAll('.output-tab').forEach(tab => {
             tab.classList.remove('active');
           });
-          document.querySelector('.output-tab[data-tab="errors"]').classList.add('active');
+          const errorTab = document.querySelector('.output-tab[data-tab="errors"]');
+          if (errorTab) {
+            errorTab.classList.add('active');
+          }
         }
       }
 
@@ -439,7 +479,7 @@
         }
       });
 
-      // 编译代码
+      // 编译(汇编)代码
       document.getElementById('compile').addEventListener('click', async () => {
         try {
           // 确保文件已保存
@@ -481,6 +521,81 @@
         } catch (error) {
           showOutput(`错误: ${error.message}`, true);
           setStatusMessage('编译失败');
+        }
+      });
+      
+      // 构建(完整)按钮点击事件
+      document.getElementById('build').addEventListener('click', async () => {
+        try {
+          // 确保文件已保存
+          if (!currentFilePath) {
+            showOutput('请先保存文件再构建', true);
+            setStatusMessage('构建失败');
+            return;
+          }
+          
+          // 获取编译器路径
+          const compilerPath = document.getElementById('compiler-path').value;
+          if (!compilerPath) {
+            showOutput('请设置编译器路径', true);
+            setStatusMessage('构建失败');
+            return;
+          }
+          
+          setStatusMessage('正在构建...');
+          showOutput('构建中...');
+          
+          // 执行完整构建流程(C -> 汇编 -> 目标文件 -> 可执行文件)
+          const result = await window.electronAPI.buildProject(currentFilePath, compilerPath);
+          
+          if (result.success) {
+             showOutput(`构建成功!\n输出文件: ${result.outputFile}\n\n${result.output}`);
+             setStatusMessage('构建成功');
+             showExecutableInfo(result.outputFile);
+          } else {
+            showOutput(`构建失败:\n${result.error}`, true);
+            setStatusMessage('构建失败');
+          }
+        } catch (error) {
+          showOutput(`错误: ${error.message}`, true);
+          setStatusMessage('构建失败');
+        }
+      });
+      
+      // 运行按钮点击事件
+      document.getElementById('run').addEventListener('click', async () => {
+        try {
+          // 确保文件已保存
+          if (!currentFilePath) {
+            showOutput('请先保存文件再运行', true);
+            setStatusMessage('运行失败');
+            return;
+          }
+          
+          // 获取编译器路径
+          const compilerPath = document.getElementById('compiler-path').value;
+          if (!compilerPath) {
+            showOutput('请设置编译器路径', true);
+            setStatusMessage('运行失败');
+            return;
+          }
+          
+          setStatusMessage('正在构建并运行...');
+          showOutput('构建中...');
+          
+          // 执行完整构建并运行流程
+          const result = await window.electronAPI.runProgram(currentFilePath, compilerPath);
+          
+          if (result.success) {
+            showOutput(`构建输出:\n${result.buildOutput}\n\n程序运行输出:\n${result.runOutput}`);
+            setStatusMessage('程序运行完成');
+          } else {
+            showOutput(`运行失败:\n${result.error || result.output}`, true);
+            setStatusMessage(result.errorType || '运行失败');
+          }
+        } catch (error) {
+          showOutput(`错误: ${error.message}`, true);
+          setStatusMessage('运行失败');
         }
       });
 
