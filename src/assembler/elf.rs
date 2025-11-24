@@ -171,14 +171,19 @@ impl ElfGenerator {
         // 计算程序头数量（为.text段创建一个PT_LOAD）
         let program_header_num = if !sections.is_empty() { 1 } else { 0 };
         
+        // 计算正确的 section_header_offset
+        // = ELF header (52 bytes) + Program headers (program_header_num * 32)
+        let program_headers_size = program_header_num * 32;
+        let section_header_offset = 52 + program_headers_size;
+        
         let header = ElfHeader {
             entry: 0x10000, // Standard RISC-V entry point
             program_header_offset: 52, // Program headers immediately follow ELF header
-            section_header_offset: 0x100, // Place headers at 0x100
+            section_header_offset: section_header_offset as u32,
             flags: 0,
             ehdr_size: 52,
             program_header_entry_size: 32,
-            program_header_num: program_header_num,
+            program_header_num: program_header_num as u16,
             section_header_entry_size: 40,
             section_header_num: (sections.len() + 1) as u16, // +1 for Null section
             section_header_string_index: (sections.len()) as u16, // Last section is .shstrtab (index = len, since 0 is Null)
@@ -248,8 +253,15 @@ impl ElfGenerator {
             binary.extend_from_slice(&0x1000u32.to_le_bytes());
         }
 
-        // 3. Section Headers (at 0x100)
-        // Pad to 0x100
+        // 3. Section Headers
+        // 注意：section_header_offset 应该紧跟在 program headers 之后
+        let current_offset = binary.len();
+        if elf.header.section_header_offset < current_offset as u32 {
+            panic!("Section header offset {} is too small, current binary size: {}", 
+                   elf.header.section_header_offset, current_offset);
+        }
+        
+        // Pad to section_header_offset
         while binary.len() < elf.header.section_header_offset as usize {
             binary.push(0);
         }

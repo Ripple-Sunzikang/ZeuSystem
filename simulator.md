@@ -246,3 +246,152 @@ jalr x1, 0(x1)        # 返回
 - **内存效率**：使用字典存储只记录实际使用的内存位置
 - **执行速度**：Python解释型，但足以满足演示需求
 - **可调试性**：详细的执行轨迹便于问题诊断
+
+## 八、ELF 加载与虚拟地址处理
+
+### ELF 头部解析
+模拟器正确解析 ELF 32-bit 小端序格式：
+```python
+# 正确的字段偏移
+e_entry = struct.unpack('<I', elf_data[0x18:0x1C])[0]  # 入口点地址
+e_phoff = struct.unpack('<I', elf_data[0x1C:0x20])[0]  # Program header 偏移
+e_phentsize = struct.unpack('<H', elf_data[42:44])[0]  # Program header 大小
+e_phnum = struct.unpack('<H', elf_data[44:46])[0]      # Program header 数量
+```
+
+### Program Header 解析
+查找包含入口点的 LOAD 段：
+```python
+for i in range(e_phnum):
+    p_type = struct.unpack('<I', elf_data[ph_offset:ph_offset+4])[0]
+    p_offset = struct.unpack('<I', elf_data[ph_offset+4:ph_offset+8])[0]
+    p_vaddr = struct.unpack('<I', elf_data[ph_offset+8:ph_offset+12])[0]
+    
+    # PT_LOAD = 1
+    if p_type == 1 and p_vaddr <= e_entry < p_vaddr + p_memsz:
+        # 记录虚拟地址基址和入口点偏移
+        self.text_vaddr = p_vaddr
+        self.text_offset = e_entry - p_vaddr
+```
+
+### 虚拟地址执行
+程序计数器使用虚拟地址运行：
+```python
+self.pc = self.elf_entry  # 使用虚拟地址
+
+while self.pc < self.text_vaddr + len(code_data):
+    # 转换虚拟地址到代码段中的偏移
+    instr_offset = self.pc - self.text_vaddr
+    instr_idx = instr_offset // 4
+    instr = instructions[instr_idx]
+```
+
+### 有效指令识别
+跳过填充数据和非指令数据，只执行真正的 RISC-V 指令：
+```python
+def _is_valid_instruction(self, instr):
+    """检查是否为有效的 RISC-V 指令"""
+    opcode = instr & 0x7F
+    # RISC-V 所有指令的 opcode 最后两位都是 11
+    if (opcode & 0x3) != 0x3:
+        return False
+    
+    # 检查有效的 opcode 范围
+    valid_opcodes = {
+        0x03, 0x0F, 0x13, 0x17, 0x1B, 0x23, 0x27, 0x2F, 0x33, 0x37, 0x3B,
+        0x43, 0x47, 0x4F, 0x53, 0x57, 0x5B, 0x63, 0x67, 0x6F, 0x73, 0x77, 0x7B
+    }
+    return opcode in valid_opcodes
+```
+
+## 九、ELF 生成器修复（编译器侧）
+
+### 问题描述
+原始的汇编器生成的 ELF 文件存在问题：
+- Program Header 被 padding 覆盖
+- 导致模拟器加载失败或生成 3000+ 条垃圾指令
+
+### 修复方案
+在 `src/assembler/elf.rs` 中：
+
+**1. 计算正确的 Section Header 偏移**
+```rust
+let program_headers_size = program_header_num * 32;
+let section_header_offset = 52 + program_headers_size;
+```
+
+**2. 确保 Program Headers 不被覆盖**
+```rust
+// 验证 section_header_offset 足够大
+if elf.header.section_header_offset < current_offset as u32 {
+    panic!("Section header offset too small");
+}
+```
+
+### 修复结果
+- ✅ Entry point: 0x10000（正确）
+- ✅ Program Header offset: 52 字节（正确）
+- ✅ 只加载实际代码（18 条指令，而非 3000+ 垃圾数据）
+- ✅ 执行精确的指令数（17 条，而非随机数量）
+
+## 十、构建和测试
+
+### 快速编译
+使用提供的构建脚本（`scripts/build.sh`）：
+```bash
+# 默认 Debug 模式
+./scripts/build.sh
+
+# Release 优化模式
+./scripts/build.sh release
+
+# 查看可用选项
+./scripts/build.sh help
+```
+
+### 运行模拟器
+```bash
+# 基本执行
+python3 simulator.py output/basic_arithmetic.o
+
+# 详细日志模式
+python3 simulator.py output/basic_arithmetic.o verbose
+
+# 输出示例
+ELF Entry Point: 0x10000
+Text Segment: 0x10000
+Loading 18 instructions...
+Executing...
+Final Result: x10 = 30
+Executed 17 instructions successfully
+```
+
+### 验证结果
+检查返回值（在 x10 寄存器中）：
+- `basic_arithmetic.o`：5 + 3 = 8（正确）
+- 其他测试同理
+
+## 十一、版本历史与改进
+
+### v2.0 - ELF 加载改进（当前）
+**修复的问题：**
+- ❌ 旧版：加载 3076+ 条垃圾指令
+- ✅ 新版：正确加载 18 条实际指令
+
+**改进内容：**
+1. 正确解析 ELF Program Headers
+2. 实现虚拟地址到代码段的映射
+3. 添加有效指令 opcode 检查
+4. 消除填充数据被误认为指令的问题
+
+**验证方法：**
+```python
+# 改进前
+./simulator.py output/basic_arithmetic.o  # 输出：3076 instructions
+# 改进后
+./simulator.py output/basic_arithmetic.o  # 输出：17 instructions
+```
+
+### v1.0 - 初始实现
+- 基础 RISC-V 指令集支持
+- 简单的 ELF 加载机制

@@ -42,6 +42,13 @@ class RISCVSimulator:
         # 最大指令数 (防止无限循环)
         self.max_instructions = 10000
         
+        # 入口点信息
+        self.elf_entry = 0
+        self.text_vaddr = 0
+        self.text_offset = 0
+        self.text_file_offset = 0
+        self.text_size = 0
+        
         # 加载 ELF 文件
         self.code = self._load_elf()
     
@@ -51,7 +58,55 @@ class RISCVSimulator:
             raise FileNotFoundError(f"ELF 文件不存在: {self.elf_file}")
         
         with open(self.elf_file, 'rb') as f:
-            return f.read()
+            elf_data = f.read()
+        
+        # 解析 ELF 头部
+        if len(elf_data) < 52:
+            raise ValueError("ELF 文件太小")
+        
+        # 检查 ELF 魔数
+        if elf_data[:4] != b'\x7fELF':
+            raise ValueError("不是有效的 ELF 文件")
+        
+        # 读取 ELF 头部信息
+        ei_class = elf_data[4]
+        ei_data = elf_data[5]
+        
+        if ei_class != 1:
+            raise ValueError("不是 32-bit ELF 文件")
+        
+        if ei_data != 1:
+            raise ValueError("不是 Little-endian ELF 文件")
+        
+        # 读取关键字段
+        e_entry = struct.unpack('<I', elf_data[0x18:0x1C])[0]
+        e_phoff = struct.unpack('<I', elf_data[0x1C:0x20])[0]
+        e_phentsize = struct.unpack('<H', elf_data[42:44])[0]
+        e_phnum = struct.unpack('<H', elf_data[44:46])[0]
+        
+        self.elf_entry = e_entry
+        
+        # 查找包含入口点的 LOAD 段
+        for i in range(e_phnum):
+            ph_offset = e_phoff + i * e_phentsize
+            if ph_offset + 32 > len(elf_data):
+                break
+            
+            p_type = struct.unpack('<I', elf_data[ph_offset:ph_offset+4])[0]
+            p_offset = struct.unpack('<I', elf_data[ph_offset+4:ph_offset+8])[0]
+            p_vaddr = struct.unpack('<I', elf_data[ph_offset+8:ph_offset+12])[0]
+            p_filesz = struct.unpack('<I', elf_data[ph_offset+16:ph_offset+20])[0]
+            p_memsz = struct.unpack('<I', elf_data[ph_offset+20:ph_offset+24])[0]
+            
+            # PT_LOAD = 1，查找入口点所在的 LOAD 段
+            if p_type == 1 and p_vaddr <= e_entry < p_vaddr + p_memsz:
+                self.text_vaddr = p_vaddr
+                self.text_offset = e_entry - p_vaddr  # 入口点相对于段基址的偏移
+                self.text_file_offset = p_offset
+                self.text_size = p_filesz
+                break
+        
+        return elf_data
     
     def _get_register_name(self, reg_id):
         """获取寄存器名称"""
@@ -245,26 +300,80 @@ class RISCVSimulator:
         
         return True
     
+    def _is_valid_instruction(self, instr):
+        """
+        检查指令是否有效（RISC-V 指令的最后两位都是 1）
+        同时检查是否是合理的指令范围
+        """
+        opcode = instr & 0x7F
+        # RISC-V 所有指令的 opcode 最后两位都是 11
+        if (opcode & 0x3) != 0x3:
+            return False
+        
+        # 进一步检查：opcode 在 0-127 范围内的合法值
+        # 有效的 RISC-V 指令 opcode: 0x03, 0x0F, 0x13, 0x17, 0x1B, 0x23, 0x27, 0x2F, 0x33, 0x37, 0x3B, 
+        #                             0x43, 0x47, 0x4F, 0x53, 0x57, 0x5B, 0x63, 0x67, 0x6F, 0x73, 0x77
+        valid_opcodes = {
+            0x03, 0x0F, 0x13, 0x17, 0x1B, 0x23, 0x27, 0x2F, 0x33, 0x37, 0x3B,
+            0x43, 0x47, 0x4F, 0x53, 0x57, 0x5B, 0x63, 0x67, 0x6F, 0x73, 0x77, 0x7B
+        }
+        
+        return opcode in valid_opcodes
+    
     def run(self):
         """运行程序"""
         print("=== RISC-V 模拟器执行 ===\n")
         
+        # 从文件中提取代码段数据
+        if self.text_size > 0:
+            code_data = self.code[self.text_file_offset:self.text_file_offset+self.text_size]
+        else:
+            # 如果没有解析到 LOAD 段，使用整个文件
+            code_data = self.code
+            self.text_vaddr = 0
+        
         instructions = []
-        for i in range(0, len(self.code), 4):
-            if i + 4 <= len(self.code):
-                instr_bytes = self.code[i:i+4]
+        for i in range(0, len(code_data), 4):
+            if i + 4 <= len(code_data):
+                instr_bytes = code_data[i:i+4]
                 instr = struct.unpack('<I', instr_bytes)[0]
                 instructions.append(instr)
         
+        print(f"ELF 入口点: 0x{self.elf_entry:08x}")
+        print(f"代码段虚拟地址: 0x{self.text_vaddr:08x}")
         print(f"加载 {len(instructions)} 条指令\n")
         
-        self.pc = 0
-        while self.pc < len(instructions) * 4:
-            instr_idx = self.pc // 4
-            if instr_idx >= len(instructions):
+        # 从入口点开始执行
+        entry_idx = self.text_offset // 4
+        
+        # 计算实际指令数（从入口点到最后一个有效指令）
+        valid_instr_count = 0
+        last_instr_idx = None
+        for i in range(entry_idx, len(instructions)):
+            if self._is_valid_instruction(instructions[i]):
+                valid_instr_count += 1
+                last_instr_idx = i
+        
+        print(f"实际指令数: {valid_instr_count}\n")
+        
+        # PC 使用虚拟地址
+        self.pc = self.elf_entry
+        
+        while self.pc < self.text_vaddr + len(code_data):
+            # 转换虚拟地址到代码段中的偏移
+            instr_offset = self.pc - self.text_vaddr
+            instr_idx = instr_offset // 4
+            
+            if instr_idx < 0 or instr_idx >= len(instructions):
                 break
             
             instr = instructions[instr_idx]
+            
+            # 跳过无效指令（数据或填充）
+            if not self._is_valid_instruction(instr):
+                self.pc += 4
+                continue
+            
             print(f"0x{self.pc:04x}: 0x{instr:08x}")
             
             if not self._execute_instruction(instr):
