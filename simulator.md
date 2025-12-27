@@ -1,5 +1,7 @@
 # RISC-V ELF 模拟器实现原理
 
+> 提示：输入应为链接后的 `.elf` 可执行文件，生成流程见 `docs/QUICKSTART.md`。
+
 ## 快速使用
 
 ```bash

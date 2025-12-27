@@ -1,220 +1,78 @@
-# 快速开始指南
+# 快速开始
 
-## 目录结构
+## 目录速览
 
 ```
-riscvCompiler/
-├── src/                    # 源代码
-│   ├── main.rs            # 主程序入口
-│   ├── lexer.rs           # 词法分析器
-│   ├── ast.rs             # 抽象语法树定义
-│   ├── parser.rs          # 语法分析器
-│   ├── semantic.rs        # 语义分析器
-│   ├── codegen.rs         # 代码生成器
-│   └── validator.rs       # 验证器
-├── docs/                   # 文档
-│   ├── README.md          # 项目说明
-│   └── DEVELOPMENT.md     # 开发者指南
-├── tests/                  # 测试用例
-│   ├── test_basic.c
-│   ├── test_while_loop.c
-│   ├── test_if_else.c
-│   ├── test_function_call.c
-│   └── test_for_loop.c
-├── examples/               # 示例代码
-│   ├── basic_arithmetic.c
-│   ├── loops_and_conditions.c
-│   ├── functions.c
-│   └── bitwise_operations.c
-├── scripts/                # 脚本
-│   ├── build.sh           # 构建脚本
-│   └── test.sh            # 测试脚本
-├── output/                 # 输出目录
-├── Cargo.toml             # 项目配置
-└── .github/prompts/
-    └── Standard.prompt.md # 项目提示词
+ZeuSystem/
+├── src/                # 编译器 / 汇编器 / 链接器源码
+├── docs/               # 文档
+├── examples/           # 示例代码
+├── output/             # 输出目录（示例产物）
+├── test.c              # 简单示例
+├── simulator.py        # ELF 模拟器
+└── zeus_ide/            # ZEUS IDE
 ```
 
-## 快速开始
+## 环境准备
 
-### 1. 构建编译器
+- Rust 工具链（`cargo`/`rustc`）
+- `riscv32-unknown-elf-gcc`（C → 汇编阶段会调用进行验证）
+
+> 注意：如果缺少 RISC-V GCC，C 编译阶段会失败；你仍可使用汇编/链接/模拟器流程验证现有 `.s/.o` 文件。
+
+## 一步跑通
 
 ```bash
-# 构建 debug 版本（默认）
-./scripts/build.sh
+# 构建
+cargo build --release
 
-# 或构建 release 版本
-./scripts/build.sh release
+# 确保输出目录存在
+mkdir -p output
+
+# C -> 汇编
+./target/release/riscv_compiler test.c output/test.s
+
+# 汇编 -> 目标文件
+./target/release/riscv_compiler output/test.s output/test.o
+
+# 链接 -> ELF 或 COE
+./target/release/riscv_compiler output/test.o output/test.elf
+./target/release/riscv_compiler output/test.o output/test.coe
+
+# 运行模拟器（仅 ELF）
+python3 simulator.py output/test.elf 0
 ```
 
-### 2. 运行测试
+## 使用示例
+
+### 编译示例 C 文件
 
 ```bash
-./scripts/test.sh
+./target/release/riscv_compiler examples/calculator_minirv.c output/calculator_minirv.s
+./target/release/riscv_compiler output/calculator_minirv.s output/calculator_minirv.o
+./target/release/riscv_compiler output/calculator_minirv.o output/calculator_minirv.elf
 ```
 
-### 3. 编译 C 代码
+### 汇编已有 `.s`
 
 ```bash
-# 编译测试用例
-./target/debug/riscv_compiler tests/test_basic.c output/test_basic.s
-
-# 编译示例代码
-./target/debug/riscv_compiler examples/basic_arithmetic.c output/arithmetic.s
-
-# 简化用法（自动生成输出文件名）
-./target/debug/riscv_compiler examples/functions.c
+./target/release/riscv_compiler examples/calculator_minirv.s output/calculator_minirv.o
 ```
 
-### 4. 查看生成的汇编代码
+## 常见问题
 
-```bash
-cat output/test_basic.s
-```
+### 找不到 `riscv32-unknown-elf-gcc`
 
-### 5. 使用汇编器 (Assembler)
+- 该工具用于验证 C → 汇编的结果，请确保已安装并在 `PATH` 中。
+- 若暂时无法安装，可先用已有 `.s` 文件走汇编/链接流程。
 
-可以直接将 `.s` 汇编文件转换为 ELF 目标文件 `.o`：
+### 输出文件写入失败
 
-```bash
-# 将汇编代码转换为目标文件
-./target/debug/riscv_compiler output/test_basic.s output/test_basic.o
-
-# 验证生成的 ELF 文件 (需要安装 riscv32-unknown-elf-objdump)
-# 假设工具链安装在 /opt/riscv32
-/opt/riscv32/bin/riscv32-unknown-elf-objdump -d output/test_basic.o
-```
-
-## 支持的 C 语言特性
-
-### 基本类型
-- `int` - 整数（32位）
-- `char` - 字符
-- `void` - 空类型
-
-### 语句
-- 表达式语句 `;`
-- 块语句 `{ ... }`
-- if/else 条件语句
-- while 循环
-- for 循环
-- return 语句
-- break/continue 语句
-- 变量声明和初始化
-
-### 表达式
-- 算术运算：`+`, `-`, `*`, `/`, `%`
-- 比较：`==`, `!=`, `<`, `<=`, `>`, `>=`
-- 逻辑：`&&`, `||`, `!`
-- 位运算：`&`, `|`, `^`, `~`, `<<`, `>>`
-- 赋值：`=`
-- 函数调用
-- 数组索引
-- 三元运算符：`? :`
-- 类型转换：`(type) expr`
-- 一元运算：`++`, `--`, `-`, `+`, `!`, `~`
-
-### 函数
-- 函数定义
-- 函数调用
-- 参数传递
-- 返回值
-
-## 编译输出
-
-编译后生成的汇编代码包含：
-
-```asm
-.section .text
-.globl main
-main:
-    addi sp, sp, -256          ; 分配堆栈空间
-    sw ra, 252(sp)             ; 保存返回地址
-    
-    ; 函数体代码
-    
-    lw ra, 252(sp)             ; 恢复返回地址
-    addi sp, sp, 256           ; 释放堆栈空间
-    ret                        ; 返回
-```
-
-## 常见命令
-
-```bash
-# 查看完整帮助
-./target/debug/riscv_compiler --help
-
-# 编译并验证
-./target/debug/riscv_compiler input.c output.s
-
-# 批量编译
-for f in tests/*.c; do
-    ./target/debug/riscv_compiler "$f" "output/${f##*/%.c}.s"
-done
-
-# 查看编译器版本
-cargo --version
-rustc --version
-```
-
-## 依赖
-
-- **Rust** 1.70+
-- **riscv32-unknown-elf-gcc** - 用于汇编代码验证
-
-### 安装 riscv-gnu-toolchain
-
-```bash
-# Ubuntu/Debian
-sudo apt-get install gcc-riscv64-unknown-elf
-
-# 或通过包管理器
-brew install riscv-tools
-
-# 或手动编译
-# https://github.com/riscv-collab/riscv-gnu-toolchain
-```
-
-## 文档
-
-- [README.md](../docs/README.md) - 项目概述和特性
-- [DEVELOPMENT.md](../docs/DEVELOPMENT.md) - 开发者指南和 API 参考
-
-## 故障排除
-
-### 问题：找不到 riscv32-unknown-elf-gcc
-
-**解决方案**：
-```bash
-# 检查是否安装
-which riscv32-unknown-elf-gcc
-
-# 或添加到 PATH
-export PATH=$PATH:/opt/riscv32/bin
-```
-
-### 问题：编译失败，提示语法错误
-
-**解决方案**：
-- 检查 C 代码是否符合支持的语法
-- 查看错误消息获取具体位置
-- 参考 `examples/` 目录中的有效代码
-
-### 问题：生成的汇编代码验证失败
-
-**解决方案**：
-- 确保 riscv32-unknown-elf-gcc 正确安装
-- 运行 `./scripts/test.sh` 进行诊断
+- 确认输出目录存在（如 `output/`）。
+- 确认对输出路径有写权限。
 
 ## 下一步
 
-1. 阅读 [docs/README.md](../docs/README.md) 了解详细功能
-2. 查看 [docs/DEVELOPMENT.md](../docs/DEVELOPMENT.md) 了解内部实现
-3. 探索 `examples/` 目录中的示例代码
-4. 为项目贡献新功能或报告问题
-
-## 联系方式
-
-- 提交 Issue：GitHub Issues
-- 贡献代码：Pull Requests
-- 项目许可：MIT
+- 了解命令细节：`QUICK_REFERENCE.md`
+- 查看架构细节：`DEVELOPMENT.md`
+- 了解功能边界：`PROJECT_SUMMARY.md`
