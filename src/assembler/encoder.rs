@@ -35,6 +35,7 @@ pub struct InstructionEncoding {
 
 pub struct Encoder {
     symbols: HashMap<String, u32>,
+    current_pc: u32,
 }
 
 impl Encoder {
@@ -45,15 +46,18 @@ impl Encoder {
         }
         Self {
             symbols,
+            current_pc: 0,
         }
     }
 
     /// 编码所有指令
     pub fn encode(&mut self, instructions: &[Instruction]) -> Result<Vec<u8>, String> {
         let mut code = Vec::new();
+        self.current_pc = 0;
 
         for instr in instructions {
             let bytes = self.encode_instruction(instr)?;
+            self.current_pc += bytes.len() as u32;
             code.extend_from_slice(&bytes);
         }
 
@@ -132,14 +136,26 @@ impl Encoder {
             }, 0x13, 0),
             "li" => self.encode_li(instr),
             "la" => self.encode_la(instr),
-            "mv" => self.encode_r_type(&Instruction {
-                name: "add".to_string(),
-                operands: vec![instr.operands[0].clone(), instr.operands[1].clone(), "x0".to_string()],
-            }, 0x33, 0, 0),
+            "mv" => self.encode_i_type(&Instruction {
+                name: "addi".to_string(),
+                operands: vec![instr.operands[0].clone(), instr.operands[1].clone(), "0".to_string()],
+            }, 0x13, 0),
+            "neg" => self.encode_r_type(&Instruction {
+                name: "sub".to_string(),
+                operands: vec![instr.operands[0].clone(), "x0".to_string(), instr.operands[1].clone()],
+            }, 0x33, 0, 0x20),
             "not" => self.encode_r_type(&Instruction {
                 name: "xor".to_string(),
                 operands: vec![instr.operands[0].clone(), instr.operands[1].clone(), "x31".to_string()],
             }, 0x33, 4, 0),  // xor rd, rs, x31 (all ones)
+            "seqz" => self.encode_i_type(&Instruction {
+                name: "sltiu".to_string(),
+                operands: vec![instr.operands[0].clone(), instr.operands[1].clone(), "1".to_string()],
+            }, 0x13, 3),
+            "snez" => self.encode_r_type(&Instruction {
+                name: "sltu".to_string(),
+                operands: vec![instr.operands[0].clone(), "x0".to_string(), instr.operands[1].clone()],
+            }, 0x33, 3, 0),
             "j" => self.encode_j(instr),
             "ret" => self.encode_i_type(&Instruction {
                 name: "jalr".to_string(),
@@ -217,7 +233,7 @@ impl Encoder {
 
         let rs1 = self.parse_register(&instr.operands[0])?;
         let rs2 = self.parse_register(&instr.operands[1])?;
-        let imm = self.parse_immediate(&instr.operands[2])?;
+        let imm = self.parse_branch_offset(&instr.operands[2])?;
 
         let imm_12 = ((imm as u32) >> 12) & 1;
         let imm_11 = ((imm as u32) >> 11) & 1;
@@ -237,8 +253,9 @@ impl Encoder {
         let rd = self.parse_register(&instr.operands[0])?;
         let imm = self.parse_immediate(&instr.operands[1])?;
 
-        let imm_31_12 = ((imm as u32) >> 12) & 0xFFFFF;
-        let encoding = opcode | (rd << 7) | (imm_31_12 << 12);
+        // 对于 lui，立即数不需要右移，直接使用
+        let imm_20 = (imm as u32) & 0xFFFFF;
+        let encoding = opcode | (rd << 7) | (imm_20 << 12);
         Ok(encoding.to_le_bytes().to_vec())
     }
 
@@ -249,7 +266,7 @@ impl Encoder {
         }
 
         let rd = self.parse_register(&instr.operands[0])?;
-        let imm = self.parse_immediate(&instr.operands[1])?;
+        let imm = self.parse_jump_offset(&instr.operands[1])?;
 
         let imm_20 = ((imm as u32) >> 20) & 1;
         let imm_10_1 = ((imm as u32) >> 1) & 0x3FF;
@@ -270,8 +287,10 @@ impl Encoder {
         let rs1 = self.parse_register(&instr.operands[1])?;
         let shamt = self.parse_immediate(&instr.operands[2])?;
 
-        let imm_11_5 = ((shamt as u32) >> 5) & 0x7F | funct7;
-        let encoding = opcode | (rd << 7) | (funct3 << 12) | (rs1 << 15) | (imm_11_5 << 25);
+        // shamt 是 5 位，放在 imm[4:0]，funct7 放在 imm[11:5]
+        let shamt_5 = (shamt as u32) & 0x1F;
+        let imm_12 = (funct7 << 5) | shamt_5;
+        let encoding = opcode | (rd << 7) | (funct3 << 12) | (rs1 << 15) | (imm_12 << 20);
         Ok(encoding.to_le_bytes().to_vec())
     }
 
@@ -390,6 +409,60 @@ impl Encoder {
         if imm.starts_with("0x") {
             i32::from_str_radix(&imm[2..], 16)
                 .map_err(|_| format!("Invalid hex immediate: {}", imm))
+        } else if imm.starts_with("-0x") {
+            i32::from_str_radix(&imm[3..], 16)
+                .map(|v| -v)
+                .map_err(|_| format!("Invalid hex immediate: {}", imm))
+        } else {
+            imm.parse::<i32>()
+                .map_err(|_| format!("Invalid immediate: {}", imm))
+        }
+    }
+
+    /// 解析分支指令偏移量（相对于当前PC）
+    fn parse_branch_offset(&self, imm: &str) -> Result<i32, String> {
+        let imm = imm.trim();
+        
+        // 尝试查找符号作为标签
+        if let Some(&addr) = self.symbols.get(imm) {
+            // 计算相对偏移量
+            let offset = (addr as i32) - (self.current_pc as i32);
+            return Ok(offset);
+        }
+
+        // 否则作为数字立即数解析
+        if imm.starts_with("0x") {
+            i32::from_str_radix(&imm[2..], 16)
+                .map_err(|_| format!("Invalid hex immediate: {}", imm))
+        } else if imm.starts_with("-0x") {
+            i32::from_str_radix(&imm[3..], 16)
+                .map(|v| -v)
+                .map_err(|_| format!("Invalid hex immediate: {}", imm))
+        } else {
+            imm.parse::<i32>()
+                .map_err(|_| format!("Invalid immediate: {}", imm))
+        }
+    }
+
+    /// 解析跳转指令偏移量（相对于当前PC）
+    fn parse_jump_offset(&self, imm: &str) -> Result<i32, String> {
+        let imm = imm.trim();
+        
+        // 尝试查找符号作为标签
+        if let Some(&addr) = self.symbols.get(imm) {
+            // 计算相对偏移量
+            let offset = (addr as i32) - (self.current_pc as i32);
+            return Ok(offset);
+        }
+
+        // 否则作为数字立即数解析
+        if imm.starts_with("0x") {
+            i32::from_str_radix(&imm[2..], 16)
+                .map_err(|_| format!("Invalid hex immediate: {}", imm))
+        } else if imm.starts_with("-0x") {
+            i32::from_str_radix(&imm[3..], 16)
+                .map(|v| -v)
+                .map_err(|_| format!("Invalid hex immediate: {}", imm))
         } else {
             imm.parse::<i32>()
                 .map_err(|_| format!("Invalid immediate: {}", imm))
@@ -415,5 +488,3 @@ impl Encoder {
         }
     }
 }
-
-

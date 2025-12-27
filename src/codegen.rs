@@ -41,6 +41,43 @@ impl Codegen {
         self.code.push(format!("{}:", label));
     }
 
+    fn emit_load_immediate(&mut self, value: i64) {
+        if (-2048..=2047).contains(&value) {
+            self.emit(&format!("addi a0, zero, {}", value));
+        } else {
+            self.emit(&format!("li a0, {}", value));
+        }
+    }
+
+    fn generate_lvalue_address(&mut self, expr: &Expression) -> Result<(), String> {
+        match expr {
+            Expression::Identifier(name) => {
+                if let Some(offset) = self.local_vars.get(name) {
+                    self.emit(&format!("addi a0, sp, {}", offset));
+                    Ok(())
+                } else {
+                    Err(format!("Undefined variable: {}", name))
+                }
+            }
+            Expression::UnaryOp { op: UnaryOp::Deref, operand } => {
+                self.generate_expression(operand)
+            }
+            Expression::Index { array, index } => {
+                self.generate_expression(array)?;
+                let temp_offset = self.stack_ptr;
+                self.emit(&format!("sw a0, {}(sp)", temp_offset));
+
+                self.generate_expression(index)?;
+                self.emit(&format!("lw a1, {}(sp)", temp_offset));
+
+                self.emit("slli a0, a0, 2");
+                self.emit("add a0, a1, a0");
+                Ok(())
+            }
+            _ => Err("Invalid assignment target".to_string()),
+        }
+    }
+
     pub fn generate(&mut self, program: &Program) -> Result<Vec<String>, String> {
         self.code.push(".section .text".to_string());
         self.code.push(".globl main".to_string());
@@ -234,11 +271,11 @@ impl Codegen {
     fn generate_expression(&mut self, expr: &Expression) -> Result<(), String> {
         match expr {
             Expression::Number(n) => {
-                self.emit(&format!("li a0, {}", n));
+                self.emit_load_immediate(*n);
                 Ok(())
             }
             Expression::Character(c) => {
-                self.emit(&format!("li a0, {}", *c as i32));
+                self.emit_load_immediate(*c as i32 as i64);
                 Ok(())
             }
             Expression::String(_) => {
@@ -321,6 +358,13 @@ impl Codegen {
                         self.generate_expression(operand)?;
                         self.emit("not a0, a0");
                     }
+                    UnaryOp::Deref => {
+                        self.generate_expression(operand)?;
+                        self.emit("lw a0, 0(a0)");
+                    }
+                    UnaryOp::Address => {
+                        self.generate_lvalue_address(operand)?;
+                    }
                     _ => return Err("Unsupported unary operator".to_string()),
                 }
                 Ok(())
@@ -335,7 +379,13 @@ impl Codegen {
                         return Err(format!("Undefined variable: {}", name));
                     }
                 } else {
-                    return Err("Invalid assignment target".to_string());
+                    let temp_offset = self.stack_ptr;
+                    self.emit(&format!("sw a0, {}(sp)", temp_offset));
+
+                    self.generate_lvalue_address(target)?;
+                    self.emit(&format!("lw a1, {}(sp)", temp_offset));
+                    self.emit("sw a1, 0(a0)");
+                    self.emit("mv a0, a1");
                 }
 
                 Ok(())
@@ -369,6 +419,9 @@ impl Codegen {
                 self.emit("lw a0, 0(a0)");
 
                 Ok(())
+            }
+            Expression::Cast { ty: _, expr } => {
+                self.generate_expression(expr)
             }
             _ => Err("Unsupported expression".to_string()),
         }

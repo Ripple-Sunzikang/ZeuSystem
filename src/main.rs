@@ -38,7 +38,7 @@ fn main() {
     } else if input_file.ends_with(".o") {
         // 目标文件 -> 可执行文件
         if args.len() < 3 {
-            eprintln!("Usage: {} <input.o>... <output.elf>", args[0]);
+            eprintln!("Usage: {} <input.o>... <output.elf|output.coe>", args[0]);
             std::process::exit(1);
         }
         
@@ -196,13 +196,25 @@ fn link(input_files: Vec<String>, output_file: &str) {
                 std::process::exit(1);
             }
             
-            println!("Generated executable: {}", output_file);
+            let output_is_coe = output_file.to_ascii_lowercase().ends_with(".coe");
+            println!(
+                "Generated {}: {}",
+                if output_is_coe { "COE file" } else { "executable" },
+                output_file
+            );
 
             // 获取并显示链接统计信息
             let stats = linker::LinkerValidator::get_link_stats(&data);
             println!("Linker verification: OK");
             println!("  Output size: {} bytes", stats.total_size);
-            println!("  Format: {}", if stats.is_elf { "ELF" } else { "Raw binary" });
+            let format = if output_is_coe {
+                "COE"
+            } else if stats.is_elf {
+                "ELF"
+            } else {
+                "Raw binary"
+            };
+            println!("  Format: {}", format);
         },
         Err(e) => {
             eprintln!("Linker error: {}", e);
@@ -210,4 +222,3 @@ fn link(input_files: Vec<String>, output_file: &str) {
         }
     }
 }
-

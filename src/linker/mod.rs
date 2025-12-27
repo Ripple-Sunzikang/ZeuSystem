@@ -3,6 +3,7 @@ pub mod symbols;
 pub mod relocation;
 pub mod layout;
 pub mod validator;
+mod coe;
 
 use std::path::Path;
 use std::fs;
@@ -200,7 +201,14 @@ impl Linker {
     }
 
     pub fn write_output(&self, data: &[u8]) -> Result<(), String> {
-        fs::write(&self.output_file, data)
-            .map_err(|e| format!("Failed to write output file: {}", e))
+        let output_lower = self.output_file.to_ascii_lowercase();
+        if output_lower.ends_with(".coe") {
+            let coe_data = coe::format_coe(data);
+            fs::write(&self.output_file, coe_data.as_bytes())
+                .map_err(|e| format!("Failed to write COE file: {}", e))
+        } else {
+            fs::write(&self.output_file, data)
+                .map_err(|e| format!("Failed to write output file: {}", e))
+        }
     }
 }

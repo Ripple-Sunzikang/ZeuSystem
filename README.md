@@ -137,7 +137,7 @@ file test.o  # 应显示 ELF 32-bit LSB executable
 - 伪指令支持（NOT、NOP等）
 
 ### 链接器后端
-将多个 ELF 目标文件链接为可执行文件
+将多个 ELF 目标文件链接为可执行文件或 COE 初始化文件
 
 #### 功能特性
 - 多文件对象文件链接
@@ -145,6 +145,7 @@ file test.o  # 应显示 ELF 32-bit LSB executable
 - 重定位处理和地址计算
 - 完整的链接验证
 - 可执行 ELF 文件生成
+- COE 文件输出（Vivado ROM 初始化）
 
 ### 模拟器
 RISC-V ELF 可执行文件的 Python 模拟器

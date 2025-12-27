@@ -20,6 +20,7 @@
 ### 链接
 ```bash
 ./target/release/riscv_compiler file1.o file2.o output.elf
+./target/release/riscv_compiler file1.o file2.o output.coe
 ```
 
 ## 完整示例
@@ -40,6 +41,7 @@ file output/test.o
 ```bash
 ./target/release/riscv_compiler output/test.o output/test2.o output/program.elf
 hexdump -C output/program.elf | head -20
+./target/release/riscv_compiler output/test.o output/test2.o output/program.coe
 ```
 
 ## 运行测试套件

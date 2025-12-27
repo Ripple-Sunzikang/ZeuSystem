@@ -51,7 +51,14 @@ impl Parser {
                 }
                 Some(Token::Instruction(name)) => {
                     self.advance();
-                    let instr = self.parse_instruction(name)?;
+                    let instr = self.parse_instruction(name.clone())?;
+                    
+                    // 计算该指令的大小并更新段地址
+                    let instr_size = self.calculate_instruction_size(&name, &instr);
+                    if current_section == Section::Text {
+                        symbols.advance_text(instr_size);
+                    }
+                    
                     instructions.push(instr);
                 }
                 Some(Token::Identifier(name)) => {
@@ -79,6 +86,16 @@ impl Parser {
         }
 
         Ok(instructions)
+    }
+
+    /// 计算指令大小（大多数指令4字节，伪指令可能更多）
+    fn calculate_instruction_size(&self, name: &str, _instr: &Instruction) -> u32 {
+        match name.to_lowercase().as_str() {
+            "li" => 8,  // lui + addi
+            "la" => 8,  // lui + addi 
+            "call" => 8, // auipc + jalr
+            _ => 4,
+        }
     }
 
     fn parse_directive(&mut self, directive: String, symbols: &mut SymbolTable, current_section: &mut Section) -> Result<(), String> {
