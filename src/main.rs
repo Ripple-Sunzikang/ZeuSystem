@@ -20,10 +20,28 @@ fn main() {
     
     if args.len() < 2 {
         eprintln!("Usage: {} <input.c|input.s> [output.s|output.o]", args[0]);
+        eprintln!("       {} <file1.c> <file2.c> ... <output.coe>  (link multiple C files)", args[0]);
         std::process::exit(1);
     }
 
     let input_file = &args[1];
+    
+    // 检查是否有多个 .c 文件需要编译和链接
+    if input_file.ends_with(".c") && args.len() > 2 {
+        let last_arg = &args[args.len() - 1];
+        if last_arg.ends_with(".coe") || last_arg.ends_with(".elf") || last_arg.ends_with(".bin") {
+            // 多个 C 文件 -> COE/ELF
+            let c_files: Vec<&String> = args[1..args.len()-1].iter().collect();
+            let output_file = last_arg;
+            
+            // 检查所有输入文件是否都是 .c 文件
+            let all_c_files = c_files.iter().all(|f| f.ends_with(".c"));
+            if all_c_files && c_files.len() > 1 {
+                compile_and_link_c_files(&c_files, output_file);
+                return;
+            }
+        }
+    }
     
     // 判断输入文件类型
     if input_file.ends_with(".s") {
@@ -68,6 +86,139 @@ fn main() {
 
         compile_c(input_file, &output_file);
     }
+}
+
+/// 编译多个 C 文件并链接生成输出文件
+/// 这是为了支持 BIOS + 用户程序的链接场景
+fn compile_and_link_c_files(c_files: &[&String], output_file: &str) {
+    println!("Compiling and linking {} C files...", c_files.len());
+    
+    // 合并所有 C 文件的源代码
+    let mut combined_source = String::new();
+    
+    for (idx, file_path) in c_files.iter().enumerate() {
+        let source = match fs::read_to_string(file_path) {
+            Ok(content) => content,
+            Err(e) => {
+                eprintln!("Error reading file {}: {}", file_path, e);
+                std::process::exit(1);
+            }
+        };
+        
+        combined_source.push_str(&format!("// ===== Source from: {} =====\n", file_path));
+        combined_source.push_str(&source);
+        combined_source.push_str("\n\n");
+        
+        println!("  [{}] {}", idx + 1, file_path);
+    }
+    
+    // 词法分析
+    let lexer = Lexer::new(&combined_source);
+    
+    // 语法分析
+    let mut parser = Parser::new(lexer);
+    let ast = match parser.parse() {
+        Ok(program) => program,
+        Err(e) => {
+            eprintln!("Parse error: {}", e);
+            std::process::exit(1);
+        }
+    };
+
+    // 语义分析
+    let mut semantic = SemanticAnalyzer::new();
+    if let Err(e) = semantic.analyze(&ast) {
+        eprintln!("Semantic error: {}", e);
+        std::process::exit(1);
+    }
+
+    // 代码生成
+    let mut codegen = Codegen::new();
+    let asm_code = match codegen.generate(&ast) {
+        Ok(code) => code,
+        Err(e) => {
+            eprintln!("Codegen error: {}", e);
+            std::process::exit(1);
+        }
+    };
+
+    // 将汇编代码组合成字符串
+    let asm_string = asm_code.join("\n");
+    
+    println!("Generated {} lines of assembly code", asm_code.len());
+    
+    // 保存中间汇编代码用于调试
+    let asm_debug_file = output_file.replace(".coe", ".s").replace(".elf", ".s");
+    if let Err(e) = fs::write(&asm_debug_file, &asm_string) {
+        eprintln!("Warning: Could not save debug assembly to {}: {}", asm_debug_file, e);
+    }
+    
+    // 汇编
+    let mut assembler = Assembler::new(&asm_string);
+    let elf = match assembler.assemble() {
+        Ok(elf) => elf,
+        Err(e) => {
+            eprintln!("Assembler error: {}", e);
+            std::process::exit(1);
+        }
+    };
+
+    // 如果输出是 COE 文件，直接从 ELF 提取代码生成 COE
+    if output_file.to_lowercase().ends_with(".coe") {
+        // 获取 .text 段的数据
+        let text_data: Vec<u8> = elf.sections.iter()
+            .find(|s| s.name == ".text")
+            .map(|s| s.data.clone())
+            .unwrap_or_default();
+        
+        if text_data.is_empty() {
+            eprintln!("Error: No code generated");
+            std::process::exit(1);
+        }
+
+        // 生成 COE 格式
+        let coe_content = generate_coe(&text_data);
+        
+        if let Err(e) = fs::write(output_file, &coe_content) {
+            eprintln!("Error writing output file {}: {}", output_file, e);
+            std::process::exit(1);
+        }
+        
+        println!("Generated COE file: {}", output_file);
+        println!("  Code size: {} bytes ({} words)", text_data.len(), text_data.len() / 4);
+    } else {
+        // 保存为 ELF 文件
+        if let Err(e) = elf.save(output_file) {
+            eprintln!("Error writing ELF file {}: {}", output_file, e);
+            std::process::exit(1);
+        }
+        println!("Generated ELF file: {}", output_file);
+    }
+}
+
+/// 生成 COE 格式内容
+fn generate_coe(data: &[u8]) -> String {
+    let mut coe = String::new();
+    coe.push_str("memory_initialization_radix = 16;\n");
+    coe.push_str("memory_initialization_vector =\n");
+    
+    // 每 4 字节一个字（小端序）
+    let total_words = (data.len() + 3) / 4;
+    for (i, chunk) in data.chunks(4).enumerate() {
+        let mut word: u32 = 0;
+        for (j, &byte) in chunk.iter().enumerate() {
+            word |= (byte as u32) << (j * 8);
+        }
+        
+        // 小写十六进制，无逗号，最后一行有分号和换行
+        if i == total_words - 1 {
+            coe.push_str(&format!("{:08x};\n", word));
+        } else {
+            coe.push_str(&format!("{:08x}\n", word));
+        }
+    }
+    
+    coe
 }
 
 fn compile_c(input_file: &str, output_file: &str) {

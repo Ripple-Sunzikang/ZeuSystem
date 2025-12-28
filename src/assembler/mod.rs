@@ -69,9 +69,24 @@ impl Assembler {
     }
 
     /// 编码
-    fn encode(&self, instructions: &[parser::Instruction]) -> Result<Vec<u8>, String> {
+    fn encode(&mut self, instructions: &[parser::Instruction]) -> Result<Vec<u8>, String> {
         let mut encoder = Encoder::new(&self.symbols);
-        encoder.encode(instructions)
+        let code = encoder.encode(instructions)?;
+        
+        // 将编码器产生的重定位信息添加到符号表
+        for reloc in &encoder.relocations {
+            self.symbols.add_relocation(
+                reloc.offset,
+                reloc.symbol.clone(),
+                match reloc.reloc_type {
+                    17 => symbols::RelocType::Jal,
+                    16 => symbols::RelocType::Branch,
+                    _ => symbols::RelocType::Jal, // 默认
+                }
+            );
+        }
+        
+        Ok(code)
     }
 
     /// 保存 ELF 文件

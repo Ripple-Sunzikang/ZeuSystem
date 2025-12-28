@@ -1,7 +1,8 @@
 // RISC-V 指令编码器
 // 完整支持所有 RV32I 指令编码（R/I/S/B/U/J类型）
+// 支持未定义符号的重定位记录
 
-use crate::assembler::symbols::SymbolTable;
+use crate::assembler::symbols::{SymbolTable, RelocType};
 use crate::assembler::parser::Instruction;
 use std::collections::HashMap;
 
@@ -33,9 +34,18 @@ pub struct InstructionEncoding {
     pub funct7: u32,
 }
 
+/// 重定位条目
+#[derive(Debug, Clone)]
+pub struct RelocationEntry {
+    pub offset: u32,
+    pub symbol: String,
+    pub reloc_type: u32, // R_RISCV_JAL=17, R_RISCV_BRANCH=16
+}
+
 pub struct Encoder {
     symbols: HashMap<String, u32>,
     current_pc: u32,
+    pub relocations: Vec<RelocationEntry>,
 }
 
 impl Encoder {
@@ -47,6 +57,7 @@ impl Encoder {
         Self {
             symbols,
             current_pc: 0,
+            relocations: Vec::new(),
         }
     }
 
@@ -65,7 +76,7 @@ impl Encoder {
     }
 
     /// 编码单条指令
-    fn encode_instruction(&self, instr: &Instruction) -> Result<Vec<u8>, String> {
+    fn encode_instruction(&mut self, instr: &Instruction) -> Result<Vec<u8>, String> {
         let name = instr.name.to_lowercase();
 
         match name.as_str() {
@@ -226,7 +237,7 @@ impl Encoder {
     }
 
     /// 编码 B-类型指令
-    fn encode_b_type(&self, instr: &Instruction, opcode: u32, funct3: u32) -> Result<Vec<u8>, String> {
+    fn encode_b_type(&mut self, instr: &Instruction, opcode: u32, funct3: u32) -> Result<Vec<u8>, String> {
         if instr.operands.len() < 3 {
             return Err(format!("B-type instruction requires 3 operands"));
         }
@@ -260,7 +271,7 @@ impl Encoder {
     }
 
     /// 编码 J-类型指令
-    fn encode_j_type(&self, instr: &Instruction, opcode: u32) -> Result<Vec<u8>, String> {
+    fn encode_j_type(&mut self, instr: &Instruction, opcode: u32) -> Result<Vec<u8>, String> {
         if instr.operands.len() < 2 {
             return Err(format!("J-type instruction requires 2 operands"));
         }
@@ -325,7 +336,7 @@ impl Encoder {
     }
 
     /// 编码 J 伪指令
-    fn encode_j(&self, instr: &Instruction) -> Result<Vec<u8>, String> {
+    fn encode_j(&mut self, instr: &Instruction) -> Result<Vec<u8>, String> {
         if instr.operands.len() < 1 {
             return Err("J requires 1 operand".to_string());
         }
@@ -344,7 +355,7 @@ impl Encoder {
     }
 
     /// 编码 CALL 伪指令
-    fn encode_call(&self, instr: &Instruction) -> Result<Vec<u8>, String> {
+    fn encode_call(&mut self, instr: &Instruction) -> Result<Vec<u8>, String> {
         if instr.operands.len() < 1 {
             return Err("CALL requires 1 operand".to_string());
         }
@@ -420,7 +431,7 @@ impl Encoder {
     }
 
     /// 解析分支指令偏移量（相对于当前PC）
-    fn parse_branch_offset(&self, imm: &str) -> Result<i32, String> {
+    fn parse_branch_offset(&mut self, imm: &str) -> Result<i32, String> {
         let imm = imm.trim();
         
         // 尝试查找符号作为标签
@@ -430,22 +441,29 @@ impl Encoder {
             return Ok(offset);
         }
 
-        // 否则作为数字立即数解析
-        if imm.starts_with("0x") {
+        // 尝试作为数字立即数解析
+        if let Ok(val) = if imm.starts_with("0x") {
             i32::from_str_radix(&imm[2..], 16)
-                .map_err(|_| format!("Invalid hex immediate: {}", imm))
         } else if imm.starts_with("-0x") {
-            i32::from_str_radix(&imm[3..], 16)
-                .map(|v| -v)
-                .map_err(|_| format!("Invalid hex immediate: {}", imm))
+            i32::from_str_radix(&imm[3..], 16).map(|v| -v)
         } else {
             imm.parse::<i32>()
-                .map_err(|_| format!("Invalid immediate: {}", imm))
+        } {
+            return Ok(val);
         }
+
+        // 符号未定义，生成重定位条目
+        // R_RISCV_BRANCH = 16
+        self.relocations.push(RelocationEntry {
+            offset: self.current_pc,
+            symbol: imm.to_string(),
+            reloc_type: 16,
+        });
+        Ok(0) // 返回占位符
     }
 
     /// 解析跳转指令偏移量（相对于当前PC）
-    fn parse_jump_offset(&self, imm: &str) -> Result<i32, String> {
+    fn parse_jump_offset(&mut self, imm: &str) -> Result<i32, String> {
         let imm = imm.trim();
         
         // 尝试查找符号作为标签
@@ -455,18 +473,25 @@ impl Encoder {
             return Ok(offset);
         }
 
-        // 否则作为数字立即数解析
-        if imm.starts_with("0x") {
+        // 尝试作为数字立即数解析
+        if let Ok(val) = if imm.starts_with("0x") {
             i32::from_str_radix(&imm[2..], 16)
-                .map_err(|_| format!("Invalid hex immediate: {}", imm))
         } else if imm.starts_with("-0x") {
-            i32::from_str_radix(&imm[3..], 16)
-                .map(|v| -v)
-                .map_err(|_| format!("Invalid hex immediate: {}", imm))
+            i32::from_str_radix(&imm[3..], 16).map(|v| -v)
         } else {
             imm.parse::<i32>()
-                .map_err(|_| format!("Invalid immediate: {}", imm))
+        } {
+            return Ok(val);
         }
+
+        // 符号未定义，生成重定位条目
+        // R_RISCV_JAL = 17
+        self.relocations.push(RelocationEntry {
+            offset: self.current_pc,
+            symbol: imm.to_string(),
+            reloc_type: 17,
+        });
+        Ok(0) // 返回占位符
     }
 
     /// 解析带偏移的操作数 (imm(rs))

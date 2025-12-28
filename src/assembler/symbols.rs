@@ -43,6 +43,8 @@ pub enum RelocType {
     Pc32,         // PC相对32位
     Got,          // 全局偏移表
     Plt,          // 过程链接表
+    Jal,          // JAL指令（J类型）
+    Branch,       // 分支指令（B类型）
 }
 
 pub struct SymbolTable {

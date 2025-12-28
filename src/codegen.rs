@@ -34,6 +34,11 @@ impl Codegen {
     pub fn emit(&mut self, instr: &str) {
         if !self.returned {
             self.code.push(instr.to_string());
+            // 在 sw X(sp) 后插入 nop，避免 store-load hazard
+            // 因为 DRAM 写入需要一个周期才能被读取到
+            if instr.starts_with("sw ") && instr.contains("(sp)") {
+                self.code.push("nop".to_string());
+            }
         }
     }
 
@@ -65,10 +70,12 @@ impl Codegen {
             Expression::Index { array, index } => {
                 self.generate_expression(array)?;
                 let temp_offset = self.stack_ptr;
+                self.stack_ptr += 4;
                 self.emit(&format!("sw a0, {}(sp)", temp_offset));
 
                 self.generate_expression(index)?;
                 self.emit(&format!("lw a1, {}(sp)", temp_offset));
+                self.stack_ptr -= 4;
 
                 self.emit("slli a0, a0, 2");
                 self.emit("add a0, a1, a0");
@@ -80,9 +87,32 @@ impl Codegen {
 
     pub fn generate(&mut self, program: &Program) -> Result<Vec<String>, String> {
         self.code.push(".section .text".to_string());
-        self.code.push(".globl main".to_string());
+        self.code.push(".globl _start".to_string());
+        self.code.push("".to_string());
+        
+        // 生成启动代码：初始化栈指针
+        self.code.push("_start:".to_string());
+        self.code.push("    # 初始化栈指针 sp = 0x7FFC (栈顶)".to_string());
+        self.code.push("    lui sp, 8".to_string());
+        self.code.push("    addi sp, sp, -4".to_string());
+        self.code.push("    # 跳转到 main".to_string());
+        self.code.push("    j main".to_string());
+        self.code.push("".to_string());
 
+        // 首先生成 main 函数（BIOS 入口）
         for func in &program.functions {
+            if func.name == "main" && func.body.is_some() {
+                self.returned = false;
+                self.generate_function(func)?;
+            }
+        }
+
+        // 然后生成其他函数
+        for func in &program.functions {
+            // 跳过只有声明没有定义的函数，也跳过 main（已经生成）
+            if func.body.is_none() || func.name == "main" {
+                continue;
+            }
             self.returned = false;
             self.generate_function(func)?;
         }
@@ -98,9 +128,15 @@ impl Codegen {
         self.local_vars.clear();
         self.stack_ptr = 4;
 
-        for param in &func.params {
+        // 将参数从寄存器保存到栈上
+        // RISC-V 调用约定: a0-a7 用于传递参数
+        let param_regs = ["a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7"];
+        for (i, param) in func.params.iter().enumerate() {
             let offset = self.stack_ptr;
             self.local_vars.insert(param.name.clone(), offset);
+            if i < param_regs.len() {
+                self.emit(&format!("sw {}, {}(sp)", param_regs[i], offset));
+            }
             self.stack_ptr += param.ty.size();
         }
 
@@ -162,16 +198,26 @@ impl Codegen {
                 self.emit(&format!("beq a0, zero, {}", else_label));
 
                 self.generate_statement(then_stmt)?;
-                if !self.returned {
+                let then_returned = self.returned;
+                self.returned = false;  // 重置，因为这只是一个分支
+                
+                if !then_returned {
                     self.emit(&format!("j {}", end_label));
                 }
 
                 self.emit_label(&else_label);
+                let mut else_returned = false;
                 if let Some(else_s) = else_stmt {
                     self.generate_statement(else_s)?;
+                    else_returned = self.returned;
+                    self.returned = false;
                 }
 
                 self.emit_label(&end_label);
+                
+                // 只有当 then 和 else 都 return 时，整个 if 才算 returned
+                self.returned = then_returned && else_returned;
+                
                 Ok(())
             }
             Statement::While { condition, body } => {
@@ -291,12 +337,14 @@ impl Codegen {
             }
             Expression::BinaryOp { op, left, right } => {
                 self.generate_expression(left)?;
-                // 使用固定的临时栈位置，不随后续操作改变
+                // 使用当前临时栈位置，并递增以防嵌套表达式覆盖
                 let temp_offset = self.stack_ptr;
+                self.stack_ptr += 4;
                 self.emit(&format!("sw a0, {}(sp)", temp_offset));
 
                 self.generate_expression(right)?;
                 self.emit(&format!("lw a1, {}(sp)", temp_offset));
+                self.stack_ptr -= 4;  // 恢复
 
                 match op {
                     BinaryOp::Add => self.emit("add a0, a1, a0"),
@@ -305,26 +353,71 @@ impl Codegen {
                     BinaryOp::Divide => self.emit("div a0, a1, a0"),
                     BinaryOp::Modulo => self.emit("rem a0, a1, a0"),
                     BinaryOp::Equal => {
-                        self.emit("sub a0, a1, a0");
-                        self.emit("seqz a0, a0");
+                        // a1 == a0 ? 1 : 0
+                        // 使用 beq 模拟: if a1 == a0, result=1, else result=0
+                        let label_eq = self.new_label("eq");
+                        let label_done = self.new_label("eq_done");
+                        self.emit(&format!("beq a1, a0, {}", label_eq));
+                        self.emit("addi a0, zero, 0");
+                        self.emit(&format!("j {}", label_done));
+                        self.emit_label(&label_eq);
+                        self.emit("addi a0, zero, 1");
+                        self.emit_label(&label_done);
                     }
                     BinaryOp::NotEqual => {
-                        self.emit("sub a0, a1, a0");
-                        self.emit("snez a0, a0");
+                        // a1 != a0 ? 1 : 0
+                        let label_ne = self.new_label("ne");
+                        let label_done = self.new_label("ne_done");
+                        self.emit(&format!("bne a1, a0, {}", label_ne));
+                        self.emit("addi a0, zero, 0");
+                        self.emit(&format!("j {}", label_done));
+                        self.emit_label(&label_ne);
+                        self.emit("addi a0, zero, 1");
+                        self.emit_label(&label_done);
                     }
                     BinaryOp::Less => {
-                        self.emit("slt a0, a1, a0");
+                        // a1 < a0 ? 1 : 0
+                        let label_lt = self.new_label("lt");
+                        let label_done = self.new_label("lt_done");
+                        self.emit(&format!("blt a1, a0, {}", label_lt));
+                        self.emit("addi a0, zero, 0");
+                        self.emit(&format!("j {}", label_done));
+                        self.emit_label(&label_lt);
+                        self.emit("addi a0, zero, 1");
+                        self.emit_label(&label_done);
                     }
                     BinaryOp::LessEqual => {
-                        self.emit("slt a0, a0, a1");
-                        self.emit("xori a0, a0, 1");
+                        // a1 <= a0 ? 1 : 0  (same as !(a0 < a1))
+                        let label_le = self.new_label("le");
+                        let label_done = self.new_label("le_done");
+                        self.emit(&format!("bge a0, a1, {}", label_le)); // a0 >= a1 means a1 <= a0
+                        self.emit("addi a0, zero, 0");
+                        self.emit(&format!("j {}", label_done));
+                        self.emit_label(&label_le);
+                        self.emit("addi a0, zero, 1");
+                        self.emit_label(&label_done);
                     }
                     BinaryOp::Greater => {
-                        self.emit("slt a0, a0, a1");
+                        // a1 > a0 ? 1 : 0
+                        let label_gt = self.new_label("gt");
+                        let label_done = self.new_label("gt_done");
+                        self.emit(&format!("blt a0, a1, {}", label_gt)); // a0 < a1 means a1 > a0
+                        self.emit("addi a0, zero, 0");
+                        self.emit(&format!("j {}", label_done));
+                        self.emit_label(&label_gt);
+                        self.emit("addi a0, zero, 1");
+                        self.emit_label(&label_done);
                     }
                     BinaryOp::GreaterEqual => {
-                        self.emit("slt a0, a1, a0");
-                        self.emit("xori a0, a0, 1");
+                        // a1 >= a0 ? 1 : 0
+                        let label_ge = self.new_label("ge");
+                        let label_done = self.new_label("ge_done");
+                        self.emit(&format!("bge a1, a0, {}", label_ge));
+                        self.emit("addi a0, zero, 0");
+                        self.emit(&format!("j {}", label_done));
+                        self.emit_label(&label_ge);
+                        self.emit("addi a0, zero, 1");
+                        self.emit_label(&label_done);
                     }
                     BinaryOp::BitwiseAnd => self.emit("and a0, a1, a0"),
                     BinaryOp::BitwiseOr => self.emit("or a0, a1, a0"),
@@ -332,14 +425,28 @@ impl Codegen {
                     BinaryOp::LeftShift => self.emit("sll a0, a1, a0"),
                     BinaryOp::RightShift => self.emit("srl a0, a1, a0"),
                     BinaryOp::And => {
-                        self.emit("snez a1, a1");
-                        self.emit("snez a0, a0");
-                        self.emit("and a0, a1, a0");
+                        // logical AND: (a1 != 0) && (a0 != 0)
+                        let label_false = self.new_label("and_false");
+                        let label_done = self.new_label("and_done");
+                        self.emit(&format!("beq a1, zero, {}", label_false));
+                        self.emit(&format!("beq a0, zero, {}", label_false));
+                        self.emit("addi a0, zero, 1");
+                        self.emit(&format!("j {}", label_done));
+                        self.emit_label(&label_false);
+                        self.emit("addi a0, zero, 0");
+                        self.emit_label(&label_done);
                     }
                     BinaryOp::Or => {
-                        self.emit("snez a1, a1");
-                        self.emit("snez a0, a0");
-                        self.emit("or a0, a1, a0");
+                        // logical OR: (a1 != 0) || (a0 != 0)
+                        let label_true = self.new_label("or_true");
+                        let label_done = self.new_label("or_done");
+                        self.emit(&format!("bne a1, zero, {}", label_true));
+                        self.emit(&format!("bne a0, zero, {}", label_true));
+                        self.emit("addi a0, zero, 0");
+                        self.emit(&format!("j {}", label_done));
+                        self.emit_label(&label_true);
+                        self.emit("addi a0, zero, 1");
+                        self.emit_label(&label_done);
                     }
                 }
                 Ok(())
@@ -348,15 +455,24 @@ impl Codegen {
                 match op {
                     UnaryOp::Negate => {
                         self.generate_expression(operand)?;
-                        self.emit("neg a0, a0");
+                        self.emit("sub a0, zero, a0");
                     }
                     UnaryOp::Not => {
+                        // !a0 = (a0 == 0 ? 1 : 0)
                         self.generate_expression(operand)?;
-                        self.emit("seqz a0, a0");
+                        let label_zero = self.new_label("not_zero");
+                        let label_done = self.new_label("not_done");
+                        self.emit(&format!("beq a0, zero, {}", label_zero));
+                        self.emit("addi a0, zero, 0");
+                        self.emit(&format!("j {}", label_done));
+                        self.emit_label(&label_zero);
+                        self.emit("addi a0, zero, 1");
+                        self.emit_label(&label_done);
                     }
                     UnaryOp::BitwiseNot => {
+                        // ~a0 = xori a0, a0, -1
                         self.generate_expression(operand)?;
-                        self.emit("not a0, a0");
+                        self.emit("xori a0, a0, -1");
                     }
                     UnaryOp::Deref => {
                         self.generate_expression(operand)?;
@@ -380,10 +496,12 @@ impl Codegen {
                     }
                 } else {
                     let temp_offset = self.stack_ptr;
+                    self.stack_ptr += 4;
                     self.emit(&format!("sw a0, {}(sp)", temp_offset));
 
                     self.generate_lvalue_address(target)?;
                     self.emit(&format!("lw a1, {}(sp)", temp_offset));
+                    self.stack_ptr -= 4;
                     self.emit("sw a1, 0(a0)");
                     self.emit("mv a0, a1");
                 }
@@ -391,14 +509,20 @@ impl Codegen {
                 Ok(())
             }
             Expression::Call { name, args } => {
+                // 先把所有参数保存到临时栈位置
+                let base_offset = self.stack_ptr;
                 for (i, arg) in args.iter().enumerate() {
                     self.generate_expression(arg)?;
+                    let offset = base_offset + i * 4;
+                    self.emit(&format!("sw a0, {}(sp)", offset));
+                }
+                
+                // 然后从栈加载到参数寄存器
+                for i in 0..args.len() {
+                    let offset = base_offset + i * 4;
                     if i < 8 {
                         let reg = format!("a{}", i);
-                        self.emit(&format!("mv {}, a0", reg));
-                    } else {
-                        let offset = (i - 8) * 4;
-                        self.emit(&format!("sw a0, {}(sp)", offset));
+                        self.emit(&format!("lw {}, {}(sp)", reg, offset));
                     }
                 }
 

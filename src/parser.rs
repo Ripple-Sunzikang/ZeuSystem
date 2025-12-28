@@ -345,7 +345,9 @@ impl Parser {
     }
 
     fn parse_expression(&mut self) -> Result<Expression, String> {
-        self.parse_ternary()
+        let expr = self.parse_ternary()?;
+        // 赋值运算符优先级最低，在顶层处理
+        self.parse_assignment(expr)
     }
 
     fn parse_ternary(&mut self) -> Result<Expression, String> {
@@ -742,7 +744,7 @@ impl Parser {
             }
         }
 
-        let expr = self.parse_assignment(expr)?;
+        // 不再在这里调用 parse_assignment，由顶层处理
         Ok(expr)
     }
 

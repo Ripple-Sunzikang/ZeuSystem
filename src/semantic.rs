@@ -29,20 +29,37 @@ impl SemanticAnalyzer {
     }
 
     pub fn analyze(&mut self, program: &Program) -> Result<(), String> {
-        // 第一遍：收集所有函数声明
+        // 第一遍：收集所有函数声明和定义
         for func in &program.functions {
-            if self.global_symbols.contains_key(&func.name) {
-                return Err(format!("Function {} already defined", func.name));
+            let has_body = func.body.is_some();
+            
+            if let Some(existing) = self.global_symbols.get(&func.name) {
+                // 如果已经有定义（is_function = true 表示有函数体）
+                // 而当前也是定义，则报错
+                if existing.is_function && has_body {
+                    return Err(format!("Function {} already defined", func.name));
+                }
+                // 如果已经有声明，现在是定义，则更新
+                if has_body {
+                    self.global_symbols.insert(
+                        func.name.clone(),
+                        Symbol {
+                            name: func.name.clone(),
+                            ty: Type::Int,
+                            is_function: true, // 有函数体
+                        },
+                    );
+                }
+            } else {
+                self.global_symbols.insert(
+                    func.name.clone(),
+                    Symbol {
+                        name: func.name.clone(),
+                        ty: Type::Int,
+                        is_function: has_body, // 是否有函数体
+                    },
+                );
             }
-
-            self.global_symbols.insert(
-                func.name.clone(),
-                Symbol {
-                    name: func.name.clone(),
-                    ty: Type::Int, // 简化处理
-                    is_function: true,
-                },
-            );
         }
 
         // 第二遍：分析每个函数
