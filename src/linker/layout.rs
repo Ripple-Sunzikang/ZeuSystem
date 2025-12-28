@@ -23,9 +23,9 @@ pub struct Layout {
 impl Layout {
     pub fn new() -> Self {
         Self {
-            text_start: 0x80000000,
-            data_start: 0x80001000,
-            bss_start: 0x80002000,
+            text_start: 0x00000000,
+            data_start: 0x00001000,
+            bss_start: 0x00002000,
             sections: Vec::new(),
             text_size: 0,
             data_size: 0,

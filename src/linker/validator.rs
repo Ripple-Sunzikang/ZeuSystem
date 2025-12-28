@@ -65,9 +65,9 @@ impl LinkerValidator {
             return Err("Text and BSS sections overlap".to_string());
         }
 
-        // 检查地址合理性（通常从 0x80000000 开始）
-        if text_start < 0x80000000 {
-            eprintln!("Warning: Text section starts at 0x{:x}, expected >= 0x80000000", text_start);
+        // 检查地址是否落入 MMIO 空间
+        if text_start >= 0xFFFF_F000 {
+            eprintln!("Warning: Text section starts at 0x{:x}, overlaps MMIO space", text_start);
         }
 
         Ok(())

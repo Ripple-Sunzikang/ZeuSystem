@@ -23,6 +23,9 @@ const SHF_WRITE: u32 = 1;
 const SHF_ALLOC: u32 = 2;
 const SHF_EXECINSTR: u32 = 4;
 
+const DEFAULT_TEXT_BASE: u32 = 0x0000_0000;
+const DEFAULT_ENTRY: u32 = DEFAULT_TEXT_BASE;
+
 #[derive(Clone)]
 pub struct ElfFile {
     pub header: ElfHeader,
@@ -101,7 +104,7 @@ impl ElfGenerator {
             name_idx: text_name_idx,
             section_type: SHT_PROGBITS,
             flags: SHF_ALLOC | SHF_EXECINSTR,
-            addr: 0x10000, // Standard RISC-V text section address
+            addr: DEFAULT_TEXT_BASE,
             offset: 0x1000,
             size: code.len() as u32,
             link: 0,
@@ -120,7 +123,7 @@ impl ElfGenerator {
                     name_idx: data_name_idx,
                     section_type: SHT_PROGBITS,
                     flags: SHF_WRITE | SHF_ALLOC,
-                    addr: 0x10000 + sections[0].size, // Simple consecutive allocation
+                    addr: DEFAULT_TEXT_BASE + sections[0].size, // Simple consecutive allocation
                     offset: 0x2000, // Fixed offset for simplicity, should be dynamic
                     size: data_section.size,
                     link: 0,
@@ -177,7 +180,7 @@ impl ElfGenerator {
         let section_header_offset = 52 + program_headers_size;
         
         let header = ElfHeader {
-            entry: 0x10000, // Standard RISC-V entry point
+            entry: DEFAULT_ENTRY,
             program_header_offset: 52, // Program headers immediately follow ELF header
             section_header_offset: section_header_offset as u32,
             flags: 0,

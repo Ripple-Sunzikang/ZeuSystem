@@ -331,7 +331,7 @@ if elf.header.section_header_offset < current_offset as u32 {
 ```
 
 ### 修复结果
-- ✅ Entry point: 0x10000（正确）
+- ✅ Entry point: 0x00000000（正确）
 - ✅ Program Header offset: 52 字节（正确）
 - ✅ 只加载实际代码（18 条指令，而非 3000+ 垃圾数据）
 - ✅ 执行精确的指令数（17 条，而非随机数量）
@@ -360,8 +360,8 @@ python3 simulator.py output/basic_arithmetic.o
 python3 simulator.py output/basic_arithmetic.o verbose
 
 # 输出示例
-ELF Entry Point: 0x10000
-Text Segment: 0x10000
+ELF Entry Point: 0x00000000
+Text Segment: 0x00000000
 Loading 18 instructions...
 Executing...
 Final Result: x10 = 30
