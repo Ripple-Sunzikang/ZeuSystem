@@ -851,3 +851,354 @@ ZeuSystem 项目
 - Xilinx - FPGA 开发工具
 - 计算机系统综合课程设计指导教师
 
+
+---
+
+## 硬件实现 (rvTest)
+
+本项目配套的 miniRV CPU 硬件实现位于 `rvTest/` 目录，是一个完整的 Vivado 工程。
+
+### 硬件目录结构
+
+```
+rvTest/
+├── rvTest.xpr                    # Vivado 项目文件
+├── program.coe                   # 指令存储器初始化文件
+├── programDRAM.coe               # 数据存储器初始化文件
+│
+├── rvTest.srcs/sources_1/new/    # RTL 源代码
+│   ├── miniRV_SoC.v             # 顶层模块
+│   ├── myCPU.v                  # CPU 核心
+│   ├── controller.v            # 控制器
+│   ├── ALU.v                    # 算术逻辑单元
+│   ├── RF.v                     # 寄存器堆
+│   ├── PC.v                     # 程序计数器
+│   ├── NPC.v                    # 下一PC计算
+│   ├── SEXT.v                   # 符号扩展
+│   ├── IF_ID.v                  # IF/ID 流水线寄存器
+│   ├── ID_EX.v                  # ID/EX 流水线寄存器
+│   ├── EX_MEM.v                 # EX/MEM 流水线寄存器
+│   ├── MEM_WB.v                 # MEM/WB 流水线寄存器
+│   ├── Data_Hazard_Detection.v  # 数据冒险检测
+│   ├── Control_Hazard_Detection.v # 控制冒险检测
+│   ├── Bridge.v                 # 总线桥 (MMIO 解码)
+│   ├── Digital_LED.v            # 7段数码管控制器
+│   ├── Keypad4x4.v              # 4x4矩阵键盘控制器
+│   ├── LED.v                    # LED 控制器
+│   ├── Switch.v                 # 开关输入
+│   ├── Button.v                 # 按钮输入
+│   ├── Timer.v                  # 定时器
+│   └── defines.vh               # 宏定义
+│
+├── rvTest.srcs/sources_1/ip/     # Xilinx IP 核
+│   ├── cpuclk/                  # PLL 时钟生成
+│   ├── IROM/                    # 指令存储器 (dist_mem_gen)
+│   └── DRAM/                    # 数据存储器 (dist_mem_gen)
+│
+└── rvTest.srcs/constrs_1/        # 约束文件
+    └── miniRV.xdc               # 引脚约束
+```
+
+### 系统顶层架构
+
+```
+                          ┌─────────────────────────────────────────────┐
+                          │              miniRV_SoC (顶层)               │
+                          │                                             │
+    fpga_clk ────────────►│  ┌─────────┐                                │
+    fpga_rst ────────────►│  │  PLL    │──► cpu_clk                     │
+                          │  │ cpuclk  │                                │
+                          │  └─────────┘                                │
+                          │        │                                    │
+                          │        ▼                                    │
+                          │  ┌─────────────────────────────────────┐   │
+                          │  │              myCPU                   │   │
+                          │  │         (5级流水线CPU核心)            │   │
+                          │  │                                     │   │
+                          │  │  IF ─► ID ─► EX ─► MEM ─► WB        │   │
+                          │  │                                     │   │
+                          │  └──────────┬──────────────────────────┘   │
+                          │             │                               │
+                          │     ┌───────┴───────┐                       │
+                          │     │               │                       │
+                          │     ▼               ▼                       │
+                          │  ┌─────┐      ┌──────────┐                  │
+                          │  │IROM │      │  Bridge  │                  │
+                          │  │指令  │      │  总线桥   │                  │
+                          │  └─────┘      └────┬─────┘                  │
+                          │                    │                        │
+                          │    ┌───────┬───────┼───────┬───────┐       │
+                          │    ▼       ▼       ▼       ▼       ▼       │
+                          │ ┌────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐    │
+                          │ │DRAM│ │7-Seg│ │ LED │ │ Key │ │Timer│    │
+                          │ │数据 │ │数码管│ │     │ │键盘  │ │     │    │
+                          │ └────┘ └─────┘ └─────┘ └─────┘ └─────┘    │
+                          │                                             │
+                          └─────────────────────────────────────────────┘
+```
+
+
+### CPU 核心 (myCPU)
+
+#### 5级流水线结构
+
+```
+┌────────┐   ┌────────┐   ┌────────┐   ┌────────┐   ┌────────┐
+│   IF   │──►│   ID   │──►│   EX   │──►│  MEM   │──►│   WB   │
+│        │   │        │   │        │   │        │   │        │
+│ 取指令  │   │ 译码    │   │ 执行    │   │ 访存    │   │ 写回    │
+└────────┘   └────────┘   └────────┘   └────────┘   └────────┘
+    │            │            │            │            │
+    ▼            ▼            ▼            ▼            ▼
+ ┌─────┐     ┌─────┐     ┌─────┐     ┌─────┐     ┌─────┐
+ │IF_ID│────►│ID_EX│────►│EX_MEM│───►│MEM_WB│───►│ RF  │
+ └─────┘     └─────┘     └─────┘     └─────┘     └─────┘
+   流水线寄存器   流水线寄存器   流水线寄存器   流水线寄存器
+```
+
+#### 各阶段功能
+
+| 阶段 | 模块 | 功能描述 |
+|-----|------|---------|
+| IF | PC, IROM | 根据 PC 从指令存储器取指令 |
+| ID | controller, RF, SEXT | 指令译码，读寄存器，符号扩展 |
+| EX | ALU | 执行算术/逻辑运算，计算地址 |
+| MEM | DRAM, Bridge | 访问数据存储器或外设 |
+| WB | RF | 将结果写回寄存器堆 |
+
+#### 数据通路
+
+```
+                    ┌─────────────────────────────────────────┐
+                    │                                         │
+                    ▼                                         │ 前递
+┌────┐   ┌────┐   ┌────┐   ┌────┐   ┌────┐   ┌────┐        │
+│ PC │──►│IROM│──►│IF_ID│──►│ RF │──►│ID_EX│──►│ALU │────┬───┘
+└────┘   └────┘   └────┘   └────┘   └────┘   └────┘    │
+  │                  │        ▲                  │       │
+  │                  │        │                  ▼       │
+  ▼                  │        │              ┌─────┐    │
+┌────┐               │        │              │EX_MEM│───┤
+│NPC │◄──────────────┴────────┼──────────────┴─────┘    │
+└────┘                        │                  │       │
+  ▲                           │                  ▼       │
+  │                           │              ┌─────┐    │
+  │                           └──────────────│MEM_WB│───┘
+  │                                          └─────┘
+  │                                              │
+  └──────────────────────────────────────────────┘
+                     分支跳转
+```
+
+### ALU 运算单元
+
+```verilog
+// ALU 操作码定义 (defines.vh)
+`define ALU_ADD 3'b000   // 加法
+`define ALU_SUB 3'b001   // 减法
+`define ALU_AND 3'b010   // 按位与
+`define ALU_OR  3'b011   // 按位或
+`define ALU_XOR 3'b100   // 按位异或
+`define ALU_SLL 3'b101   // 逻辑左移
+`define ALU_SRL 3'b110   // 逻辑右移
+`define ALU_SRA 3'b111   // 算术右移
+```
+
+**ALU 输出**:
+- `alu_c[31:0]`: 运算结果
+- `br[1:0]`: 分支标志 (0=相等, 1=小于, 2=大于)
+
+### 冒险处理
+
+#### 数据冒险 (Data Hazard)
+
+**检测条件**: 当前指令的源寄存器与前面指令的目标寄存器相同
+
+**解决方案**:
+1. **前递 (Forwarding)**: 从 EX/MEM/WB 阶段前递结果到 ID 阶段
+2. **暂停 (Stall)**: Load-Use 情况下暂停一周期
+
+```
+// Load-Use 冒险示例
+lw a0, 0(sp)    ; 从内存加载
+add a1, a0, a2  ; 需要暂停一周期等待 a0
+```
+
+**前递来源优先级**: EX > MEM > WB
+
+#### 控制冒险 (Control Hazard)
+
+**检测条件**: 分支/跳转指令
+
+**解决方案**: 分支在 EX 阶段确定，冲刷 IF/ID 和 ID/EX 阶段
+
+```
+beq a0, a1, target  ; EX 阶段确定分支
+nop                 ; 被冲刷 (bubble)
+nop                 ; 被冲刷 (bubble)
+target: ...         ; 正确的目标指令
+```
+
+### 总线桥 (Bridge)
+
+Bridge 模块负责地址解码，将 CPU 的访存请求路由到正确的设备：
+
+```verilog
+// 地址空间划分
+wire access_mem = (addr[31:12] != 20'hFFFFF);  // 0x0000_0000 ~ 0xFFFF_EFFF
+wire access_dig = (addr == 32'hFFFF_FC00);     // 数码管
+wire access_led = (addr == 32'hFFFF_FC60);     // LED
+wire access_keypad = (addr[31:4] == 28'hFFFF_FC1); // 键盘 0xFFFF_FC10~0xFFFF_FC1F
+```
+
+**读数据多路选择**:
+```verilog
+always @(*) begin
+    casex (access_bit)
+        7'b1000000: rdata_to_cpu = rdata_from_dram;
+        7'b0001000: rdata_to_cpu = rdata_from_sw;
+        7'b0000100: rdata_to_cpu = rdata_from_btn;
+        7'b0000010: rdata_to_cpu = rdata_from_timer;
+        7'b0000001: rdata_to_cpu = rdata_from_keypad;
+        default:    rdata_to_cpu = 32'hFFFF_FFFF;
+    endcase
+end
+```
+
+
+### 外设控制器
+
+#### 7段数码管 (Digital_LED)
+
+动态扫描显示 8 位数码管。
+
+**特性**:
+- 扫描周期: 每位约 0.1ms (10kHz 刷新率)
+- 支持 BCD 编码 (0-9) 和扩展字符 (A-F)
+- 0xA 显示为负号 `-`
+
+**段码定义**:
+```
+    ─A─
+   │   │
+   F   B
+   │   │
+    ─G─
+   │   │
+   E   C
+   │   │
+    ─D─  ·DP
+```
+
+```verilog
+// 段码表 (低电平有效)
+case(DN_data)
+    4'b0000: DN = 8'b00000011;  // 0
+    4'b0001: DN = 8'b10011111;  // 1
+    4'b0010: DN = 8'b00100101;  // 2
+    4'b0011: DN = 8'b00001101;  // 3
+    4'b0100: DN = 8'b10011001;  // 4
+    4'b0101: DN = 8'b01001001;  // 5
+    4'b0110: DN = 8'b01000001;  // 6
+    4'b0111: DN = 8'b00011111;  // 7
+    4'b1000: DN = 8'b00000001;  // 8
+    4'b1001: DN = 8'b00011001;  // 9
+    4'b1010: DN = 8'b11111101;  // - (负号，只亮G段)
+    4'b1011: DN = 8'b11000001;  // b
+    4'b1100: DN = 8'b11100101;  // c
+    4'b1101: DN = 8'b10000101;  // d
+    4'b1110: DN = 8'b01100001;  // E
+    4'b1111: DN = 8'b01110001;  // F
+endcase
+```
+
+#### 4x4 矩阵键盘 (Keypad4x4)
+
+**扫描原理**:
+1. 依次将行线 (row) 置低
+2. 读取列线 (line) 状态
+3. 如果某列为低，则该行列交叉点有按键按下
+
+**硬件特性**:
+- 2级同步器消除亚稳态
+- 5帧防抖动
+- 按键锁存，软件需清除
+
+**寄存器映射**:
+| 偏移 | 寄存器 | 读/写 | 描述 |
+|-----|--------|------|------|
+| +0x00 | DATA | R/W | 键值 (0-15) 或 0xFFFFFFFF |
+| +0x02 | STATUS | R | bit0: 按键按下标志 |
+
+**键值编码**:
+```
+       Line
+       0   1   2   3
+Row 0: 1   2   3   A
+Row 1: 4   5   6   B
+Row 2: 7   8   9   C
+Row 3: E   0   F   D
+```
+
+#### LED 控制器
+
+24 位 LED，每位控制一个 LED。
+
+```verilog
+always @(posedge clk or posedge rst) begin
+    if (rst)
+        led_data <= 24'b0;
+    else if (wen)
+        led_data <= wdata[23:0];
+end
+assign led = led_data;
+```
+
+### 存储器
+
+#### 指令存储器 (IROM)
+
+- **类型**: Xilinx Distributed Memory Generator
+- **深度**: 16384 words (64KB)
+- **宽度**: 32 bits
+- **接口**: 只读，组合逻辑输出
+- **初始化**: program.coe
+
+#### 数据存储器 (DRAM)
+
+- **类型**: Xilinx Distributed Memory Generator
+- **深度**: 16384 words (64KB)
+- **宽度**: 32 bits
+- **接口**: 读写，同步写入，组合逻辑读取
+- **初始化**: programDRAM.coe
+
+**注意**: DRAM 同步写入导致 Store-Load Hazard，编译器已通过插入 `nop` 解决。
+
+### MMIO 地址映射总表
+
+| 地址范围 | 设备 | 读/写 | 描述 |
+|---------|------|------|------|
+| `0x0000_0000` - `0x0000_FFFF` | DRAM | R/W | 数据存储器 |
+| `0xFFFF_FC00` | 数码管 | W | 32位 BCD 编码 |
+| `0xFFFF_FC10` | 键盘数据 | R/W | 键值或 0xFFFFFFFF |
+| `0xFFFF_FC12` | 键盘状态 | R | bit0=按键标志 |
+| `0xFFFF_FC20` | 定时器0 | R/W | 计数器值 |
+| `0xFFFF_FC24` | 定时器N | R/W | 重载值 |
+| `0xFFFF_FC60` | LED | W | 24位 LED 控制 |
+| `0xFFFF_FC70` | 开关 | R | 24位开关状态 |
+| `0xFFFF_FC78` | 按钮 | R | 5位按钮状态 |
+
+### 时钟系统
+
+- **输入时钟**: fpga_clk (开发板晶振，通常 100MHz)
+- **PLL 输出**: cpu_clk (经 PLL 分频/倍频后的 CPU 时钟)
+- **调试模式**: 直接使用外部时钟 (不经过 PLL)
+
+```verilog
+`ifdef RUN_TRACE
+    assign cpu_clk = fpga_clk;  // 调试模式
+`else
+    assign cpu_clk = pll_clk & pll_lock;  // 正常模式
+`endif
+```
+
