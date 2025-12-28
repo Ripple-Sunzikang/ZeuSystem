@@ -33,18 +33,37 @@
 
 ## 1. 环境准备
 
+---
+
+### ‼️  **操作系统要求 - 必读！！！**  ‼️
+
+**⚠️  CRITICAL WARNING  ⚠️**
+
+**本项目 ONLY 在 Linux 物理机环境下进行开发和测试！**
+
+**强烈强烈强烈推荐** ⭐⭐⭐ 使用 **Linux 物理机**进行调试！！！
+
+**双系统是最佳方案。WSL、虚拟机以及Windows环境都未曾经过尝试，请谨慎考虑。**
+
+#### 🐧 Linux 发行版建议
+
+- **Ubuntu** - 最常见、社区庞大、文档最多
+- **Linux Mint** - 更加友好易用、开箱即用（如果你想认真玩玩 Linux 的话，Mint 也许是更好的入门选择 💪）
+
+---
+
 ### 1.1 所需软件
 
 | 软件 | 版本要求 | 用途 |
 |-----|---------|------|
-| Rust | 1.70+ | 编译 ZeuSystem 编译器 |
+| Rust | 1.70+ | 编译 SEU-RISCV-CPU 编译器 |
 | Vivado | 2017.4+ | FPGA 综合与烧录 |
 
-### 1.2 编译 ZeuSystem 编译器
+### 1.2 编译 SEU-RISCV-CPU 编译器
 
 ```bash
 # 进入项目目录
-cd /path/to/ZeuSystem
+cd /path/to/SEU-RISCV-CPU
 
 # 编译 Release 版本
 cargo build --release
@@ -560,7 +579,7 @@ cd rvTest && vivado rvTest.xpr &
 
 # 一键编译 BIOS 计算器并部署到 Vivado 工程
 
-echo "=== ZeuSystem BIOS Calculator Build ==="
+echo "=== SEU-RISCV-CPU BIOS Calculator Build ==="
 
 # 编译 bios_v2.c + calculator_v2.c
 ./target/release/riscv_compiler examples/bios_v2.c examples/calculator_v2.c -o output/calc_v2

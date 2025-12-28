@@ -103,6 +103,8 @@ C 源代码 → 编译器 → RISC-V 汇编 → 汇编器 → 机器码 → COE�
 SEU-RISCV-CPU/
 ├── Cargo.toml                 # Rust 项目配置
 ├── README.md                  # 本文档
+├── QuickStart.md              # 快速开始指南
+├── build.sh                   # 一键编译脚本
 │
 ├── src/                       # 编译器源代码
 │   ├── main.rs               # 主入口
@@ -132,17 +134,23 @@ SEU-RISCV-CPU/
 ├── examples/                  # 示例程序
 │   ├── bios_v2.c             # BIOS 固件 (推荐)
 │   ├── calculator_v2.c       # 计算器 - BIOS调用版 (推荐)
-│   ├── calculator_final.c    # 计算器 - 独立版
-│   ├── bios.c                # BIOS 旧版本
-│   └── calculator_user.c     # 计算器 旧版本
+│   └── calculator_withoutbios.c  # 计算器 - 独立版
 │
 ├── output/                    # 编译输出
 │   ├── calc_v2.coe           # 最终 COE 文件
 │   └── calc_v2.s             # 生成的汇编代码
 │
-└── target/                    # Rust 编译输出
-    └── release/
-        └── riscv_compiler    # 编译器可执行文件
+├── target/                    # Rust 编译输出
+│   └── release/
+│       └── riscv_compiler    # 编译器可执行文件
+│
+├── rvTest/                    # Vivado 硬件工程
+│   └── ...                   # miniRV CPU RTL 源码
+│
+└── zeus_ide/                  # IDE 开发环境
+    ├── main.js               # Electron 主进程
+    ├── index.html            # 界面
+    └── ...                   # 其他 IDE 文件
 ```
 
 ---
