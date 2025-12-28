@@ -1,4 +1,4 @@
-# SEU-RISCV-CPU - RISC-V 计算器系统
+# SEU-RISCV-CPU - 从硬件到软件的完整实现
 
 <div align="center">
 
