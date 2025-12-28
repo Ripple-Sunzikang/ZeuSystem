@@ -265,11 +265,11 @@ ipcMain.handle('compile-code', async (event, compilerPath, inputFile, outputFile
       possiblePaths.push(path.join(appRoot, compilerPath));
     }
     
-    // 3. 根目录下的target目录(IDE现在位于ZeuSystem-main根目录下)
+    // 3. 根目录下的target目录(IDE现在位于SEU-RISCV-CPU根目录下)
     possiblePaths.push(path.join(appRoot, 'target', 'release', 'riscv_compiler.exe'));
     
-    // 4. 直接指向标准的ZeuSystem-main目录结构(备用路径)
-    possiblePaths.push('e:\\ZeuSystem-main\\target\\release\\riscv_compiler.exe');
+    // 4. 直接指向标准的SEU-RISCV-CPU目录结构(备用路径)
+    possiblePaths.push('e:\\SEU-RISCV-CPU\\target\\release\\riscv_compiler.exe');
     
     // 尝试所有可能的路径
     let absoluteCompilerPath = null;
@@ -394,7 +394,7 @@ ipcMain.handle('build-project', async (event, inputFile, compilerPath) => {
       possiblePaths.push(path.join(appRoot, compilerPath));
     }
     possiblePaths.push(path.join(appRoot, 'target', 'release', 'riscv_compiler.exe'));
-    possiblePaths.push('e:\\ZeuSystem-main\\target\\release\\riscv_compiler.exe');
+    possiblePaths.push('e:\\SEU-RISCV-CPU\\target\\release\\riscv_compiler.exe');
     
     let absoluteCompilerPath = null;
     for (const testPath of possiblePaths) {
@@ -503,7 +503,7 @@ ipcMain.handle('run-program', async (event, inputFile, compilerPath) => {
       possiblePaths.push(path.join(appRoot, compilerPath));
     }
     possiblePaths.push(path.join(appRoot, 'target', 'release', 'riscv_compiler.exe'));
-    possiblePaths.push('e:\\ZeuSystem-main\\target\\release\\riscv_compiler.exe');
+    possiblePaths.push('e:\\SEU-RISCV-CPU\\target\\release\\riscv_compiler.exe');
     
     let absoluteCompilerPath = null;
     for (const testPath of possiblePaths) {

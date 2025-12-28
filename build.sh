@@ -2,7 +2,7 @@
 
 # 一键编译 BIOS 计算器并部署到 Vivado 工程
 
-echo "=== ZeuSystem BIOS Calculator Build ==="
+echo "=== SEU-RISCV-CPU BIOS Calculator Build ==="
 
 # 编译 bios_v2.c + calculator_v2.c
 ./target/release/riscv_compiler examples/bios_v2.c examples/calculator_v2.c -o output/calc_v2

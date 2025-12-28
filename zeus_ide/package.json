@@ -1,7 +1,7 @@
 {
-  "name": "zeus_ide",
+  "name": "seu_riscv_cpu_ide",
   "version": "1.0.0",
-  "description": "Simple IDE for ZEUSYSTEM RISC-V Compiler",
+  "description": "Simple IDE for SEU-RISCV-CPU Compiler",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -9,8 +9,8 @@
     "build": "electron-builder --dir"
   },
   "build": {
-    "appId": "com.zeusystem.ide",
-    "productName": "ZEUS IDE",
+    "appId": "com.seu-riscv-cpu.ide",
+    "productName": "IDE",
     "directories": {
       "output": "dist"
     }
@@ -20,7 +20,7 @@
     "ide",
     "compiler",
     "riscv",
-    "zeusystem"
+    "seu-riscv-cpu"
   ],
   "author": "",
   "license": "MIT",

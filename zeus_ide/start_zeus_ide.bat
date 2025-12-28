@@ -1,8 +1,8 @@
 @echo off
 
-:: ZEUS IDE Startup Script - Modified for operation inside ZeuSystem-main
+:: IDE Startup Script - Modified for operation inside SEU-RISCV-CPU
 
-echo Starting ZEUS IDE...
+echo Starting IDE...
 
 :: Change to the script's directory to ensure proper path resolution
 cd /d "%~dp0"

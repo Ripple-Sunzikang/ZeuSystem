@@ -1,6 +1,6 @@
-appId: com.zeusystem.ide
-productName: ZEUS IDE
-copyright: Copyright © 2023 ZEUSYSTEM
+appId: com.seu-riscv-cpu.ide
+productName: IDE
+copyright: Copyright © 2023 SEU-RISCV-CPU
 
 # 目录配置
 directories:

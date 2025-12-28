@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZEUS IDE</title>
+  <title>IDE</title>
   <style>
     * {
       margin: 0;
@@ -191,7 +191,7 @@
     <div id="status-message">就绪</div>
     <div class="compiler-config">
       <label for="compiler-path">编译器路径:</label>
-      <input type="text" id="compiler-path" value="../ZeuSystem-main/target/release/riscv_compiler.exe" placeholder="输入编译器路径">
+      <input type="text" id="compiler-path" value="../target/release/riscv_compiler.exe" placeholder="输入编译器路径">
       <button id="select-compiler" style="margin-left: 5px; padding: 4px 8px; font-size: 12px; background-color: #0e639c; color: white; border: none; border-radius: 3px; cursor: pointer;">浏览</button>
     </div>
   </div>
@@ -203,7 +203,7 @@
     require(['vs/editor/editor.main'], function() {
       // 创建编辑器实例
       const editor = monaco.editor.create(document.getElementById('editor'), {
-        value: '// ZEUS IDE - 输入您的代码\n\nint main() {\n    int a = 10;\n    int b = 20;\n    int c = a + b;\n    return 0;\n}',
+        value: '// IDE - 输入您的代码\n\nint main() {\n    int a = 10;\n    int b = 20;\n    int c = a + b;\n    return 0;\n}',
         language: 'c',
         theme: 'vs-dark',
         automaticLayout: true,
@@ -497,12 +497,12 @@
             return;
           }
           
-          // 生成输出文件路径 - 统一到ZeuSystem-main\output文件夹
+          // 生成输出文件路径 - 统一到SEU-RISCV-CPU\output文件夹
           const fileName = currentFilePath.split('\\').pop().replace(/\.c$/, '.s') || 'output.s';
-          // 由于IDE现在位于ZeuSystem-main内部，使用父目录下的output文件夹
-          const outputDir = window.location.pathname.includes('\\ZeuSystem-main\\zeus_ide\\') 
+          // 由于IDE现在位于SEU-RISCV-CPU内部，使用父目录下的output文件夹
+          const outputDir = window.location.pathname.includes('\\SEU-RISCV-CPU\\zeus_ide\\') 
             ? '..\\output' 
-            : 'e:\\ZeuSystem-main\\ZeuSystem-main\\output';
+            : '..\\output';
           const outputFile = outputDir + '\\' + fileName;
           
           setStatusMessage('正在编译...');

@@ -1,4 +1,4 @@
-# ZeuSystem 快速入门指南
+# SEU-RISCV-CPU 快速入门指南
 
 本指南将带你完成从 C 源代码到 FPGA 运行的完整流程。
 

@@ -1,4 +1,20 @@
-# ZeuSystem - RISC-V 计算器系统
+# SEU-RISCV-CPU - RISC-V 计算器系统
+
+<div align="center">
+
+### 🎓 致 SEUer
+
+**本项目提供给大四课设选择了 RISC-V 方向的 SEUer 参考，其他学校的同学也欢迎参考学习！**
+
+**祝各位秋招顺利 💼 考研上岸 📚**
+
+---
+
+⭐ **如果这个项目对你有帮助，路过的朋友点个 Star 支持一下吧~** ⭐
+
+</div>
+
+---
 
 一个完整的 RISC-V 嵌入式系统，包含 C 语言编译器、BIOS 固件和计算器应用程序，运行在自制的 miniRV CPU 上。
 
@@ -22,7 +38,7 @@
 
 ## 项目概述
 
-ZeuSystem 是一个教学用的嵌入式系统项目，展示了从高级语言到硬件执行的完整流程：
+SEU-RISCV-CPU 是一个教学用的嵌入式系统项目，展示了从高级语言到硬件执行的完整流程：
 
 ```
 C 源代码 → 编译器 → RISC-V 汇编 → 汇编器 → 机器码 → COE文件 → FPGA
@@ -39,7 +55,7 @@ C 源代码 → 编译器 → RISC-V 汇编 → 汇编器 → 机器码 → COE�
 
 - **CPU**: miniRV（5级流水线 RISC-V 处理器）
 - **指令集**: RV32I 子集（不含 slt/mul/div）
-- **平台**: Xilinx FPGA 开发板
+- **开发板型号**: XC7A100T FGG484C-1
 
 ---
 
@@ -84,7 +100,7 @@ C 源代码 → 编译器 → RISC-V 汇编 → 汇编器 → 机器码 → COE�
 ## 目录结构
 
 ```
-ZeuSystem/
+SEU-RISCV-CPU/
 ├── Cargo.toml                 # Rust 项目配置
 ├── README.md                  # 本文档
 │
@@ -135,7 +151,7 @@ ZeuSystem/
 
 ### 概述
 
-ZeuSystem 编译器是用 Rust 编写的 C 语言子集编译器，直接生成 RISC-V 汇编代码。
+SEU-RISCV-CPU 编译器是用 Rust 编写的 C 语言子集编译器，直接生成 RISC-V 汇编代码。
 
 ### 支持的 C 语言特性
 
@@ -634,7 +650,7 @@ lw a1, 0(sp)  ; 现在读取正确值
 ### 构建编译器
 
 ```bash
-cd ZeuSystem
+cd SEU-RISCV-CPU
 
 # Debug 构建
 cargo build
@@ -843,7 +859,7 @@ MIT License
 
 ## 作者
 
-ZeuSystem 项目
+SEU-RISCV-CPU 项目
 
 ---
 
