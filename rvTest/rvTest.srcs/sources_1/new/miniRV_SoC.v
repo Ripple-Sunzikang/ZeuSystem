@@ -21,7 +21,10 @@ module miniRV_SoC (
 
     // 4x4 矩阵键盘接口
     output wire [3:0]   row,
-    input  wire [3:0]   line
+    input  wire [3:0]   line,
+
+    // 蜂鸣器接口
+    output wire         buzzer
 
 `ifdef RUN_TRACE
     ,// Debug Interface
@@ -102,6 +105,23 @@ module miniRV_SoC (
     wire [31:0]   keypad_addr;
     wire [31:0]   keypad_wdata;
     wire [31:0]   keypad_rdata;
+
+    // PWM (drives buzzer)
+    wire          pwm_rst;
+    wire          pwm_clk;
+    wire          pwm_wen;
+    wire [31:0]   pwm_addr;
+    wire [31:0]   pwm_wdata;
+    wire [31:0]   pwm_rdata;
+
+    // Watchdog Timer (WDT)
+    wire          wdt_rst;
+    wire          wdt_clk;
+    wire          wdt_wen;
+    wire [31:0]   wdt_addr;
+    wire [31:0]   wdt_wdata;
+    wire [31:0]   wdt_rdata;
+    wire          wdt_reset_out;  // 看门狗复位输出
     
 
     
@@ -119,8 +139,13 @@ module miniRV_SoC (
     );
 `endif
     
+    // 组合复位信号：外部复位 OR 看门狗复位
+    // WDT 复位暂时禁用，避免影响调试
+    // 如需启用，改为：wire cpu_rst_combined = fpga_rst | wdt_reset_out;
+    wire cpu_rst_combined = fpga_rst;
+    
     myCPU Core_cpu (
-        .cpu_rst            (fpga_rst),
+        .cpu_rst            (cpu_rst_combined),
         .cpu_clk            (cpu_clk),
 
         // Interface to IROM
@@ -205,7 +230,23 @@ module miniRV_SoC (
         .wen_to_keypad       (keypad_wen),
         .addr_to_keypad      (keypad_addr),
         .wdata_to_keypad     (keypad_wdata),
-        .rdata_from_keypad   (keypad_rdata)
+        .rdata_from_keypad   (keypad_rdata),
+
+        // Interface to PWM (drives buzzer)
+        .rst_to_pwm          (pwm_rst),
+        .clk_to_pwm          (pwm_clk),
+        .wen_to_pwm          (pwm_wen),
+        .addr_to_pwm         (pwm_addr),
+        .wdata_to_pwm        (pwm_wdata),
+        .rdata_from_pwm      (pwm_rdata),
+
+        // Interface to WDT
+        .rst_to_wdt          (wdt_rst),
+        .clk_to_wdt          (wdt_clk),
+        .wen_to_wdt          (wdt_wen),
+        .addr_to_wdt         (wdt_addr),
+        .wdata_to_wdt        (wdt_wdata),
+        .rdata_from_wdt      (wdt_rdata)
     );
 
     DRAM Mem_DRAM (
@@ -284,6 +325,27 @@ module miniRV_SoC (
         .rdata(keypad_rdata)
     );
 
+    // PWM (drives buzzer on pin A19)
+    PWM PWM_0(
+        .rst(fpga_rst | wdt_reset_out),
+        .clk(pwm_clk),
+        .wen(pwm_wen),
+        .addr(pwm_addr),
+        .wdata(pwm_wdata),
+        .rdata(pwm_rdata),
+        .pwm_out(buzzer)
+    );
+
+    // Watchdog Timer
+    WDT WDT_0(
+        .rst(fpga_rst),
+        .clk(wdt_clk),
+        .wen(wdt_wen),
+        .addr(wdt_addr),
+        .wdata(wdt_wdata),
+        .rdata(wdt_rdata),
+        .wdt_rst(wdt_reset_out)
+    );
 
 
 endmodule

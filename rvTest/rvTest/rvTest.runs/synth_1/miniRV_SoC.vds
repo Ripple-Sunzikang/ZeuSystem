@@ -1,0 +1,95 @@
+#-----------------------------------------------------------
+# Vivado v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Sat Jan  3 21:44:39 2026
+# Process ID: 45661
+# Current directory: /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1
+# Command line: vivado -log miniRV_SoC.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source miniRV_SoC.tcl
+# Log file: /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/miniRV_SoC.vds
+# Journal file: /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/vivado.jou
+#-----------------------------------------------------------
+source miniRV_SoC.tcl -notrace
+Command: synth_design -top miniRV_SoC -part xc7a100tfgg484-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 45666 
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 1274.617 ; gain = 85.000 ; free physical = 4099 ; free virtual = 15378
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'miniRV_SoC' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/miniRV_SoC.v:5]
+INFO: [Synth 8-638] synthesizing module 'cpuclk' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-45661-Cookie/realtime/cpuclk_stub.v:5]
+INFO: [Synth 8-256] done synthesizing module 'cpuclk' (1#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-45661-Cookie/realtime/cpuclk_stub.v:5]
+INFO: [Synth 8-638] synthesizing module 'myCPU' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/myCPU.v:5]
+INFO: [Synth 8-638] synthesizing module 'PC' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PC.v:2]
+INFO: [Synth 8-256] done synthesizing module 'PC' (2#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PC.v:2]
+INFO: [Synth 8-638] synthesizing module 'NPC' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/NPC.v:2]
+INFO: [Synth 8-256] done synthesizing module 'NPC' (3#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/NPC.v:2]
+INFO: [Synth 8-638] synthesizing module 'IF_ID' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/IF_ID.v:2]
+INFO: [Synth 8-256] done synthesizing module 'IF_ID' (4#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/IF_ID.v:2]
+INFO: [Synth 8-638] synthesizing module 'controller' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/controller.v:5]
+INFO: [Synth 8-256] done synthesizing module 'controller' (5#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/controller.v:5]
+INFO: [Synth 8-638] synthesizing module 'SEXT' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/SEXT.v:5]
+INFO: [Synth 8-256] done synthesizing module 'SEXT' (6#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/SEXT.v:5]
+INFO: [Synth 8-638] synthesizing module 'RF' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/RF.v:5]
+INFO: [Synth 8-256] done synthesizing module 'RF' (7#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/RF.v:5]
+WARNING: [Synth 8-350] instance 'RF_0' of module 'RF' requires 14 connections, but only 13 given [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/myCPU.v:165]
+INFO: [Synth 8-638] synthesizing module 'ID_EX' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:2]
+INFO: [Synth 8-256] done synthesizing module 'ID_EX' (8#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:2]
+INFO: [Synth 8-638] synthesizing module 'ALU' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ALU.v:6]
+INFO: [Synth 8-226] default block is never used [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ALU.v:32]
+INFO: [Synth 8-256] done synthesizing module 'ALU' (9#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ALU.v:6]
+INFO: [Synth 8-638] synthesizing module 'EX_MEM' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/EX_MEM.v:2]
+INFO: [Synth 8-256] done synthesizing module 'EX_MEM' (10#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/EX_MEM.v:2]
+INFO: [Synth 8-638] synthesizing module 'MEM_WB' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/MEM_WB.v:2]
+INFO: [Synth 8-256] done synthesizing module 'MEM_WB' (11#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/MEM_WB.v:2]
+INFO: [Synth 8-638] synthesizing module 'data_hazard_detection' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Data_Hazard_Detection.v:2]
+INFO: [Synth 8-256] done synthesizing module 'data_hazard_detection' (12#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Data_Hazard_Detection.v:2]
+INFO: [Synth 8-638] synthesizing module 'control_hazard_detection' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Control_Hazard_Detection.v:2]
+INFO: [Synth 8-256] done synthesizing module 'control_hazard_detection' (13#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Control_Hazard_Detection.v:2]
+INFO: [Synth 8-256] done synthesizing module 'myCPU' (14#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/myCPU.v:5]
+INFO: [Synth 8-638] synthesizing module 'IROM' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-45661-Cookie/realtime/IROM_stub.v:6]
+INFO: [Synth 8-256] done synthesizing module 'IROM' (15#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-45661-Cookie/realtime/IROM_stub.v:6]
+INFO: [Synth 8-638] synthesizing module 'Bridge' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Bridge.v:5]
+INFO: [Synth 8-256] done synthesizing module 'Bridge' (16#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Bridge.v:5]
+INFO: [Synth 8-638] synthesizing module 'DRAM' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-45661-Cookie/realtime/DRAM_stub.v:6]
+INFO: [Synth 8-256] done synthesizing module 'DRAM' (17#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-45661-Cookie/realtime/DRAM_stub.v:6]
+INFO: [Synth 8-638] synthesizing module 'Digital_LED' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:5]
+INFO: [Synth 8-226] default block is never used [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:89]
+WARNING: [Synth 8-5788] Register DN_data_reg in module Digital_LED is has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:64]
+INFO: [Synth 8-256] done synthesizing module 'Digital_LED' (18#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:5]
+INFO: [Synth 8-638] synthesizing module 'LED' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/LED.v:1]
+INFO: [Synth 8-256] done synthesizing module 'LED' (19#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/LED.v:1]
+INFO: [Synth 8-638] synthesizing module 'Switch' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Switch.v:5]
+INFO: [Synth 8-256] done synthesizing module 'Switch' (20#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Switch.v:5]
+INFO: [Synth 8-638] synthesizing module 'Button' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Button.v:5]
+	Parameter DEBOUNCE_CYCLES bound to: 500000 - type: integer 
+	Parameter COUNTER_WIDTH bound to: 19 - type: integer 
+	Parameter S_IDLE bound to: 2'b00 
+	Parameter S_WAIT bound to: 2'b01 
+	Parameter S_CHECK bound to: 2'b10 
+INFO: [Synth 8-256] done synthesizing module 'Button' (21#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Button.v:5]
+INFO: [Synth 8-638] synthesizing module 'Timer' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Timer.v:5]
+WARNING: [Synth 8-5788] Register rdata_reg in module Timer is has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Timer.v:49]
+INFO: [Synth 8-256] done synthesizing module 'Timer' (22#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Timer.v:5]
+INFO: [Synth 8-638] synthesizing module 'Keypad4x4' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Keypad4x4.v:5]
+	Parameter ROW_PERIOD_CYCLES bound to: 12500 - type: integer 
+	Parameter DEBOUNCE_FRAMES bound to: 5 - type: integer 
+INFO: [Synth 8-226] default block is never used [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Keypad4x4.v:119]
+WARNING: [Synth 8-6014] Unused sequential element stable_frames_next_reg was removed.  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Keypad4x4.v:223]
+INFO: [Synth 8-256] done synthesizing module 'Keypad4x4' (23#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Keypad4x4.v:5]
+INFO: [Synth 8-638] synthesizing module 'PWM' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PWM.v:19]
+INFO: [Synth 8-256] done synthesizing module 'PWM' (24#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PWM.v:19]
+ERROR: [Synth 8-439] module 'WDT' not found [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/miniRV_SoC.v:338]
+ERROR: [Synth 8-285] failed synthesizing module 'miniRV_SoC' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/miniRV_SoC.v:5]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 1319.148 ; gain = 129.531 ; free physical = 4049 ; free virtual = 15328
+---------------------------------------------------------------------------------
+RTL Elaboration failed
+INFO: [Common 17-83] Releasing license: Synthesis
+54 Infos, 4 Warnings, 0 Critical Warnings and 3 Errors encountered.
+synth_design failed
+ERROR: [Common 17-69] Command failed: Synthesis failed - please see the console or run log file for details
+INFO: [Common 17-206] Exiting Vivado at Sat Jan  3 21:44:53 2026...

@@ -1,7 +1,7 @@
 Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------------------
 | Tool Version              : Vivado v.2017.4 (lin64) Build 2086221 Fri Dec 15 20:54:30 MST 2017
-| Date                      : Mon Dec 29 02:50:36 2025
+| Date                      : Sat Jan  3 22:40:16 2026
 | Host                      : Cookie running 64-bit Linux Mint 22.2
 | Command                   : report_io -file miniRV_SoC_io_placed.rpt
 | Design                    : miniRV_SoC
@@ -25,7 +25,7 @@ Table of Contents
 +---------------+
 | Total User IO |
 +---------------+
-|            79 |
+|            80 |
 +---------------+
 
 
@@ -53,7 +53,7 @@ Table of Contents
 | A16        |             | High Range | IO_L9N_T1_DQS_16             | User IO       |             |      16 |            |      |                     |                      |         |            |           |          |      |                  |              |                   |              |
 | A17        |             | High Range | VCCO_16                      | VCCO          |             |      16 |            |      |                     |                      |    3.30 |            |           |          |      |                  |              |                   |              |
 | A18        | dig_en[7]   | High Range | IO_L17P_T2_16                | OUTPUT        | LVCMOS33    |      16 |         12 | SLOW |                     |            FP_VTT_50 |         | FIXED      |           |          |      | NONE             |              |                   |              |
-| A19        |             | High Range | IO_L17N_T2_16                | User IO       |             |      16 |            |      |                     |                      |         |            |           |          |      |                  |              |                   |              |
+| A19        | buzzer      | High Range | IO_L17N_T2_16                | OUTPUT        | LVCMOS33    |      16 |         12 | SLOW |                     |            FP_VTT_50 |         | FIXED      |           |          |      | NONE             |              |                   |              |
 | A20        | dig_en[6]   | High Range | IO_L16N_T2_16                | OUTPUT        | LVCMOS33    |      16 |         12 | SLOW |                     |            FP_VTT_50 |         | FIXED      |           |          |      | NONE             |              |                   |              |
 | A21        | led[0]      | High Range | IO_L21N_T3_DQS_16            | OUTPUT        | LVCMOS33    |      16 |         12 | SLOW |                     |            FP_VTT_50 |         | FIXED      |           |          |      | NONE             |              |                   |              |
 | A22        |             |            | GND                          | GND           |             |         |            |      |                     |                      |     0.0 |            |           |          |      |                  |              |                   |              |

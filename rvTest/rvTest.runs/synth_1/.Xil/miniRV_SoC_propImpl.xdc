@@ -1,4 +1,4 @@
-set_property SRC_FILE_INFO {cfile:/home/vessel/rvTest/rvTest.srcs/constrs_1/new/miniRV_SoC.xdc rfile:../../../rvTest.srcs/constrs_1/new/miniRV_SoC.xdc id:1} [current_design]
+set_property SRC_FILE_INFO {cfile:/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/constrs_1/new/miniRV_SoC.xdc rfile:../../../rvTest.srcs/constrs_1/new/miniRV_SoC.xdc id:1} [current_design]
 set_property src_info {type:XDC file:1 line:1 export:INPUT save:INPUT read:READ} [current_design]
 set_property -dict { IOSTANDARD LVCMOS33 PACKAGE_PIN P20 } [get_ports fpga_rst]
 set_property src_info {type:XDC file:1 line:2 export:INPUT save:INPUT read:READ} [current_design]
@@ -157,3 +157,5 @@ set_property src_info {type:XDC file:1 line:86 export:INPUT save:INPUT read:READ
 set_property -dict { IOSTANDARD LVCMOS33 PACKAGE_PIN J4 } [get_ports line[1]]
 set_property src_info {type:XDC file:1 line:87 export:INPUT save:INPUT read:READ} [current_design]
 set_property -dict { IOSTANDARD LVCMOS33 PACKAGE_PIN K4 } [get_ports line[0]]
+set_property src_info {type:XDC file:1 line:93 export:INPUT save:INPUT read:READ} [current_design]
+set_property -dict { IOSTANDARD LVCMOS33 PACKAGE_PIN A19 } [get_ports buzzer]

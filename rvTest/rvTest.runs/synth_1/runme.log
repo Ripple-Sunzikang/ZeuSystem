@@ -14,175 +14,179 @@ Starting synth_design
 Attempting to get a license for feature 'Synthesis' and/or device 'xc7a100t'
 INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100t'
 INFO: Launching helper process for spawning children vivado processes
-INFO: Helper process launched with PID 247521 
+INFO: Helper process launched with PID 75974 
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 1274.621 ; gain = 86.000 ; free physical = 8856 ; free virtual = 15407
+Starting RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 1274.617 ; gain = 86.000 ; free physical = 3773 ; free virtual = 15203
 ---------------------------------------------------------------------------------
-INFO: [Synth 8-638] synthesizing module 'miniRV_SoC' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/miniRV_SoC.v:5]
-INFO: [Synth 8-638] synthesizing module 'cpuclk' [/home/vessel/rvTest/rvTest.runs/synth_1/.Xil/Vivado-247512-Cookie/realtime/cpuclk_stub.v:5]
-INFO: [Synth 8-256] done synthesizing module 'cpuclk' (1#1) [/home/vessel/rvTest/rvTest.runs/synth_1/.Xil/Vivado-247512-Cookie/realtime/cpuclk_stub.v:5]
-INFO: [Synth 8-638] synthesizing module 'myCPU' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/myCPU.v:5]
-INFO: [Synth 8-638] synthesizing module 'PC' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/PC.v:2]
-INFO: [Synth 8-256] done synthesizing module 'PC' (2#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/PC.v:2]
-INFO: [Synth 8-638] synthesizing module 'NPC' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/NPC.v:2]
-INFO: [Synth 8-256] done synthesizing module 'NPC' (3#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/NPC.v:2]
-INFO: [Synth 8-638] synthesizing module 'IF_ID' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/IF_ID.v:2]
-INFO: [Synth 8-256] done synthesizing module 'IF_ID' (4#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/IF_ID.v:2]
-INFO: [Synth 8-638] synthesizing module 'controller' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/controller.v:5]
-INFO: [Synth 8-256] done synthesizing module 'controller' (5#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/controller.v:5]
-INFO: [Synth 8-638] synthesizing module 'SEXT' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/SEXT.v:5]
-INFO: [Synth 8-256] done synthesizing module 'SEXT' (6#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/SEXT.v:5]
-INFO: [Synth 8-638] synthesizing module 'RF' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/RF.v:5]
-INFO: [Synth 8-256] done synthesizing module 'RF' (7#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/RF.v:5]
-WARNING: [Synth 8-350] instance 'RF_0' of module 'RF' requires 14 connections, but only 13 given [/home/vessel/rvTest/rvTest.srcs/sources_1/new/myCPU.v:165]
-INFO: [Synth 8-638] synthesizing module 'ID_EX' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:2]
-INFO: [Synth 8-256] done synthesizing module 'ID_EX' (8#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:2]
-INFO: [Synth 8-638] synthesizing module 'ALU' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/ALU.v:6]
-INFO: [Synth 8-226] default block is never used [/home/vessel/rvTest/rvTest.srcs/sources_1/new/ALU.v:32]
-INFO: [Synth 8-256] done synthesizing module 'ALU' (9#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/ALU.v:6]
-INFO: [Synth 8-638] synthesizing module 'EX_MEM' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/EX_MEM.v:2]
-INFO: [Synth 8-256] done synthesizing module 'EX_MEM' (10#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/EX_MEM.v:2]
-INFO: [Synth 8-638] synthesizing module 'MEM_WB' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/MEM_WB.v:2]
-INFO: [Synth 8-256] done synthesizing module 'MEM_WB' (11#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/MEM_WB.v:2]
-INFO: [Synth 8-638] synthesizing module 'data_hazard_detection' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Data_Hazard_Detection.v:2]
-INFO: [Synth 8-256] done synthesizing module 'data_hazard_detection' (12#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Data_Hazard_Detection.v:2]
-INFO: [Synth 8-638] synthesizing module 'control_hazard_detection' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Control_Hazard_Detection.v:2]
-INFO: [Synth 8-256] done synthesizing module 'control_hazard_detection' (13#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Control_Hazard_Detection.v:2]
-INFO: [Synth 8-256] done synthesizing module 'myCPU' (14#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/myCPU.v:5]
-INFO: [Synth 8-638] synthesizing module 'IROM' [/home/vessel/rvTest/rvTest.runs/synth_1/.Xil/Vivado-247512-Cookie/realtime/IROM_stub.v:6]
-INFO: [Synth 8-256] done synthesizing module 'IROM' (15#1) [/home/vessel/rvTest/rvTest.runs/synth_1/.Xil/Vivado-247512-Cookie/realtime/IROM_stub.v:6]
-INFO: [Synth 8-638] synthesizing module 'Bridge' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Bridge.v:5]
-INFO: [Synth 8-256] done synthesizing module 'Bridge' (16#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Bridge.v:5]
-INFO: [Synth 8-638] synthesizing module 'DRAM' [/home/vessel/rvTest/rvTest.runs/synth_1/.Xil/Vivado-247512-Cookie/realtime/DRAM_stub.v:6]
-INFO: [Synth 8-256] done synthesizing module 'DRAM' (17#1) [/home/vessel/rvTest/rvTest.runs/synth_1/.Xil/Vivado-247512-Cookie/realtime/DRAM_stub.v:6]
-INFO: [Synth 8-638] synthesizing module 'Digital_LED' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:5]
-INFO: [Synth 8-226] default block is never used [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:89]
-WARNING: [Synth 8-5788] Register DN_data_reg in module Digital_LED is has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:64]
-INFO: [Synth 8-256] done synthesizing module 'Digital_LED' (18#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:5]
-INFO: [Synth 8-638] synthesizing module 'LED' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/LED.v:1]
-INFO: [Synth 8-256] done synthesizing module 'LED' (19#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/LED.v:1]
-INFO: [Synth 8-638] synthesizing module 'Switch' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Switch.v:5]
-INFO: [Synth 8-256] done synthesizing module 'Switch' (20#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Switch.v:5]
-INFO: [Synth 8-638] synthesizing module 'Button' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Button.v:5]
+INFO: [Synth 8-638] synthesizing module 'miniRV_SoC' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/miniRV_SoC.v:5]
+INFO: [Synth 8-638] synthesizing module 'cpuclk' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-75968-Cookie/realtime/cpuclk_stub.v:5]
+INFO: [Synth 8-256] done synthesizing module 'cpuclk' (1#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-75968-Cookie/realtime/cpuclk_stub.v:5]
+INFO: [Synth 8-638] synthesizing module 'myCPU' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/myCPU.v:5]
+INFO: [Synth 8-638] synthesizing module 'PC' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PC.v:2]
+INFO: [Synth 8-256] done synthesizing module 'PC' (2#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PC.v:2]
+INFO: [Synth 8-638] synthesizing module 'NPC' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/NPC.v:2]
+INFO: [Synth 8-256] done synthesizing module 'NPC' (3#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/NPC.v:2]
+INFO: [Synth 8-638] synthesizing module 'IF_ID' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/IF_ID.v:2]
+INFO: [Synth 8-256] done synthesizing module 'IF_ID' (4#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/IF_ID.v:2]
+INFO: [Synth 8-638] synthesizing module 'controller' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/controller.v:5]
+INFO: [Synth 8-256] done synthesizing module 'controller' (5#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/controller.v:5]
+INFO: [Synth 8-638] synthesizing module 'SEXT' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/SEXT.v:5]
+INFO: [Synth 8-256] done synthesizing module 'SEXT' (6#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/SEXT.v:5]
+INFO: [Synth 8-638] synthesizing module 'RF' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/RF.v:5]
+INFO: [Synth 8-256] done synthesizing module 'RF' (7#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/RF.v:5]
+WARNING: [Synth 8-350] instance 'RF_0' of module 'RF' requires 14 connections, but only 13 given [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/myCPU.v:165]
+INFO: [Synth 8-638] synthesizing module 'ID_EX' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:2]
+INFO: [Synth 8-256] done synthesizing module 'ID_EX' (8#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:2]
+INFO: [Synth 8-638] synthesizing module 'ALU' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ALU.v:6]
+INFO: [Synth 8-226] default block is never used [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ALU.v:32]
+INFO: [Synth 8-256] done synthesizing module 'ALU' (9#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ALU.v:6]
+INFO: [Synth 8-638] synthesizing module 'EX_MEM' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/EX_MEM.v:2]
+INFO: [Synth 8-256] done synthesizing module 'EX_MEM' (10#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/EX_MEM.v:2]
+INFO: [Synth 8-638] synthesizing module 'MEM_WB' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/MEM_WB.v:2]
+INFO: [Synth 8-256] done synthesizing module 'MEM_WB' (11#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/MEM_WB.v:2]
+INFO: [Synth 8-638] synthesizing module 'data_hazard_detection' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Data_Hazard_Detection.v:2]
+INFO: [Synth 8-256] done synthesizing module 'data_hazard_detection' (12#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Data_Hazard_Detection.v:2]
+INFO: [Synth 8-638] synthesizing module 'control_hazard_detection' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Control_Hazard_Detection.v:2]
+INFO: [Synth 8-256] done synthesizing module 'control_hazard_detection' (13#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Control_Hazard_Detection.v:2]
+INFO: [Synth 8-256] done synthesizing module 'myCPU' (14#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/myCPU.v:5]
+INFO: [Synth 8-638] synthesizing module 'IROM' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-75968-Cookie/realtime/IROM_stub.v:6]
+INFO: [Synth 8-256] done synthesizing module 'IROM' (15#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-75968-Cookie/realtime/IROM_stub.v:6]
+INFO: [Synth 8-638] synthesizing module 'Bridge' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Bridge.v:5]
+INFO: [Synth 8-256] done synthesizing module 'Bridge' (16#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Bridge.v:5]
+INFO: [Synth 8-638] synthesizing module 'DRAM' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-75968-Cookie/realtime/DRAM_stub.v:6]
+INFO: [Synth 8-256] done synthesizing module 'DRAM' (17#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-75968-Cookie/realtime/DRAM_stub.v:6]
+INFO: [Synth 8-638] synthesizing module 'Digital_LED' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:5]
+INFO: [Synth 8-226] default block is never used [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:89]
+WARNING: [Synth 8-5788] Register DN_data_reg in module Digital_LED is has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:64]
+INFO: [Synth 8-256] done synthesizing module 'Digital_LED' (18#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:5]
+INFO: [Synth 8-638] synthesizing module 'LED' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/LED.v:1]
+INFO: [Synth 8-256] done synthesizing module 'LED' (19#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/LED.v:1]
+INFO: [Synth 8-638] synthesizing module 'Switch' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Switch.v:5]
+INFO: [Synth 8-256] done synthesizing module 'Switch' (20#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Switch.v:5]
+INFO: [Synth 8-638] synthesizing module 'Button' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Button.v:5]
 	Parameter DEBOUNCE_CYCLES bound to: 500000 - type: integer 
 	Parameter COUNTER_WIDTH bound to: 19 - type: integer 
 	Parameter S_IDLE bound to: 2'b00 
 	Parameter S_WAIT bound to: 2'b01 
 	Parameter S_CHECK bound to: 2'b10 
-INFO: [Synth 8-256] done synthesizing module 'Button' (21#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Button.v:5]
-INFO: [Synth 8-638] synthesizing module 'Timer' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Timer.v:5]
-WARNING: [Synth 8-5788] Register rdata_reg in module Timer is has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Timer.v:49]
-INFO: [Synth 8-256] done synthesizing module 'Timer' (22#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Timer.v:5]
-INFO: [Synth 8-638] synthesizing module 'Keypad4x4' [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Keypad4x4.v:5]
+INFO: [Synth 8-256] done synthesizing module 'Button' (21#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Button.v:5]
+INFO: [Synth 8-638] synthesizing module 'Timer' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Timer.v:5]
+WARNING: [Synth 8-5788] Register rdata_reg in module Timer is has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Timer.v:49]
+INFO: [Synth 8-256] done synthesizing module 'Timer' (22#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Timer.v:5]
+INFO: [Synth 8-638] synthesizing module 'Keypad4x4' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Keypad4x4.v:5]
 	Parameter ROW_PERIOD_CYCLES bound to: 12500 - type: integer 
 	Parameter DEBOUNCE_FRAMES bound to: 5 - type: integer 
-INFO: [Synth 8-226] default block is never used [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Keypad4x4.v:119]
-WARNING: [Synth 8-6014] Unused sequential element stable_frames_next_reg was removed.  [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Keypad4x4.v:223]
-INFO: [Synth 8-256] done synthesizing module 'Keypad4x4' (23#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Keypad4x4.v:5]
-INFO: [Synth 8-256] done synthesizing module 'miniRV_SoC' (24#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/new/miniRV_SoC.v:5]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[31]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[30]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[29]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[28]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[27]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[26]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[25]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[24]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[23]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[22]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[21]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[20]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[19]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[18]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[17]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[16]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[15]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[14]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[13]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[12]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[11]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[10]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[9]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[8]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[7]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[6]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[5]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[4]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[3]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[1]
-WARNING: [Synth 8-3331] design Keypad4x4 has unconnected port wdata[0]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[31]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[30]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[29]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[28]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[27]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[26]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[25]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[24]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[23]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[22]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[21]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[20]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[19]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[18]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[17]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[16]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[15]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[14]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[13]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[12]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[11]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[10]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[9]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[8]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[7]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[6]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[5]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[4]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[3]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[2]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[1]
-WARNING: [Synth 8-3331] design Button has unconnected port addr[0]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[31]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[30]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[29]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[28]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[27]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[26]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[25]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[24]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[23]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[22]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[21]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[20]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[19]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[18]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[17]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[16]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[15]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[14]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[13]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[12]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[11]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[10]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[9]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[8]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[7]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[6]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[5]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[4]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[3]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[2]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[1]
-WARNING: [Synth 8-3331] design Switch has unconnected port addr[0]
-WARNING: [Synth 8-3331] design LED has unconnected port addr[31]
-WARNING: [Synth 8-3331] design LED has unconnected port addr[30]
-WARNING: [Synth 8-3331] design LED has unconnected port addr[29]
-WARNING: [Synth 8-3331] design LED has unconnected port addr[28]
-WARNING: [Synth 8-3331] design LED has unconnected port addr[27]
+INFO: [Synth 8-226] default block is never used [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Keypad4x4.v:119]
+WARNING: [Synth 8-6014] Unused sequential element stable_frames_next_reg was removed.  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Keypad4x4.v:223]
+INFO: [Synth 8-256] done synthesizing module 'Keypad4x4' (23#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Keypad4x4.v:5]
+INFO: [Synth 8-638] synthesizing module 'PWM' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PWM.v:17]
+INFO: [Synth 8-256] done synthesizing module 'PWM' (24#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PWM.v:17]
+INFO: [Synth 8-638] synthesizing module 'WDT' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/WDT.v:18]
+INFO: [Synth 8-256] done synthesizing module 'WDT' (25#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/WDT.v:18]
+INFO: [Synth 8-256] done synthesizing module 'miniRV_SoC' (26#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/miniRV_SoC.v:5]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[31]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[30]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[29]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[28]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[27]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[26]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[25]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[24]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[23]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[22]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[21]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[20]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[19]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[18]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[17]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[16]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[15]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[14]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[13]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[12]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[11]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[10]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[9]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[8]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[7]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[6]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[5]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[4]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[3]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[2]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[1]
+WARNING: [Synth 8-3331] design WDT has unconnected port addr[0]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[31]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[30]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[29]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[28]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[27]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[26]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[25]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[24]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[23]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[22]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[21]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[20]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[19]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[18]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[17]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[16]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[15]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[14]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[13]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[12]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[11]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[10]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[9]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[8]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[7]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[6]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[5]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[4]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[3]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[2]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[1]
+WARNING: [Synth 8-3331] design WDT has unconnected port wdata[0]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[31]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[30]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[29]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[28]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[27]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[26]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[25]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[24]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[23]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[22]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[21]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[20]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[19]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[18]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[17]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[16]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[15]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[14]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[13]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[12]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[11]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[10]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[9]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[8]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[7]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[6]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[5]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[4]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[1]
+WARNING: [Synth 8-3331] design PWM has unconnected port addr[0]
+WARNING: [Synth 8-3331] design PWM has unconnected port wdata[31]
+WARNING: [Synth 8-3331] design PWM has unconnected port wdata[30]
+WARNING: [Synth 8-3331] design PWM has unconnected port wdata[29]
+WARNING: [Synth 8-3331] design PWM has unconnected port wdata[28]
+WARNING: [Synth 8-3331] design PWM has unconnected port wdata[27]
+WARNING: [Synth 8-3331] design PWM has unconnected port wdata[26]
 INFO: [Common 17-14] Message 'Synth 8-3331' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 1318.152 ; gain = 129.531 ; free physical = 8808 ; free virtual = 15360
+Finished RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 1319.148 ; gain = 130.531 ; free physical = 3716 ; free virtual = 15155
 ---------------------------------------------------------------------------------
 
 Report Check Netlist: 
@@ -191,42 +195,42 @@ Report Check Netlist:
 +------+------------------+-------+---------+-------+------------------+
 |1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
 +------+------------------+-------+---------+-------+------------------+
-WARNING: [Synth 8-3295] tying undriven pin RF_0:rst to constant 0 [/home/vessel/rvTest/rvTest.srcs/sources_1/new/myCPU.v:165]
+WARNING: [Synth 8-3295] tying undriven pin RF_0:rst to constant 0 [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/myCPU.v:165]
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 1318.152 ; gain = 129.531 ; free physical = 8808 ; free virtual = 15360
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 1319.148 ; gain = 130.531 ; free physical = 3716 ; free virtual = 15155
 ---------------------------------------------------------------------------------
 INFO: [Device 21-403] Loading part xc7a100tfgg484-1
 INFO: [Project 1-570] Preparing netlist for logic optimization
 
 Processing XDC Constraints
 Initializing timing engine
-Parsing XDC File [/home/vessel/rvTest/rvTest.runs/synth_1/.Xil/Vivado-247512-Cookie/dcp3/DRAM_in_context.xdc] for cell 'Mem_DRAM'
-Finished Parsing XDC File [/home/vessel/rvTest/rvTest.runs/synth_1/.Xil/Vivado-247512-Cookie/dcp3/DRAM_in_context.xdc] for cell 'Mem_DRAM'
-Parsing XDC File [/home/vessel/rvTest/rvTest.runs/synth_1/.Xil/Vivado-247512-Cookie/dcp4/cpuclk_in_context.xdc] for cell 'Clkgen'
-Finished Parsing XDC File [/home/vessel/rvTest/rvTest.runs/synth_1/.Xil/Vivado-247512-Cookie/dcp4/cpuclk_in_context.xdc] for cell 'Clkgen'
-Parsing XDC File [/home/vessel/rvTest/rvTest.runs/synth_1/.Xil/Vivado-247512-Cookie/dcp5/IROM_in_context.xdc] for cell 'Mem_IROM'
-Finished Parsing XDC File [/home/vessel/rvTest/rvTest.runs/synth_1/.Xil/Vivado-247512-Cookie/dcp5/IROM_in_context.xdc] for cell 'Mem_IROM'
-Parsing XDC File [/home/vessel/rvTest/rvTest.srcs/constrs_1/new/miniRV_SoC.xdc]
-Finished Parsing XDC File [/home/vessel/rvTest/rvTest.srcs/constrs_1/new/miniRV_SoC.xdc]
-INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [/home/vessel/rvTest/rvTest.srcs/constrs_1/new/miniRV_SoC.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/miniRV_SoC_propImpl.xdc].
+Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-75968-Cookie/dcp3/DRAM_in_context.xdc] for cell 'Mem_DRAM'
+Finished Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-75968-Cookie/dcp3/DRAM_in_context.xdc] for cell 'Mem_DRAM'
+Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-75968-Cookie/dcp4/cpuclk_in_context.xdc] for cell 'Clkgen'
+Finished Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-75968-Cookie/dcp4/cpuclk_in_context.xdc] for cell 'Clkgen'
+Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-75968-Cookie/dcp5/IROM_in_context.xdc] for cell 'Mem_IROM'
+Finished Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-75968-Cookie/dcp5/IROM_in_context.xdc] for cell 'Mem_IROM'
+Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/constrs_1/new/miniRV_SoC.xdc]
+Finished Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/constrs_1/new/miniRV_SoC.xdc]
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/constrs_1/new/miniRV_SoC.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/miniRV_SoC_propImpl.xdc].
 Resolution: To avoid this warning, move constraints listed in [.Xil/miniRV_SoC_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
-Parsing XDC File [/home/vessel/rvTest/rvTest.srcs/constrs_1/new/miniRV_clock.xdc]
-Finished Parsing XDC File [/home/vessel/rvTest/rvTest.srcs/constrs_1/new/miniRV_clock.xdc]
+Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/constrs_1/new/miniRV_clock.xdc]
+Finished Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/constrs_1/new/miniRV_clock.xdc]
 Completed Processing XDC Constraints
 
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1702.840 ; gain = 0.000 ; free physical = 8717 ; free virtual = 15269
+Constraint Validation Runtime : Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00 . Memory (MB): peak = 1702.828 ; gain = 0.000 ; free physical = 3447 ; free virtual = 14900
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:00:17 ; elapsed = 00:00:23 . Memory (MB): peak = 1702.840 ; gain = 514.219 ; free physical = 8799 ; free virtual = 15347
+Finished Constraint Validation : Time (s): cpu = 00:00:17 ; elapsed = 00:00:24 . Memory (MB): peak = 1702.828 ; gain = 514.211 ; free physical = 3551 ; free virtual = 14983
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7a100tfgg484-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:00:17 ; elapsed = 00:00:23 . Memory (MB): peak = 1702.840 ; gain = 514.219 ; free physical = 8799 ; free virtual = 15347
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:17 ; elapsed = 00:00:24 . Memory (MB): peak = 1702.828 ; gain = 514.211 ; free physical = 3551 ; free virtual = 14983
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
@@ -235,7 +239,7 @@ Applied set_property DONT_TOUCH = true for Clkgen. (constraint file  auto genera
 Applied set_property DONT_TOUCH = true for Mem_DRAM. (constraint file  auto generated constraint, line ).
 Applied set_property DONT_TOUCH = true for Mem_IROM. (constraint file  auto generated constraint, line ).
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:17 ; elapsed = 00:00:23 . Memory (MB): peak = 1702.840 ; gain = 514.219 ; free physical = 8799 ; free virtual = 15348
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:18 ; elapsed = 00:00:24 . Memory (MB): peak = 1702.828 ; gain = 514.211 ; free physical = 3551 ; free virtual = 14983
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-5546] ROM "inst_jalr" won't be mapped to RAM because it is too sparse
 INFO: [Synth 8-5546] ROM "inst_jal" won't be mapped to RAM because it is too sparse
@@ -289,21 +293,24 @@ INFO: [Synth 8-5546] ROM "rf_reg[28]" won't be mapped to RAM because it is too s
 INFO: [Synth 8-5546] ROM "rf_reg[29]" won't be mapped to RAM because it is too sparse
 INFO: [Synth 8-5546] ROM "rf_reg[30]" won't be mapped to RAM because it is too sparse
 INFO: [Synth 8-5546] ROM "rf_reg[31]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [/home/vessel/rvTest/rvTest.srcs/sources_1/new/ALU.v:32]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ALU.v:32]
 INFO: [Synth 8-5545] ROM "access_dig" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
 INFO: [Synth 8-5545] ROM "access_led" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
 INFO: [Synth 8-5545] ROM "access_keypad" won't be mapped to RAM because address size (28) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "access_pwm" won't be mapped to RAM because address size (28) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "access_wdt" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
 INFO: [Synth 8-5545] ROM "access_sw" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
 INFO: [Synth 8-5545] ROM "access_btn" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
-WARNING: [Synth 8-6014] Unused sequential element cnt_reg was removed.  [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:28]
+WARNING: [Synth 8-6014] Unused sequential element cnt_reg was removed.  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:28]
 INFO: [Synth 8-5545] ROM "rdata" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
-WARNING: [Synth 8-6014] Unused sequential element CNT1_reg was removed.  [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Timer.v:33]
+WARNING: [Synth 8-6014] Unused sequential element CNT1_reg was removed.  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Timer.v:33]
 INFO: [Synth 8-5544] ROM "row" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
 INFO: [Synth 8-5544] ROM "first_one_idx" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
 INFO: [Synth 8-5544] ROM "first_zero_idx" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
 INFO: [Synth 8-5544] ROM "map_key" won't be mapped to Block RAM because address size (4) smaller than threshold (5)
+INFO: [Synth 8-5546] ROM "rst_cnt" won't be mapped to RAM because it is too sparse
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:18 ; elapsed = 00:00:24 . Memory (MB): peak = 1702.840 ; gain = 514.219 ; free physical = 8799 ; free virtual = 15347
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:18 ; elapsed = 00:00:24 . Memory (MB): peak = 1702.828 ; gain = 514.211 ; free physical = 3558 ; free virtual = 14991
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -318,42 +325,47 @@ Detailed RTL Component Info :
 +---Adders : 
 	   2 Input     32 Bit       Adders := 2     
 	   3 Input     32 Bit       Adders := 2     
+	   2 Input     24 Bit       Adders := 1     
 	   2 Input     19 Bit       Adders := 5     
+	   2 Input     16 Bit       Adders := 1     
 	   2 Input     14 Bit       Adders := 1     
-	   2 Input      3 Bit       Adders := 1     
+	   2 Input      3 Bit       Adders := 2     
 	   2 Input      2 Bit       Adders := 1     
 +---XORs : 
 	   2 Input     32 Bit         XORs := 1     
 	   2 Input      3 Bit         XORs := 1     
 +---Registers : 
 	               32 Bit    Registers := 54    
-	               24 Bit    Registers := 1     
+	               24 Bit    Registers := 2     
 	               19 Bit    Registers := 5     
+	               16 Bit    Registers := 4     
 	               14 Bit    Registers := 1     
 	                8 Bit    Registers := 1     
 	                5 Bit    Registers := 6     
 	                4 Bit    Registers := 10    
-	                3 Bit    Registers := 6     
+	                3 Bit    Registers := 7     
 	                2 Bit    Registers := 8     
-	                1 Bit    Registers := 10    
+	                1 Bit    Registers := 11    
 +---Muxes : 
 	   2 Input     32 Bit        Muxes := 29    
-	   4 Input     32 Bit        Muxes := 4     
-	   8 Input     32 Bit        Muxes := 1     
-	   6 Input     32 Bit        Muxes := 1     
+	   4 Input     32 Bit        Muxes := 5     
+	   8 Input     32 Bit        Muxes := 2     
+	   2 Input     24 Bit        Muxes := 2     
 	   2 Input     19 Bit        Muxes := 10    
+	   2 Input     16 Bit        Muxes := 2     
 	   2 Input     14 Bit        Muxes := 2     
 	   2 Input      5 Bit        Muxes := 1     
 	   2 Input      4 Bit        Muxes := 21    
 	   5 Input      4 Bit        Muxes := 1     
 	   7 Input      3 Bit        Muxes := 1     
 	   5 Input      3 Bit        Muxes := 1     
-	   2 Input      3 Bit        Muxes := 4     
+	   2 Input      3 Bit        Muxes := 6     
 	   2 Input      2 Bit        Muxes := 4     
 	   3 Input      2 Bit        Muxes := 1     
 	   4 Input      2 Bit        Muxes := 1     
 	   8 Input      2 Bit        Muxes := 1     
-	   2 Input      1 Bit        Muxes := 115   
+	   2 Input      1 Bit        Muxes := 120   
+	   3 Input      1 Bit        Muxes := 1     
 ---------------------------------------------------------------------------------
 Finished RTL Component Statistics 
 ---------------------------------------------------------------------------------
@@ -444,8 +456,8 @@ Detailed RTL Component Info :
 Module Bridge 
 Detailed RTL Component Info : 
 +---Muxes : 
-	   6 Input     32 Bit        Muxes := 1     
-	   2 Input      1 Bit        Muxes := 5     
+	   8 Input     32 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 7     
 Module Digital_LED 
 Detailed RTL Component Info : 
 +---Registers : 
@@ -507,6 +519,29 @@ Detailed RTL Component Info :
 	   2 Input      2 Bit        Muxes := 1     
 	   8 Input      2 Bit        Muxes := 1     
 	   2 Input      1 Bit        Muxes := 12    
+Module PWM 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     16 Bit       Adders := 1     
++---Registers : 
+	               16 Bit    Registers := 4     
++---Muxes : 
+	   4 Input     32 Bit        Muxes := 1     
+	   2 Input     16 Bit        Muxes := 2     
+Module WDT 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     24 Bit       Adders := 1     
+	   2 Input      3 Bit       Adders := 1     
++---Registers : 
+	               24 Bit    Registers := 1     
+	                3 Bit    Registers := 1     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   2 Input     24 Bit        Muxes := 2     
+	   2 Input      3 Bit        Muxes := 2     
+	   3 Input      1 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 3     
 ---------------------------------------------------------------------------------
 Finished RTL Hierarchical Component Statistics
 ---------------------------------------------------------------------------------
@@ -530,79 +565,81 @@ INFO: [Synth 8-5546] ROM "inst_lw" won't be mapped to RAM because it is too spar
 INFO: [Synth 8-5546] ROM "s_typ" won't be mapped to RAM because it is too sparse
 INFO: [Synth 8-5546] ROM "i_typ" won't be mapped to RAM because it is too sparse
 INFO: [Synth 8-5546] ROM "r_typ" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5545] ROM "Bridge/access_wdt" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "Bridge/access_pwm" won't be mapped to RAM because address size (28) is larger than maximum supported(25)
 INFO: [Synth 8-5545] ROM "Bridge/access_keypad" won't be mapped to RAM because address size (28) is larger than maximum supported(25)
 INFO: [Synth 8-5545] ROM "Bridge/access_btn" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
 INFO: [Synth 8-5545] ROM "Bridge/access_sw" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
 INFO: [Synth 8-5545] ROM "Bridge/access_led" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
 INFO: [Synth 8-5545] ROM "Bridge/access_dig" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
 INFO: [Synth 8-5545] ROM "Timer_0/rdata" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
-WARNING: [Synth 8-6014] Unused sequential element Digital_LED_0/cnt_reg was removed.  [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:28]
-WARNING: [Synth 8-6014] Unused sequential element Timer_0/CNT1_reg was removed.  [/home/vessel/rvTest/rvTest.srcs/sources_1/new/Timer.v:33]
+WARNING: [Synth 8-6014] Unused sequential element Digital_LED_0/cnt_reg was removed.  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:28]
+WARNING: [Synth 8-6014] Unused sequential element Timer_0/CNT1_reg was removed.  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Timer.v:33]
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Button_0/state_reg[0][1] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Button_0/state_reg[1][1] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Button_0/state_reg[2][1] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Button_0/state_reg[3][1] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Button_0/state_reg[4][1] )
 INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[4]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[5]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[5]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[6]' (FDC) to 'Button_0/rdata_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[5]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[6]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[7]' (FDC) to 'Button_0/rdata_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[6]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[7]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[8]' (FDC) to 'Button_0/rdata_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[7]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[8]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[9]' (FDC) to 'Button_0/rdata_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[8]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[9]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[10]' (FDC) to 'Button_0/rdata_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[9]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[10]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[11]' (FDC) to 'Button_0/rdata_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[10]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[11]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[12]' (FDC) to 'Button_0/rdata_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[11]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[12]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[13]' (FDC) to 'Button_0/rdata_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[12]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[13]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[14]' (FDC) to 'Button_0/rdata_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[13]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[14]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[15]' (FDC) to 'Button_0/rdata_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[14]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[15]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[16]' (FDC) to 'Button_0/rdata_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[15]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[16]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[17]' (FDC) to 'Button_0/rdata_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[16]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[17]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[18]' (FDC) to 'Button_0/rdata_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[17]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[18]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[19]' (FDC) to 'Button_0/rdata_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[18]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[19]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[20]' (FDC) to 'Button_0/rdata_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[19]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[20]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[21]' (FDC) to 'Button_0/rdata_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[20]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[21]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[22]' (FDC) to 'Button_0/rdata_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[21]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[22]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[23]' (FDC) to 'Button_0/rdata_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[22]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[23]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[23]' (FDC) to 'Button_0/rdata_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[24]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[24]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Switch_0/rdata_reg[24]' (FDC) to 'Button_0/rdata_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[24]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[25]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[25]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Switch_0/rdata_reg[25]' (FDC) to 'Button_0/rdata_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[25]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[26]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[26]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Switch_0/rdata_reg[26]' (FDC) to 'Button_0/rdata_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[26]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[27]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[27]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Switch_0/rdata_reg[27]' (FDC) to 'Button_0/rdata_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[27]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[28]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[28]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Switch_0/rdata_reg[28]' (FDC) to 'Button_0/rdata_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[28]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[29]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[29]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Switch_0/rdata_reg[29]' (FDC) to 'Button_0/rdata_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[29]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[30]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[30]' (FDC) to 'Button_0/rdata_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Switch_0/rdata_reg[30]' (FDC) to 'Button_0/rdata_reg[31]'
-INFO: [Synth 8-3886] merging instance 'Keypad4x4_0/keyvalue_latched_reg[30]' (FDPE) to 'Keypad4x4_0/keyvalue_latched_reg[31]'
 INFO: [Synth 8-3886] merging instance 'Button_0/rdata_reg[31]' (FDC) to 'Switch_0/rdata_reg[31]'
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Switch_0/rdata_reg[31] )
 INFO: [Synth 8-3886] merging instance 'Core_cpu/U_ID_EX/EX_rf_wsel_reg[2]' (FDC) to 'Core_cpu/U_ID_EX/EX_alub_sel_reg[2]'
@@ -621,7 +658,7 @@ WARNING: [Synth 8-3332] Sequential element (Button_0/state_reg[4][1]) is unused 
 WARNING: [Synth 8-3332] Sequential element (Keypad4x4_0/stable_frames_reg[3]) is unused and will be removed from module miniRV_SoC.
 WARNING: [Synth 8-3332] Sequential element (Switch_0/rdata_reg[31]) is unused and will be removed from module miniRV_SoC.
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:23 ; elapsed = 00:00:30 . Memory (MB): peak = 1702.840 ; gain = 514.219 ; free physical = 8733 ; free virtual = 15282
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:25 ; elapsed = 00:00:32 . Memory (MB): peak = 1702.828 ; gain = 514.211 ; free physical = 3458 ; free virtual = 14902
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -635,13 +672,13 @@ Start Applying XDC Timing Constraints
 INFO: [Synth 8-5578] Moved timing constraint from pin 'Clkgen/clk_out1' to pin 'Clkgen/bbstub_clk_out1/O'
 INFO: [Synth 8-5819] Moved 1 constraints on hierarchical pins to their respective driving/loading pins
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:27 ; elapsed = 00:00:35 . Memory (MB): peak = 1702.840 ; gain = 514.219 ; free physical = 8670 ; free virtual = 15206
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:28 ; elapsed = 00:00:37 . Memory (MB): peak = 1702.828 ; gain = 514.211 ; free physical = 3387 ; free virtual = 14819
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:00:28 ; elapsed = 00:00:36 . Memory (MB): peak = 1702.840 ; gain = 514.219 ; free physical = 8627 ; free virtual = 15182
+Finished Timing Optimization : Time (s): cpu = 00:00:29 ; elapsed = 00:00:37 . Memory (MB): peak = 1704.828 ; gain = 516.211 ; free physical = 3370 ; free virtual = 14802
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -652,14 +689,14 @@ Report RTL Partitions:
 ---------------------------------------------------------------------------------
 Start Technology Mapping
 ---------------------------------------------------------------------------------
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Core_cpu/RF_0/rf_reg[0][25] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Core_cpu/RF_0/rf_reg[0][31] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Core_cpu/RF_0/rf_reg[0][29] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Core_cpu/RF_0/rf_reg[0][27] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Core_cpu/RF_0/rf_reg[0][28] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Core_cpu/RF_0/rf_reg[0][30] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Core_cpu/RF_0/rf_reg[0][27] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Core_cpu/RF_0/rf_reg[0][25] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Core_cpu/RF_0/rf_reg[0][24] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Core_cpu/RF_0/rf_reg[0][26] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Core_cpu/RF_0/rf_reg[0][30] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Core_cpu/RF_0/rf_reg[0][0] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Core_cpu/RF_0/rf_reg[0][1] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Core_cpu/RF_0/rf_reg[0][2] )
@@ -717,7 +754,7 @@ WARNING: [Synth 8-3332] Sequential element (Core_cpu/RF_0/rf_reg[0][2]) is unuse
 WARNING: [Synth 8-3332] Sequential element (Core_cpu/RF_0/rf_reg[0][1]) is unused and will be removed from module miniRV_SoC.
 WARNING: [Synth 8-3332] Sequential element (Core_cpu/RF_0/rf_reg[0][0]) is unused and will be removed from module miniRV_SoC.
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:00:29 ; elapsed = 00:00:37 . Memory (MB): peak = 1737.012 ; gain = 548.391 ; free physical = 8603 ; free virtual = 15160
+Finished Technology Mapping : Time (s): cpu = 00:00:30 ; elapsed = 00:00:39 . Memory (MB): peak = 1742.320 ; gain = 553.703 ; free physical = 3334 ; free virtual = 14763
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -741,7 +778,7 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:00:29 ; elapsed = 00:00:37 . Memory (MB): peak = 1737.012 ; gain = 548.391 ; free physical = 8603 ; free virtual = 15160
+Finished IO Insertion : Time (s): cpu = 00:00:31 ; elapsed = 00:00:39 . Memory (MB): peak = 1742.320 ; gain = 553.703 ; free physical = 3333 ; free virtual = 14762
 ---------------------------------------------------------------------------------
 
 Report Check Netlist: 
@@ -754,7 +791,7 @@ Report Check Netlist:
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:00:29 ; elapsed = 00:00:37 . Memory (MB): peak = 1737.012 ; gain = 548.391 ; free physical = 8603 ; free virtual = 15160
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:31 ; elapsed = 00:00:39 . Memory (MB): peak = 1742.320 ; gain = 553.703 ; free physical = 3333 ; free virtual = 14762
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -766,25 +803,25 @@ Report RTL Partitions:
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:29 ; elapsed = 00:00:37 . Memory (MB): peak = 1737.012 ; gain = 548.391 ; free physical = 8603 ; free virtual = 15160
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:31 ; elapsed = 00:00:39 . Memory (MB): peak = 1742.320 ; gain = 553.703 ; free physical = 3333 ; free virtual = 14762
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:00:29 ; elapsed = 00:00:37 . Memory (MB): peak = 1737.012 ; gain = 548.391 ; free physical = 8603 ; free virtual = 15160
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:31 ; elapsed = 00:00:39 . Memory (MB): peak = 1742.320 ; gain = 553.703 ; free physical = 3333 ; free virtual = 14762
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:29 ; elapsed = 00:00:37 . Memory (MB): peak = 1737.012 ; gain = 548.391 ; free physical = 8603 ; free virtual = 15160
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:31 ; elapsed = 00:00:39 . Memory (MB): peak = 1742.320 ; gain = 553.703 ; free physical = 3334 ; free virtual = 14762
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:00:29 ; elapsed = 00:00:37 . Memory (MB): peak = 1737.012 ; gain = 548.391 ; free physical = 8603 ; free virtual = 15160
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:31 ; elapsed = 00:00:39 . Memory (MB): peak = 1742.320 ; gain = 553.703 ; free physical = 3334 ; free virtual = 14762
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -807,50 +844,52 @@ Report Cell Usage:
 |2     |IROM   |     1|
 |3     |cpuclk |     1|
 |4     |BUFG   |     1|
-|5     |CARRY4 |    91|
-|6     |LUT1   |     3|
-|7     |LUT2   |   274|
-|8     |LUT3   |   203|
-|9     |LUT4   |   299|
-|10    |LUT5   |   371|
-|11    |LUT6   |  1150|
+|5     |CARRY4 |   105|
+|6     |LUT1   |    26|
+|7     |LUT2   |   318|
+|8     |LUT3   |   190|
+|9     |LUT4   |   353|
+|10    |LUT5   |   397|
+|11    |LUT6   |  1227|
 |12    |MUXF7  |   263|
-|13    |FDCE   |   874|
-|14    |FDPE   |    41|
+|13    |FDCE   |   911|
+|14    |FDPE   |    96|
 |15    |FDRE   |  1088|
 |16    |LDC    |     4|
 |17    |IBUF   |    35|
-|18    |OBUF   |    44|
+|18    |OBUF   |    45|
 +------+-------+------+
 
 Report Instance Areas: 
 +------+----------------+------------+------+
 |      |Instance        |Module      |Cells |
 +------+----------------+------------+------+
-|1     |top             |            |  4807|
+|1     |top             |            |  5125|
 |2     |  Button_0      |Button      |   270|
-|3     |  Core_cpu      |myCPU       |  3819|
+|3     |  Core_cpu      |myCPU       |  3924|
 |4     |    RF_0        |RF          |  1888|
 |5     |    PC_0        |PC          |    73|
 |6     |    SEX_0       |SEXT        |     2|
-|7     |    U_EX_MEM    |EX_MEM      |   474|
+|7     |    U_EX_MEM    |EX_MEM      |   580|
 |8     |    U_ID_EX     |ID_EX       |   935|
-|9     |    U_IF_ID     |IF_ID       |   167|
-|10    |    U_MEM_WB    |MEM_WB      |   280|
+|9     |    U_IF_ID     |IF_ID       |   150|
+|10    |    U_MEM_WB    |MEM_WB      |   296|
 |11    |  Digital_LED_0 |Digital_LED |   139|
-|12    |  Keypad4x4_0   |Keypad4x4   |   135|
+|12    |  Keypad4x4_0   |Keypad4x4   |   143|
 |13    |  LED_0         |LED         |    24|
-|14    |  Switch_0      |Switch      |    24|
-|15    |  Timer_0       |Timer       |   249|
+|14    |  PWM_0         |PWM         |   137|
+|15    |  Switch_0      |Switch      |    24|
+|16    |  Timer_0       |Timer       |   249|
+|17    |  WDT_0         |WDT         |    67|
 +------+----------------+------------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:00:29 ; elapsed = 00:00:37 . Memory (MB): peak = 1737.012 ; gain = 548.391 ; free physical = 8603 ; free virtual = 15160
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:31 ; elapsed = 00:00:39 . Memory (MB): peak = 1742.320 ; gain = 553.703 ; free physical = 3334 ; free virtual = 14762
 ---------------------------------------------------------------------------------
 Synthesis finished with 0 errors, 0 critical warnings and 47 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:00:24 ; elapsed = 00:00:27 . Memory (MB): peak = 1737.012 ; gain = 163.703 ; free physical = 8603 ; free virtual = 15160
-Synthesis Optimization Complete : Time (s): cpu = 00:00:29 ; elapsed = 00:00:37 . Memory (MB): peak = 1737.020 ; gain = 548.391 ; free physical = 8603 ; free virtual = 15160
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:26 ; elapsed = 00:00:29 . Memory (MB): peak = 1742.320 ; gain = 170.023 ; free physical = 3386 ; free virtual = 14815
+Synthesis Optimization Complete : Time (s): cpu = 00:00:31 ; elapsed = 00:00:39 . Memory (MB): peak = 1742.328 ; gain = 553.703 ; free physical = 3386 ; free virtual = 14815
 INFO: [Project 1-571] Translating synthesized netlist
-INFO: [Netlist 29-17] Analyzing 393 Unisim elements for replacement
+INFO: [Netlist 29-17] Analyzing 407 Unisim elements for replacement
 INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
@@ -859,10 +898,10 @@ INFO: [Project 1-111] Unisim Transformation Summary:
   LDC => LDCE: 4 instances
 
 INFO: [Common 17-83] Releasing license: Synthesis
-246 Infos, 152 Warnings, 0 Critical Warnings and 0 Errors encountered.
+255 Infos, 152 Warnings, 0 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:00:31 ; elapsed = 00:00:39 . Memory (MB): peak = 1769.027 ; gain = 607.230 ; free physical = 8632 ; free virtual = 15188
-INFO: [Common 17-1381] The checkpoint '/home/vessel/rvTest/rvTest.runs/synth_1/miniRV_SoC.dcp' has been generated.
+synth_design: Time (s): cpu = 00:00:33 ; elapsed = 00:00:41 . Memory (MB): peak = 1774.336 ; gain = 612.543 ; free physical = 3374 ; free virtual = 14805
+INFO: [Common 17-1381] The checkpoint '/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/miniRV_SoC.dcp' has been generated.
 INFO: [runtcl-4] Executing : report_utilization -file miniRV_SoC_utilization_synth.rpt -pb miniRV_SoC_utilization_synth.pb
-report_utilization: Time (s): cpu = 00:00:00.04 ; elapsed = 00:00:00.07 . Memory (MB): peak = 1793.039 ; gain = 0.000 ; free physical = 8635 ; free virtual = 15192
-INFO: [Common 17-206] Exiting Vivado at Mon Dec 29 02:49:30 2025...
+report_utilization: Time (s): cpu = 00:00:00.03 ; elapsed = 00:00:00.05 . Memory (MB): peak = 1798.348 ; gain = 0.000 ; free physical = 3376 ; free virtual = 14808
+INFO: [Common 17-206] Exiting Vivado at Sat Jan  3 22:39:10 2026...

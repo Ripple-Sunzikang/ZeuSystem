@@ -22,49 +22,51 @@ set_param project.singleFileAddWarning.threshold 0
 set_param project.compositeFile.enableAutoGeneration 0
 set_param synth.vivado.isSynthRun true
 set_msg_config -source 4 -id {IP_Flow 19-2162} -severity warning -new_severity info
-set_property webtalk.parent_dir /home/vessel/rvTest/rvTest.cache/wt [current_project]
-set_property parent.project_path /home/vessel/rvTest/rvTest.xpr [current_project]
+set_property webtalk.parent_dir /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.cache/wt [current_project]
+set_property parent.project_path /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.xpr [current_project]
 set_property XPM_LIBRARIES XPM_CDC [current_project]
 set_property default_lib xil_defaultlib [current_project]
 set_property target_language Verilog [current_project]
-set_property ip_output_repo /home/vessel/rvTest/rvTest.cache/ip [current_project]
+set_property ip_output_repo /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.cache/ip [current_project]
 set_property ip_cache_permissions {read write} [current_project]
-add_files /home/vessel/rvTest/program.coe
-add_files /home/vessel/rvTest/programDRAM.coe
-read_verilog /home/vessel/rvTest/rvTest.srcs/sources_1/new/defines.vh
+add_files /home/vessel/SEU-RISCV-CPU/rvTest/program.coe
+add_files /home/vessel/SEU-RISCV-CPU/rvTest/programDRAM.coe
+read_verilog /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/defines.vh
 read_verilog -library xil_defaultlib {
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/ALU.v
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/Bridge.v
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/Button.v
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/Control_Hazard_Detection.v
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/Data_Hazard_Detection.v
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/EX_MEM.v
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/ID_EX.v
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/IF_ID.v
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/Keypad4x4.v
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/LED.v
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/MEM_WB.v
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/NPC.v
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/PC.v
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/RF.v
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/SEXT.v
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/Switch.v
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/Timer.v
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/controller.v
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/myCPU.v
-  /home/vessel/rvTest/rvTest.srcs/sources_1/new/miniRV_SoC.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ALU.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Bridge.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Button.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Control_Hazard_Detection.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Data_Hazard_Detection.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/EX_MEM.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/IF_ID.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Keypad4x4.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/LED.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/MEM_WB.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/NPC.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PC.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PWM.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/RF.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/SEXT.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Switch.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Timer.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/WDT.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/controller.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/myCPU.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/miniRV_SoC.v
 }
-read_ip -quiet /home/vessel/rvTest/rvTest.srcs/sources_1/ip/DRAM/DRAM.xci
-set_property used_in_implementation false [get_files -all /home/vessel/rvTest/rvTest.srcs/sources_1/ip/DRAM/DRAM_ooc.xdc]
+read_ip -quiet /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/DRAM/DRAM.xci
+set_property used_in_implementation false [get_files -all /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/DRAM/DRAM_ooc.xdc]
 
-read_ip -quiet /home/vessel/rvTest/rvTest.srcs/sources_1/ip/cpuclk/cpuclk.xci
-set_property used_in_implementation false [get_files -all /home/vessel/rvTest/rvTest.srcs/sources_1/ip/cpuclk/cpuclk_board.xdc]
-set_property used_in_implementation false [get_files -all /home/vessel/rvTest/rvTest.srcs/sources_1/ip/cpuclk/cpuclk.xdc]
-set_property used_in_implementation false [get_files -all /home/vessel/rvTest/rvTest.srcs/sources_1/ip/cpuclk/cpuclk_ooc.xdc]
+read_ip -quiet /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/cpuclk/cpuclk.xci
+set_property used_in_implementation false [get_files -all /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/cpuclk/cpuclk_board.xdc]
+set_property used_in_implementation false [get_files -all /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/cpuclk/cpuclk.xdc]
+set_property used_in_implementation false [get_files -all /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/cpuclk/cpuclk_ooc.xdc]
 
-read_ip -quiet /home/vessel/rvTest/rvTest.srcs/sources_1/ip/IROM_1/IROM.xci
-set_property used_in_implementation false [get_files -all /home/vessel/rvTest/rvTest.srcs/sources_1/ip/IROM_1/IROM_ooc.xdc]
+read_ip -quiet /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/IROM_1/IROM.xci
+set_property used_in_implementation false [get_files -all /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/IROM_1/IROM_ooc.xdc]
 
 # Mark all dcp files as not used in implementation to prevent them from being
 # stitched into the results of this synthesis run. Any black boxes in the
@@ -74,11 +76,11 @@ set_property used_in_implementation false [get_files -all /home/vessel/rvTest/rv
 foreach dcp [get_files -quiet -all -filter file_type=="Design\ Checkpoint"] {
   set_property used_in_implementation false $dcp
 }
-read_xdc /home/vessel/rvTest/rvTest.srcs/constrs_1/new/miniRV_SoC.xdc
-set_property used_in_implementation false [get_files /home/vessel/rvTest/rvTest.srcs/constrs_1/new/miniRV_SoC.xdc]
+read_xdc /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/constrs_1/new/miniRV_SoC.xdc
+set_property used_in_implementation false [get_files /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/constrs_1/new/miniRV_SoC.xdc]
 
-read_xdc /home/vessel/rvTest/rvTest.srcs/constrs_1/new/miniRV_clock.xdc
-set_property used_in_implementation false [get_files /home/vessel/rvTest/rvTest.srcs/constrs_1/new/miniRV_clock.xdc]
+read_xdc /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/constrs_1/new/miniRV_clock.xdc
+set_property used_in_implementation false [get_files /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/constrs_1/new/miniRV_clock.xdc]
 
 
 synth_design -top miniRV_SoC -part xc7a100tfgg484-1

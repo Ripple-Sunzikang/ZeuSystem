@@ -1,7 +1,7 @@
 Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version     : Vivado v.2017.4 (lin64) Build 2086221 Fri Dec 15 20:54:30 MST 2017
-| Date             : Mon Dec 29 02:51:18 2025
+| Date             : Sat Jan  3 22:41:05 2026
 | Host             : Cookie running 64-bit Linux Mint 22.2
 | Command          : report_power -file miniRV_SoC_power_routed.rpt -pb miniRV_SoC_power_summary_routed.pb -rpx miniRV_SoC_power_routed.rpx
 | Design           : miniRV_SoC
@@ -30,14 +30,14 @@ Table of Contents
 ----------
 
 +--------------------------+--------------+
-| Total On-Chip Power (W)  | 0.294        |
+| Total On-Chip Power (W)  | 0.326        |
 | Design Power Budget (W)  | Unspecified* |
 | Power Budget Margin (W)  | NA           |
-| Dynamic (W)              | 0.197        |
+| Dynamic (W)              | 0.228        |
 | Device Static (W)        | 0.097        |
 | Effective TJA (C/W)      | 2.7          |
-| Max Ambient (C)          | 84.2         |
-| Junction Temperature (C) | 25.8         |
+| Max Ambient (C)          | 84.1         |
+| Junction Temperature (C) | 25.9         |
 | Confidence Level         | Low          |
 | Setting File             | ---          |
 | Simulation Activity File | ---          |
@@ -53,18 +53,18 @@ Table of Contents
 | On-Chip                  | Power (W) | Used     | Available | Utilization (%) |
 +--------------------------+-----------+----------+-----------+-----------------+
 | Clocks                   |     0.011 |        5 |       --- |             --- |
-| Slice Logic              |     0.018 |    21135 |       --- |             --- |
-|   LUT as Distributed RAM |     0.009 |     8192 |     19000 |           43.12 |
-|   LUT as Logic           |     0.007 |     3362 |     63400 |            5.30 |
-|   F7/F8 Muxes            |     0.002 |     7044 |     63400 |           11.11 |
-|   Register               |    <0.001 |     2019 |    126800 |            1.59 |
-|   CARRY4                 |    <0.001 |       91 |     15850 |            0.57 |
-|   Others                 |     0.000 |       20 |       --- |             --- |
-| Signals                  |     0.069 |     6578 |       --- |             --- |
+| Slice Logic              |     0.029 |    21949 |       --- |             --- |
+|   LUT as Distributed RAM |     0.014 |     8192 |     19000 |           43.12 |
+|   LUT as Logic           |     0.011 |     3968 |     63400 |            6.26 |
+|   F7/F8 Muxes            |     0.003 |     6987 |     63400 |           11.02 |
+|   Register               |    <0.001 |     2111 |    126800 |            1.66 |
+|   CARRY4                 |    <0.001 |      105 |     15850 |            0.66 |
+|   Others                 |     0.000 |       24 |       --- |             --- |
+| Signals                  |     0.089 |     7450 |       --- |             --- |
 | PLL                      |     0.099 |        1 |         6 |           16.67 |
-| I/O                      |    <0.001 |       79 |       285 |           27.72 |
+| I/O                      |    <0.001 |       80 |       285 |           28.07 |
 | Static Power             |     0.097 |          |           |                 |
-| Total                    |     0.294 |          |           |                 |
+| Total                    |     0.326 |          |           |                 |
 +--------------------------+-----------+----------+-----------+-----------------+
 
 
@@ -74,7 +74,7 @@ Table of Contents
 +-----------+-------------+-----------+-------------+------------+
 | Source    | Voltage (V) | Total (A) | Dynamic (A) | Static (A) |
 +-----------+-------------+-----------+-------------+------------+
-| Vccint    |       1.000 |     0.122 |       0.107 |      0.015 |
+| Vccint    |       1.000 |     0.153 |       0.138 |      0.015 |
 | Vccaux    |       1.800 |     0.068 |       0.050 |      0.018 |
 | Vcco33    |       3.300 |     0.004 |       0.000 |      0.004 |
 | Vcco25    |       2.500 |     0.000 |       0.000 |      0.000 |
@@ -145,25 +145,25 @@ Table of Contents
 +-------------------------------------+-----------+
 | Name                                | Power (W) |
 +-------------------------------------+-----------+
-| miniRV_SoC                          |     0.197 |
+| miniRV_SoC                          |     0.228 |
 |   Button_0                          |    <0.001 |
 |   Clkgen                            |     0.100 |
 |     inst                            |     0.100 |
-|   Core_cpu                          |     0.067 |
-|     PC_0                            |     0.002 |
+|   Core_cpu                          |     0.084 |
+|     PC_0                            |     0.003 |
 |     RF_0                            |     0.001 |
 |     SEX_0                           |    <0.001 |
-|     U_EX_MEM                        |     0.059 |
-|     U_ID_EX                         |     0.002 |
+|     U_EX_MEM                        |     0.073 |
+|     U_ID_EX                         |     0.003 |
 |     U_IF_ID                         |    <0.001 |
 |     U_MEM_WB                        |     0.002 |
 |   Digital_LED_0                     |    <0.001 |
 |   Keypad4x4_0                       |    <0.001 |
 |   LED_0                             |    <0.001 |
-|   Mem_DRAM                          |     0.025 |
-|     U0                              |     0.025 |
-|       synth_options.dist_mem_inst   |     0.025 |
-|         gen_sp_ram.spram_inst       |     0.025 |
+|   Mem_DRAM                          |     0.037 |
+|     U0                              |     0.037 |
+|       synth_options.dist_mem_inst   |     0.037 |
+|         gen_sp_ram.spram_inst       |     0.037 |
 |           ram_reg_0_255_0_0         |    <0.001 |
 |           ram_reg_0_255_10_10       |    <0.001 |
 |           ram_reg_0_255_11_11       |    <0.001 |
@@ -2212,12 +2212,14 @@ Table of Contents
 |           ram_reg_9984_10239_7_7    |    <0.001 |
 |           ram_reg_9984_10239_8_8    |    <0.001 |
 |           ram_reg_9984_10239_9_9    |    <0.001 |
-|   Mem_IROM                          |     0.003 |
-|     U0                              |     0.003 |
-|       synth_options.dist_mem_inst   |     0.003 |
-|         gen_rom.rom_inst            |     0.003 |
+|   Mem_IROM                          |     0.005 |
+|     U0                              |     0.005 |
+|       synth_options.dist_mem_inst   |     0.005 |
+|         gen_rom.rom_inst            |     0.005 |
+|   PWM_0                             |    <0.001 |
 |   Switch_0                          |    <0.001 |
 |   Timer_0                           |    <0.001 |
+|   WDT_0                             |    <0.001 |
 +-------------------------------------+-----------+
 
 

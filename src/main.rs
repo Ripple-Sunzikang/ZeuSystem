@@ -20,26 +20,38 @@ fn main() {
     
     if args.len() < 2 {
         eprintln!("Usage: {} <input.c|input.s> [output.s|output.o]", args[0]);
-        eprintln!("       {} <file1.c> <file2.c> ... <output.coe>  (link multiple C files)", args[0]);
+        eprintln!("       {} <file1.c> <file2.c> ... -o <output>  (link multiple C files)", args[0]);
         std::process::exit(1);
     }
 
     let input_file = &args[1];
     
+    // 检查是否有 -o 参数来指定输出文件
+    let (output_file_opt, c_files_end) = parse_output_option(&args);
+    
     // 检查是否有多个 .c 文件需要编译和链接
     if input_file.ends_with(".c") && args.len() > 2 {
-        let last_arg = &args[args.len() - 1];
-        if last_arg.ends_with(".coe") || last_arg.ends_with(".elf") || last_arg.ends_with(".bin") {
-            // 多个 C 文件 -> COE/ELF
-            let c_files: Vec<&String> = args[1..args.len()-1].iter().collect();
-            let output_file = last_arg;
+        let c_files_range = if c_files_end > 0 { 1..c_files_end } else { 1..args.len() };
+        let c_files: Vec<&String> = args[c_files_range.clone()].iter().collect();
+        
+        // 检查是否所有都是 .c 文件
+        let all_c_files = c_files.iter().all(|f| f.ends_with(".c"));
+        
+        if all_c_files && c_files.len() > 1 {
+            // 多个 C 文件需要链接
+            let output_file = if let Some(ref out) = output_file_opt {
+                // 自动添加 .coe 扩展名
+                if out.ends_with(".coe") || out.ends_with(".elf") || out.ends_with(".bin") {
+                    out.clone()
+                } else {
+                    format!("{}.coe", out)
+                }
+            } else {
+                "a.out.coe".to_string()
+            };
             
-            // 检查所有输入文件是否都是 .c 文件
-            let all_c_files = c_files.iter().all(|f| f.ends_with(".c"));
-            if all_c_files && c_files.len() > 1 {
-                compile_and_link_c_files(&c_files, output_file);
-                return;
-            }
+            compile_and_link_c_files(&c_files, &output_file);
+            return;
         }
     }
     
@@ -86,6 +98,17 @@ fn main() {
 
         compile_c(input_file, &output_file);
     }
+}
+
+/// 解析 -o 输出选项
+/// 返回 (输出文件名, -o 参数之前的位置)
+fn parse_output_option(args: &[String]) -> (Option<String>, usize) {
+    for i in 1..args.len() {
+        if args[i] == "-o" && i + 1 < args.len() {
+            return (Some(args[i + 1].clone()), i);
+        }
+    }
+    (None, 0)
 }
 
 /// 编译多个 C 文件并链接生成输出文件
@@ -148,9 +171,19 @@ fn compile_and_link_c_files(c_files: &[&String], output_file: &str) {
     println!("Generated {} lines of assembly code", asm_code.len());
     
     // 保存中间汇编代码用于调试
-    let asm_debug_file = output_file.replace(".coe", ".s").replace(".elf", ".s");
+    // 确保扩展名正确替换，避免覆盖源文件
+    let asm_debug_file = if output_file.ends_with(".coe") {
+        output_file.replace(".coe", ".s")
+    } else if output_file.ends_with(".elf") {
+        output_file.replace(".elf", ".s")
+    } else {
+        format!("{}.s", output_file)
+    };
+    
     if let Err(e) = fs::write(&asm_debug_file, &asm_string) {
         eprintln!("Warning: Could not save debug assembly to {}: {}", asm_debug_file, e);
+    } else {
+        println!("Generated assembly code: {}", asm_debug_file);
     }
     
     // 汇编

@@ -2,11 +2,11 @@
 # Vivado v2017.4 (64-bit)
 # SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
 # IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
-# Start of session at: Mon Dec 29 02:49:30 2025
-# Process ID: 247653
-# Current directory: /home/vessel/rvTest/rvTest.runs/impl_1
+# Start of session at: Sat Jan  3 22:39:11 2026
+# Process ID: 76110
+# Current directory: /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/impl_1
 # Command line: vivado -log miniRV_SoC.vdi -applog -product Vivado -messageDb vivado.pb -mode batch -source miniRV_SoC.tcl -notrace
-# Log file: /home/vessel/rvTest/rvTest.runs/impl_1/miniRV_SoC.vdi
-# Journal file: /home/vessel/rvTest/rvTest.runs/impl_1/vivado.jou
+# Log file: /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/impl_1/miniRV_SoC.vdi
+# Journal file: /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/impl_1/vivado.jou
 #-----------------------------------------------------------
 source miniRV_SoC.tcl -notrace

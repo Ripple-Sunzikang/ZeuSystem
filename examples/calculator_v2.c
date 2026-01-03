@@ -7,6 +7,7 @@
 //   - bios_key_read(): 读取按键（带边沿检测），返回 0-15 或 -1
 //   - bios_mul10(x): 返回 x * 10
 //   - bios_multiply(x, y): 返回 x * y
+//   - bios_wdt_feed(): 喂狗
 
 // 声明 BIOS 函数
 void bios_display_bcd(int value);
@@ -14,6 +15,7 @@ void bios_led_write(int value);
 int bios_key_read();
 int bios_mul10(int x);
 int bios_multiply(int x, int y);
+void bios_wdt_feed();
 
 // 用户主程序入口
 int user_main() {
@@ -23,20 +25,30 @@ int user_main() {
     int last_key;
     int key_val;
     int tmp;
+    int loop_cnt;
 
     current = 0;
     operand1 = 0;
     op = 0;
     last_key = 0;
+    loop_cnt = 0;
 
     // 初始显示
     bios_display_bcd(0);
     bios_led_write(1);
 
     while (1) {
+        // 定期喂狗（每1000次循环喂一次）
+        loop_cnt = loop_cnt + 1;
+        if (loop_cnt >= 1000) {
+            bios_wdt_feed();
+            loop_cnt = 0;
+        }
+
         key_val = bios_key_read();
 
         if (key_val >= 0) {
+            bios_wdt_feed();  // 有按键时也喂狗
             last_key = key_val;
 
             if (key_val < 10) {
