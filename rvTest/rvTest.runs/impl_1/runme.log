@@ -487,3 +487,49 @@ INFO: [Common 17-83] Releasing license: Implementation
 write_bitstream completed successfully
 write_bitstream: Time (s): cpu = 00:00:20 ; elapsed = 00:02:23 . Memory (MB): peak = 2986.480 ; gain = 106.562 ; free physical = 2545 ; free virtual = 14007
 INFO: [Common 17-206] Exiting Vivado at Sat Jan  3 22:43:29 2026...
+
+*** Running vivado
+    with args -log miniRV_SoC.vdi -applog -m64 -product Vivado -messageDb vivado.pb -mode batch -source miniRV_SoC.tcl -notrace
+
+
+****** Vivado v2017.4 (64-bit)
+  **** SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
+  **** IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+    ** Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
+
+source miniRV_SoC.tcl -notrace
+Command: open_checkpoint miniRV_SoC_routed.dcp
+
+Starting open_checkpoint Task
+
+Time (s): cpu = 00:00:00.02 ; elapsed = 00:00:00.04 . Memory (MB): peak = 1138.719 ; gain = 0.000 ; free physical = 3392 ; free virtual = 14887
+INFO: [Netlist 29-17] Analyzing 3032 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2017.4
+INFO: [Device 21-403] Loading part xc7a100tfgg484-1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/impl_1/.Xil/Vivado-81191-Cookie/dcp1/miniRV_SoC_board.xdc]
+Finished Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/impl_1/.Xil/Vivado-81191-Cookie/dcp1/miniRV_SoC_board.xdc]
+Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/impl_1/.Xil/Vivado-81191-Cookie/dcp1/miniRV_SoC_early.xdc]
+Finished Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/impl_1/.Xil/Vivado-81191-Cookie/dcp1/miniRV_SoC_early.xdc]
+Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/impl_1/.Xil/Vivado-81191-Cookie/dcp1/miniRV_SoC.xdc]
+Finished Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/impl_1/.Xil/Vivado-81191-Cookie/dcp1/miniRV_SoC.xdc]
+Reading XDEF placement.
+Reading placer database...
+Reading XDEF routing.
+Read XDEF File: Time (s): cpu = 00:00:00.57 ; elapsed = 00:00:00.60 . Memory (MB): peak = 1492.086 ; gain = 22.672 ; free physical = 3046 ; free virtual = 14543
+Restored from archive | CPU: 0.590000 secs | Memory: 22.041344 MB |
+Finished XDEF File Restore: Time (s): cpu = 00:00:00.57 ; elapsed = 00:00:00.60 . Memory (MB): peak = 1492.086 ; gain = 22.672 ; free physical = 3046 ; free virtual = 14543
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 2048 instances were transformed.
+  RAM256X1S => RAM256X1S (MUXF7, MUXF7, MUXF8, RAMS64E, RAMS64E, RAMS64E, RAMS64E): 2048 instances
+
+INFO: [Project 1-604] Checkpoint was created with Vivado v2017.4 (64-bit) build 2086221
+open_checkpoint: Time (s): cpu = 00:00:07 ; elapsed = 00:00:13 . Memory (MB): peak = 1492.086 ; gain = 353.367 ; free physical = 3042 ; free virtual = 14515
+Command: write_bitstream -force miniRV_SoC.bit
+Attempting to get a license for feature 'Implementation' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xc7a100t'
+Running DRC as a precondition to command write_bitstream
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/opt/Xilinx/Vivado/2017.4/data/ip'.

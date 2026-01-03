@@ -257,7 +257,6 @@ int main() {
 
     // 3. 键盘检测 - 确保无键卡住
     // 暂时跳过键盘检测，先验证蜂鸣器是否正常
-    /*
     pressed = *status;
     pressed = pressed & 1;
     if (pressed != 0) {
@@ -269,7 +268,7 @@ int main() {
             bios_wdt_feed();  // 错误状态也要喂狗，否则会不断重启
         }
     }
-    */
+    
 
     // 4. 初始化键盘状态
     bios_key_init();
