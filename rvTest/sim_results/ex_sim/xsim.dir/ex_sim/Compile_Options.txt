@@ -1,1 +1,0 @@
--debug "typical" "work.EX_stage_tb" -s "ex_sim" 

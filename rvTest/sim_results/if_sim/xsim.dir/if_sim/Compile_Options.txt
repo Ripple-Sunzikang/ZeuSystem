@@ -1,1 +1,0 @@
--debug "typical" "work.IF_stage_tb" -s "if_sim" 
