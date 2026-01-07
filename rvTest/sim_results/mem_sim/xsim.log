@@ -1,0 +1,53 @@
+#-----------------------------------------------------------
+# xsim v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Wed Jan  7 14:31:27 2026
+# Process ID: 21791
+# Current directory: /home/vessel/SEU-RISCV-CPU/rvTest/sim_results/mem_sim
+# Command line: xsim -mode tcl -source {xsim.dir/mem_sim/xsim_script.tcl}
+# Log file: /home/vessel/SEU-RISCV-CPU/rvTest/sim_results/mem_sim/xsim.log
+# Journal file: /home/vessel/SEU-RISCV-CPU/rvTest/sim_results/mem_sim/xsim.jou
+#-----------------------------------------------------------
+source xsim.dir/mem_sim/xsim_script.tcl
+# xsim {mem_sim} -wdb {mem_waves.wdb} -autoloadwcfg -runall
+Vivado Simulator 2017.4
+Time resolution is 1 ps
+run -all
+========== MEMé˜¶æ®µ(å­˜å‚¨)æ¨¡å—ä»¿çœŸæµ‹è¯• ==========
+
+=== DRAMè¯»å†™æµ‹è¯• ===
+[36000] å†™                                                                  DRÿÿÿœÿÿÿ€0x00: addr=00000000, data=12345678, we_dram=1, we_dig=0, we_led=0
+[46000] å†™                                                                  DRÿÿÿœÿÿÿ€0x04: addr=00000004, data=abcdef00, we_dram=1, we_dig=0, we_led=0
+[56000] å†™                                                                 DRAÿÿÿ°ÿÿ€0x100: addr=00000100, data=deadbeef, we_dram=1, we_dig=0, we_led=0
+[66000] è¯»                                                                  DRÿÿÿœÿÿÿ€0x00: addr=00000000, data=12345678
+[76000] è¯»                                                                  DRÿÿÿœÿÿÿ€0x04: addr=00000004, data=abcdef00
+[86000] è¯»                                                                 DRAÿÿÿ°ÿÿ€0x100: addr=00000100, data=deadbeef
+
+=== å¤–è®¾å†™å…¥æµ‹è¯• ===
+[96000] å†™                                                                    ÿÿÿæÿÿÿ ÿÿÿ¡: addr=fffffc00, data=00001234, we_dram=0, we_dig=1, we_led=0
+[106000] å†™                                                                          LEÿÿÿ¯: addr=fffffc60, data=000000ff, we_dram=0, we_dig=0, we_led=1
+[116000] å†™                                                                    ÿÿÿ®ÿÿÿ¶ÿÿ¨0: addr=fffffc20, data=0000ffff, we_dram=0, we_dig=0, we_led=0
+[126000] å†™                                                                    ÿÿÿçÿÿÿÿÿÿ¶: addr=fffffc18, data=00000001, we_dram=0, we_dig=0, we_led=0
+[136000] å†™                                                                             PWM: addr=fffffc30, data=00000200, we_dram=0, we_dig=0, we_led=0
+[146000] å†™                                                                    ÿÿÿçÿÿÿ—ÿÿÿ—: addr=fffffc50, data=00000001, we_dram=0, we_dig=0, we_led=0
+[156000] å†™                                                                            UART: addr=fffffc40, data=00000041, we_dram=0, we_dig=0, we_led=0
+
+=== å¤–è®¾è¯»å–æµ‹è¯• ===
+[166000] è¯»                                                                        ÿÿÿ¼ÿÿÿ³: addr=fffffc70, data=000000aa
+[176000] è¯»                                                                        ÿÿÿŒÿÿÿ®: addr=fffffc78, data=00000005
+[186000] è¯»                                                                    ÿÿÿ®ÿÿÿ¶ÿÿ¨0: addr=fffffc20, data=00001234
+[196000] è¯»                                                                    ÿÿÿçÿÿÿ•ÿÿÿ®: addr=fffffc10, data=00000001
+[206000] è¯»                                                                             PWM: addr=fffffc30, data=00000100
+[216000] è¯»                                                                    ÿÿÿçÿÿÿ—ÿÿÿ—: addr=fffffc50, data=0000cafe
+[226000] è¯»                                                                            UART: addr=fffffc40, data=000000ff
+
+=== åœ°å€è¯‘ç è¾¹ç•Œæµ‹è¯• ===
+[236000] å†™                                                        ÿÿÿåÿÿÿ®ÿÿÿ¹ÿÿÿäÿ‹(DRAM): addr=fffffbff, data=aaaaaaaa, we_dram=0, we_dig=0, we_led=0
+[246000] è¯»                                                                ÿÿÿ–ÿÿÿèÿÿÿ•ÿÿÿ‹: addr=fffffbff, data=ffffffff
+[256000] è¯»                                                                ÿÿÿªÿÿÿåÿÿÿœÿÿÿ€: addr=ffffffff, data=ffffffff
+
+========== MEMé˜¶æ®µä»¿çœŸæµ‹è¯•å®Œæˆ ==========
+$finish called at time : 306 ns : File "/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sim_1/new/MEM_stage_tb.v" Line 247
+exit
+INFO: [Common 17-206] Exiting xsim at Wed Jan  7 14:31:54 2026...

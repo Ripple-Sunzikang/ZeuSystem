@@ -174,6 +174,9 @@ impl Encoder {
             }, 0x67, 0),
             "call" => self.encode_call(instr),
 
+            // 数据伪指令
+            ".word" => self.encode_word(instr),
+
             _ => Err(format!("Unknown instruction: {}", name)),
         }
     }
@@ -366,6 +369,22 @@ impl Encoder {
         };
 
         self.encode_j_type(&jal_instr, 0x6F)
+    }
+
+    /// 编码 .word 伪指令 - 直接输出 32 位数据
+    fn encode_word(&mut self, instr: &Instruction) -> Result<Vec<u8>, String> {
+        if instr.operands.is_empty() {
+            return Err(".word requires at least 1 operand".to_string());
+        }
+
+        let value = self.parse_immediate(&instr.operands[0])?;
+        // 输出小端序的 4 字节数据
+        Ok(vec![
+            (value & 0xFF) as u8,
+            ((value >> 8) & 0xFF) as u8,
+            ((value >> 16) & 0xFF) as u8,
+            ((value >> 24) & 0xFF) as u8,
+        ])
     }
 
     /// 解析寄存器编号

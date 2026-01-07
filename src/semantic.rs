@@ -207,6 +207,18 @@ impl SemanticAnalyzer {
 
                 Ok(Type::Int)
             }
+            Expression::IndirectCall { target, args } => {
+                // 间接函数调用（函数指针）
+                // target 应该是一个指针类型的表达式
+                self.analyze_expression(target)?;
+                
+                for arg in args {
+                    self.analyze_expression(arg)?;
+                }
+
+                // 函数调用的返回类型默认为 int
+                Ok(Type::Int)
+            }
             Expression::Index { array, index } => {
                 self.analyze_expression(array)?;
                 self.analyze_expression(index)?;

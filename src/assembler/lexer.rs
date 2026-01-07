@@ -107,7 +107,26 @@ impl Lexer {
                 Some('.') => {
                     self.position += 1;
                     let directive = self.read_identifier();
-                    tokens.push(Token::Directive(format!(".{}", directive)));
+                    let full_name = format!(".{}", directive);
+                    
+                    // 检查是否是标签（后跟冒号）
+                    if self.current_char() == Some(':') {
+                        tokens.push(Token::Label(full_name));
+                    } else {
+                        // 检查是否是已知的指令
+                        let known_directives = [
+                            ".text", ".data", ".rodata", ".bss", ".section",
+                            ".globl", ".global", ".word", ".align", ".byte",
+                            ".half", ".string", ".asciz", ".zero", ".space",
+                            ".equ", ".set", ".org", ".include"
+                        ];
+                        if known_directives.contains(&full_name.as_str()) {
+                            tokens.push(Token::Directive(full_name));
+                        } else {
+                            // 不是已知指令，当作标识符（可能是标签引用）
+                            tokens.push(Token::Identifier(full_name));
+                        }
+                    }
                 }
                 Some(c) if c.is_alphabetic() || c == '_' => {
                     let ident = self.read_identifier();

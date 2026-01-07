@@ -2,16 +2,17 @@
 
 本指南将带你完成从 C 源代码到 FPGA 运行的完整流程。
 
-## 项目示例：BIOS 计算器
+## 项目示例
 
-本项目实现了一个**基于 BIOS 调用的四则计算器**，由两个源文件链接生成：
+本项目提供多个示例程序，均基于 BIOS 调用实现：
 
-| 文件 | 说明 |
-|-----|------|
-| `examples/bios_v2.c` | BIOS 固件，提供硬件抽象层 |
-| `examples/calculator_v2.c` | 计算器应用，调用 BIOS 函数 |
+| 示例 | 文件 | 说明 |
+|-----|------|------|
+| 计算器 | `bios_v2.c` + `calculator_v2.c` | 四则运算计算器 |
+| 开关LED | `bios_v2.c` + `sw_led_demo.c` | 拨码开关控制LED |
+| 彩灯 | `bios_v2.c` + `led_wave.c` | LED波浪灯效果 |
 
-编译命令：
+编译命令示例（计算器）：
 ```bash
 ./target/release/riscv_compiler examples/bios_v2.c examples/calculator_v2.c -o output/calc_v2
 ```
@@ -104,20 +105,27 @@ SEU-RISCV-CPU 程序由 **BIOS** 和 **应用程序** 两部分组成：
 
 ```
 ┌─────────────────────────────────────┐
-│           应用程序 (main)            │
+│        应用程序 (user_main)          │
 │  - 调用 BIOS 函数                    │
 │  - 实现业务逻辑                      │
 ├─────────────────────────────────────┤
 │           BIOS 函数库                │
-│  - bios_display_bcd()               │
-│  - bios_key_read()                  │
-│  - bios_led_write()                 │
-│  - bios_multiply()                  │
+│  - bios_display_bcd()  数码管显示    │
+│  - bios_key_read()     键盘读取      │
+│  - bios_led_write()    LED控制       │
+│  - bios_uart_*()       UART串口      │
+│  - bios_buzzer_*()     蜂鸣器/PWM    │
+│  - bios_sw_*()         拨码开关      │
+│  - bios_btn_*()        按钮          │
+│  - bios_wdt_feed()     看门狗        │
 │  - ...                              │
 ├─────────────────────────────────────┤
 │        BIOS 入口 (_start)            │
 │  - 初始化栈指针                      │
-│  - 跳转到 main()                    │
+│  - 自检 (LED/数码管/键盘)            │
+│  - 检测启动模式 (SW[23])             │
+│    - SW[23]=0: 调用 user_main()     │
+│    - SW[23]=1: 进入 UART Bootloader │
 └─────────────────────────────────────┘
 ```
 
@@ -127,13 +135,17 @@ BIOS 和应用程序是**两个独立的 `.c` 文件**，编译时链接在一�
 
 ```
 examples/
-├── bios_v2.c           # BIOS 固件 (已提供，无需修改)
-└── calculator_v2.c     # 计算器应用 (调用 BIOS)
+├── bios_v2.c               # BIOS 固件 (已提供，含 UART Bootloader)
+├── calculator_v2.c         # 计算器应用 (调用 BIOS)
+├── sw_led_demo.c           # 拨码开关控制 LED 示例
+└── led_wave.c              # LED 彩灯波浪效果示例
 ```
 
 ### 2.3 BIOS 文件 (bios_v2.c)
 
-BIOS 提供以下函数，应用程序直接调用即可：
+BIOS v2.1 提供以下函数，应用程序直接调用即可：
+
+**基础函数:**
 
 | 函数 | 参数 | 返回值 | 说明 |
 |-----|------|-------|------|
@@ -141,7 +153,42 @@ BIOS 提供以下函数，应用程序直接调用即可：
 | `bios_key_read()` | 无 | int | 读取按键 (-1=无按键) |
 | `bios_led_write(value)` | int | void | 控制 24 位 LED |
 | `bios_multiply(a, b)` | int, int | int | 软件乘法 |
+| `bios_mul10(x)` | int | int | 乘 10 运算 |
 | `bios_delay(count)` | int | void | 延时循环 |
+| `bios_wdt_feed()` | 无 | void | 看门狗喂狗 (防止复位) |
+
+**UART 串口函数:**
+
+| 函数 | 参数 | 返回值 | 说明 |
+|-----|------|-------|------|
+| `bios_uart_putc(c)` | char | void | 发送单个字符 |
+| `bios_uart_puts(str)` | char* | void | 发送字符串 |
+| `bios_uart_putnum(num)` | int | void | 发送十进制数字 |
+| `bios_uart_puthex(num)` | int | void | 发送十六进制数字 |
+| `bios_uart_getc()` | 无 | char | 接收字符 (阻塞) |
+| `bios_uart_available()` | 无 | int | 检查是否有数据可读 |
+
+**蜂鸣器/PWM 函数:**
+
+| 函数 | 参数 | 返回值 | 说明 |
+|-----|------|-------|------|
+| `bios_buzzer_on()` | 无 | void | 开启蜂鸣器 |
+| `bios_buzzer_off()` | 无 | void | 关闭蜂鸣器 |
+| `bios_buzzer_set(freq_div)` | int | void | 设置频率并开启 |
+| `bios_buzzer_beep(duration)` | int | void | 蜂鸣指定时长 |
+
+**开关 & 按钮函数:**
+
+| 函数 | 参数 | 返回值 | 说明 |
+|-----|------|-------|------|
+| `bios_sw_read()` | 无 | int | 读取 24 位拨码开关状态 |
+| `bios_sw_get(sw_num)` | int | int | 读取指定开关 (0-23) |
+| `bios_sw_read_high()` | 无 | int | 读取高 8 位 SW[23:16] |
+| `bios_sw_read_mid()` | 无 | int | 读取中 8 位 SW[15:8] |
+| `bios_sw_read_low()` | 无 | int | 读取低 8 位 SW[7:0] |
+| `bios_btn_read()` | 无 | int | 读取 5 位按钮状态 |
+| `bios_btn_get(btn_num)` | int | int | 读取指定按钮 (0-4) |
+| `bios_btn_wait()` | 无 | int | 等待任意按钮按下 |
 
 ### 2.4 应用程序文件 (calculator_v2.c)
 
@@ -226,20 +273,33 @@ void main() {
 
 编译器会自动：
 1. 编译 `bios_v2.c` (包含 `_start` 入口和所有 BIOS 函数)
-2. 编译 `calculator_v2.c` (包含 `main` 函数)
+2. 编译 `calculator_v2.c` (包含 `user_main` 函数)
 3. 链接两者，生成完整的 COE 文件
 
-### 2.6 语言限制
+### 2.6 其他示例程序
+
+**拨码开关控制LED** (`sw_led_demo.c`):
+```bash
+./target/release/riscv_compiler examples/bios_v2.c examples/sw_led_demo.c -o output/sw_led
+```
+
+**LED彩灯波浪效果** (`led_wave.c`):
+```bash
+./target/release/riscv_compiler examples/bios_v2.c examples/led_wave.c -o output/led_wave
+```
+
+### 2.7 语言限制
 
 SEU-RISCV-CPU 编译器支持 C 语言的一个子集：
 
 | 支持 ✅ | 不支持 ❌ |
 |--------|----------|
 | int 类型 | float/double |
-| int* 指针 | 数组 |
-| if/else/while | for/switch/do-while |
-| 函数调用 | 递归 (栈有限) |
-| 基本运算 (+,-,*,/,%) | 硬件乘除 (软件模拟) |
+| int* 指针 | 数组声明 (可用指针) |
+| if/else/while/for | switch/do-while |
+| break/continue | goto |
+| 函数调用 | 深度递归 (栈有限) |
+| 基本运算 (+,-,*) | 硬件乘除 (用软件模拟) |
 | 位运算 (&,\|,^,<<,>>) | 结构体/联合体 |
 | 比较运算 | 三目运算符 ?: |
 
@@ -611,6 +671,50 @@ fi
 chmod +x build.sh
 ./build.sh
 ```
+
+---
+
+## 9. UART Bootloader 模式
+
+BIOS v2.1 支持通过 UART 串口动态加载用户程序，无需重新烧录 FPGA。
+
+### 9.1 启动模式选择
+
+| SW[23] 状态 | 启动模式 |
+|------------|---------|
+| 0 (关) | 运行内置程序 (`user_main()`) |
+| 1 (开) | 进入 UART Bootloader 模式 |
+
+### 9.2 Bootloader 使用流程
+
+1. **将 SW[23] 拨到 ON 位置**
+2. **复位或上电启动**
+3. **打开串口终端** (115200-8-N-1)
+4. **发送命令**:
+   - `L` - 开始加载程序
+   - 发送程序长度 (4字节，小端序，字数)
+   - 发送程序数据
+   - `G` - 跳转执行
+   - `?` - 显示帮助
+
+### 9.3 编译用户程序 (独立模式)
+
+```bash
+./target/release/riscv_compiler --user examples/my_user_prog.c -o output/user_prog.coe
+```
+
+`--user` 选项会：
+- 将程序基地址设为 0x10000 (PRAM)
+- BIOS 函数通过系统调用表调用
+
+### 9.4 UART 参数
+
+| 参数 | 值 |
+|-----|-----|
+| 波特率 | 115200 |
+| 数据位 | 8 |
+| 停止位 | 1 |
+| 校验 | 无 |
 
 ---
 

@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Wed Jan  7 18:08:13 2026
+# Process ID: 38325
+# Current directory: /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/PRAM_BRAM_synth_1
+# Command line: vivado -log PRAM_BRAM.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source PRAM_BRAM.tcl
+# Log file: /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/PRAM_BRAM_synth_1/PRAM_BRAM.vds
+# Journal file: /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/PRAM_BRAM_synth_1/vivado.jou
+#-----------------------------------------------------------
+source PRAM_BRAM.tcl -notrace

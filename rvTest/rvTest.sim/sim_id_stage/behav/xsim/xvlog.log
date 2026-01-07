@@ -1,0 +1,9 @@
+INFO: [VRFC 10-2263] Analyzing Verilog file "/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/RF.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module RF
+INFO: [VRFC 10-2263] Analyzing Verilog file "/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/SEXT.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module SEXT
+INFO: [VRFC 10-2263] Analyzing Verilog file "/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sim_1/new/ID_stage_tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module ID_stage_tb
+WARNING: [VRFC 10-986] literal value truncated to fit in 25 bits [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sim_1/new/ID_stage_tb.v:148]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.sim/sim_id_stage/behav/xsim/glbl.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module glbl

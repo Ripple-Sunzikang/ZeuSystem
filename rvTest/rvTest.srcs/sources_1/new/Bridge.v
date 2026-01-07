@@ -75,10 +75,28 @@ module Bridge (
     output wire         wen_to_wdt,
     output wire [31:0]  addr_to_wdt,
     output wire [31:0]  wdata_to_wdt,
-    input  wire [31:0]  rdata_from_wdt
+    input  wire [31:0]  rdata_from_wdt,
+
+    // Interface to UART
+    output wire         rst_to_uart,
+    output wire         clk_to_uart,
+    output wire         wen_to_uart,
+    output wire [31:0]  addr_to_uart,
+    output wire [31:0]  wdata_to_uart,
+    input  wire [31:0]  rdata_from_uart,
+
+    // Interface to PRAM (Program RAM for UART Bootloader)
+    output wire         clk_to_pram,
+    output wire [11:0]  addr_to_pram,    // 12位=4K words=16KB
+    output wire [31:0]  wdata_to_pram,
+    output wire         we_to_pram,
+    input  wire [31:0]  rdata_from_pram
 );
 
-    wire access_mem = (addr_from_cpu[31:12] != 20'hFFFFF) ? 1'b1 : 1'b0;
+    // PRAM 地址范围: 0x0001_0000 ~ 0x0001_FFFF
+    wire access_pram = (addr_from_cpu[31:16] == 16'h0001) ? 1'b1 : 1'b0;
+    // DRAM 地址范围: 0x0000_0000 ~ 0x0000_FFFF (排除外设和 PRAM)
+    wire access_mem = (addr_from_cpu[31:16] == 16'h0000) ? 1'b1 : 1'b0;
     wire access_dig = (addr_from_cpu == `PERI_ADDR_DIG) ? 1'b1 : 1'b0;
     wire access_led = (addr_from_cpu == `PERI_ADDR_LED) ? 1'b1 : 1'b0;
     wire access_sw  = (addr_from_cpu == `PERI_ADDR_SW ) ? 1'b1 : 1'b0;
@@ -92,16 +110,20 @@ module Bridge (
     wire access_pwm = (addr_from_cpu[31:4] == (`PERI_BASE_PWM >> 4)) ? 1'b1 : 1'b0;
     // WDT: decode 0xFFFF_FC50
     wire access_wdt = (addr_from_cpu == `PERI_BASE_WDT) ? 1'b1 : 1'b0;
+    // UART: decode 0xFFFF_FC40 ~ 0xFFFF_FC4F window
+    wire access_uart = (addr_from_cpu[31:4] == (`PERI_BASE_UART >> 4)) ? 1'b1 : 1'b0;
     
-    wire [8:0] access_bit = { access_mem,
-                              access_dig,
-                              access_led,
-                              access_sw,
-                              access_btn,
-                              access_timer,
-                              access_keypad,
-                              access_pwm,
-                              access_wdt };
+    wire [10:0] access_bit = { access_pram,
+                               access_mem,
+                               access_dig,
+                               access_led,
+                               access_sw,
+                               access_btn,
+                               access_timer,
+                               access_keypad,
+                               access_pwm,
+                               access_wdt,
+                               access_uart };
 
     // DRAM
     // assign rst_to_dram  = rst_from_cpu;
@@ -162,16 +184,34 @@ module Bridge (
     assign wen_to_wdt    = we_from_cpu & access_wdt;
     assign wdata_to_wdt  = wdata_from_cpu;
 
+    // UART
+    assign rst_to_uart   = rst_from_cpu;
+    assign clk_to_uart   = clk_from_cpu;
+    assign addr_to_uart  = addr_from_cpu;
+    assign wen_to_uart   = we_from_cpu & access_uart;
+    assign wdata_to_uart = wdata_from_cpu;
+
+    // PRAM (Program RAM for UART Bootloader)
+    assign clk_to_pram   = clk_from_cpu;
+    assign addr_to_pram  = addr_from_cpu[13:2];  // 12位字地址 (4K words)
+    assign wdata_to_pram = wdata_from_cpu;
+    assign we_to_pram    = we_from_cpu & access_pram;
+
     // Select read data towards CPU
+    // access_bit[10:0] = {pram, mem, dig, led, sw, btn, timer, keypad, pwm, wdt, uart}
     always @(*) begin
         casex (access_bit)
-            9'b100000000: rdata_to_cpu = rdata_from_dram;
-            9'b000100000: rdata_to_cpu = rdata_from_sw;
-            9'b000010000: rdata_to_cpu = rdata_from_btn;
-            9'b000001000: rdata_to_cpu = rdata_from_timer;
-            9'b000000100: rdata_to_cpu = rdata_from_keypad;
-            9'b000000010: rdata_to_cpu = rdata_from_pwm;
-            9'b000000001: rdata_to_cpu = rdata_from_wdt;
+            11'b10000000000: rdata_to_cpu = rdata_from_pram;   // PRAM     bit[10]
+            11'b01000000000: rdata_to_cpu = rdata_from_dram;   // DRAM     bit[9]
+            11'b00100000000: rdata_to_cpu = 32'h0;             // DIG      bit[8] (write-only)
+            11'b00010000000: rdata_to_cpu = 32'h0;             // LED      bit[7] (write-only)
+            11'b00001000000: rdata_to_cpu = rdata_from_sw;     // Switch   bit[6]
+            11'b00000100000: rdata_to_cpu = rdata_from_btn;    // Button   bit[5]
+            11'b00000010000: rdata_to_cpu = rdata_from_timer;  // Timer    bit[4]
+            11'b00000001000: rdata_to_cpu = rdata_from_keypad; // Keypad   bit[3]
+            11'b00000000100: rdata_to_cpu = rdata_from_pwm;    // PWM      bit[2]
+            11'b00000000010: rdata_to_cpu = rdata_from_wdt;    // WDT      bit[1]
+            11'b00000000001: rdata_to_cpu = rdata_from_uart;   // UART     bit[0]
             default:  rdata_to_cpu = 32'hFFFF_FFFF;
         endcase
     end

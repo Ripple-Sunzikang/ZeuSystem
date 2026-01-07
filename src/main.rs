@@ -10,29 +10,54 @@ mod linker;
 use std::fs;
 use lexer::Lexer;
 use parser::Parser;
-use codegen::Codegen;
+use codegen::{Codegen, CodegenOptions};
 use semantic::SemanticAnalyzer;
 use assembler::Assembler;
 use linker::Linker;
+
+/// 编译选项
+#[derive(Clone, Default)]
+struct CompileOptions {
+    /// 用户模式：生成独立用户程序，BIOS函数通过系统调用表调用
+    user_mode: bool,
+    /// 代码基地址（用户程序默认 0x10000）
+    base_address: u32,
+    /// 系统调用表基地址
+    syscall_table_base: u32,
+}
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     
     if args.len() < 2 {
-        eprintln!("Usage: {} <input.c|input.s> [output.s|output.o]", args[0]);
-        eprintln!("       {} <file1.c> <file2.c> ... -o <output>  (link multiple C files)", args[0]);
+        print_usage(&args[0]);
         std::process::exit(1);
     }
 
-    let input_file = &args[1];
+    // 解析命令行选项
+    let (options, remaining_args) = parse_options(&args);
+    
+    if remaining_args.len() < 2 {
+        print_usage(&args[0]);
+        std::process::exit(1);
+    }
+
+    let input_file = &remaining_args[1];
     
     // 检查是否有 -o 参数来指定输出文件
-    let (output_file_opt, c_files_end) = parse_output_option(&args);
+    let (output_file_opt, c_files_end) = parse_output_option(&remaining_args);
+    
+    // 用户模式：编译单个用户程序
+    if options.user_mode && input_file.ends_with(".c") {
+        let output_file = output_file_opt.unwrap_or_else(|| "user_prog.coe".to_string());
+        compile_user_program(input_file, &output_file, &options);
+        return;
+    }
     
     // 检查是否有多个 .c 文件需要编译和链接
-    if input_file.ends_with(".c") && args.len() > 2 {
-        let c_files_range = if c_files_end > 0 { 1..c_files_end } else { 1..args.len() };
-        let c_files: Vec<&String> = args[c_files_range.clone()].iter().collect();
+    if input_file.ends_with(".c") && remaining_args.len() > 2 {
+        let c_files_range = if c_files_end > 0 { 1..c_files_end } else { 1..remaining_args.len() };
+        let c_files: Vec<&String> = remaining_args[c_files_range.clone()].iter().collect();
         
         // 检查是否所有都是 .c 文件
         let all_c_files = c_files.iter().all(|f| f.ends_with(".c"));
@@ -58,16 +83,16 @@ fn main() {
     // 判断输入文件类型
     if input_file.ends_with(".s") {
         // 汇编文件 -> ELF目标文件
-        if args.len() < 3 {
+        if remaining_args.len() < 3 {
             eprintln!("Usage: {} <input.s> <output.o>", args[0]);
             std::process::exit(1);
         }
 
-        let output_file = &args[2];
+        let output_file = &remaining_args[2];
         assemble(input_file, output_file);
     } else if input_file.ends_with(".o") {
         // 目标文件 -> 可执行文件
-        if args.len() < 3 {
+        if remaining_args.len() < 3 {
             eprintln!("Usage: {} <input.o>... <output.elf|output.coe>", args[0]);
             std::process::exit(1);
         }
@@ -77,9 +102,9 @@ fn main() {
         let mut output_file = String::from("a.out");
         
         let mut i = 1;
-        while i < args.len() {
-            let arg = &args[i];
-            if i == args.len() - 1 {
+        while i < remaining_args.len() {
+            let arg = &remaining_args[i];
+            if i == remaining_args.len() - 1 {
                 output_file = arg.clone();
             } else {
                 input_files.push(arg.clone());
@@ -90,14 +115,182 @@ fn main() {
         link(input_files, &output_file);
     } else {
         // C文件 -> 汇编文件
-        let output_file = if args.len() > 2 {
-            args[2].clone()
+        let output_file = if remaining_args.len() > 2 {
+            remaining_args[2].clone()
         } else {
             input_file.replace(".c", ".s")
         };
 
         compile_c(input_file, &output_file);
     }
+}
+
+fn print_usage(program: &str) {
+    eprintln!("Usage: {} <input.c|input.s> [output.s|output.o]", program);
+    eprintln!("       {} <file1.c> <file2.c> ... -o <output>  (link multiple C files)", program);
+    eprintln!("       {} --user <user.c> -o <output.coe>      (compile user program for UART bootloader)", program);
+    eprintln!();
+    eprintln!("Options:");
+    eprintln!("  --user              Compile as standalone user program (uses syscall table for BIOS functions)");
+    eprintln!("  --base <addr>       Set code base address (default: 0x10000 for user mode)");
+    eprintln!("  --syscall <addr>    Set syscall table base address (default: 0x7F00)");
+    eprintln!("  -o <output>         Specify output file");
+}
+
+/// 解析命令行选项
+fn parse_options(args: &[String]) -> (CompileOptions, Vec<String>) {
+    let mut options = CompileOptions {
+        user_mode: false,
+        base_address: 0x10000,      // 默认用户程序基地址
+        syscall_table_base: 0x7F00, // 系统调用表基地址
+    };
+    
+    let mut remaining = Vec::new();
+    remaining.push(args[0].clone());
+    
+    let mut i = 1;
+    while i < args.len() {
+        let arg = &args[i];
+        
+        if arg == "--user" {
+            options.user_mode = true;
+        } else if arg == "--base" && i + 1 < args.len() {
+            i += 1;
+            options.base_address = parse_address(&args[i]);
+        } else if arg == "--syscall" && i + 1 < args.len() {
+            i += 1;
+            options.syscall_table_base = parse_address(&args[i]);
+        } else {
+            remaining.push(arg.clone());
+        }
+        
+        i += 1;
+    }
+    
+    (options, remaining)
+}
+
+/// 解析地址（支持十进制和十六进制）
+fn parse_address(s: &str) -> u32 {
+    if s.starts_with("0x") || s.starts_with("0X") {
+        u32::from_str_radix(&s[2..], 16).unwrap_or(0)
+    } else {
+        s.parse().unwrap_or(0)
+    }
+}
+
+/// 编译用户程序（用于 UART Bootloader 加载）
+/// 生成独立的程序，BIOS 函数通过系统调用表调用
+fn compile_user_program(input_file: &str, output_file: &str, options: &CompileOptions) {
+    println!("Compiling user program for UART Bootloader...");
+    println!("  Input: {}", input_file);
+    println!("  Output: {}", output_file);
+    println!("  Base address: 0x{:08X}", options.base_address);
+    println!("  Syscall table: 0x{:08X}", options.syscall_table_base);
+    
+    // 读取源文件
+    let source = match fs::read_to_string(input_file) {
+        Ok(content) => content,
+        Err(e) => {
+            eprintln!("Error reading file {}: {}", input_file, e);
+            std::process::exit(1);
+        }
+    };
+
+    // 词法分析
+    let lexer = Lexer::new(&source);
+    
+    // 语法分析
+    let mut parser = Parser::new(lexer);
+    let ast = match parser.parse() {
+        Ok(program) => program,
+        Err(e) => {
+            eprintln!("Parse error: {}", e);
+            std::process::exit(1);
+        }
+    };
+
+    // 语义分析
+    let mut semantic = SemanticAnalyzer::new();
+    if let Err(e) = semantic.analyze(&ast) {
+        eprintln!("Semantic error: {}", e);
+        std::process::exit(1);
+    }
+
+    // 代码生成（用户模式）
+    let codegen_options = CodegenOptions {
+        user_mode: true,
+        base_address: options.base_address,
+        syscall_table_base: options.syscall_table_base,
+    };
+    let mut codegen = Codegen::with_options(codegen_options);
+    let asm_code = match codegen.generate(&ast) {
+        Ok(code) => code,
+        Err(e) => {
+            eprintln!("Codegen error: {}", e);
+            std::process::exit(1);
+        }
+    };
+
+    // 将汇编代码组合成字符串
+    let asm_string = asm_code.join("\n");
+    
+    println!("Generated {} lines of assembly code", asm_code.len());
+    
+    // 保存中间汇编代码用于调试
+    let asm_debug_file = if output_file.ends_with(".coe") {
+        output_file.replace(".coe", ".s")
+    } else {
+        format!("{}.s", output_file)
+    };
+    
+    if let Err(e) = fs::write(&asm_debug_file, &asm_string) {
+        eprintln!("Warning: Could not save debug assembly to {}: {}", asm_debug_file, e);
+    } else {
+        println!("Generated assembly code: {}", asm_debug_file);
+    }
+    
+    // 汇编
+    let mut assembler = Assembler::new(&asm_string);
+    let elf = match assembler.assemble() {
+        Ok(elf) => elf,
+        Err(e) => {
+            eprintln!("Assembler error: {}", e);
+            std::process::exit(1);
+        }
+    };
+
+    // 获取 .text 段的数据
+    let text_data: Vec<u8> = elf.sections.iter()
+        .find(|s| s.name == ".text")
+        .map(|s| s.data.clone())
+        .unwrap_or_default();
+    
+    if text_data.is_empty() {
+        eprintln!("Error: No code generated");
+        std::process::exit(1);
+    }
+
+    // 生成 COE 格式
+    let coe_content = generate_coe(&text_data);
+    
+    let output_path = if output_file.ends_with(".coe") {
+        output_file.to_string()
+    } else {
+        format!("{}.coe", output_file)
+    };
+    
+    if let Err(e) = fs::write(&output_path, &coe_content) {
+        eprintln!("Error writing output file {}: {}", output_path, e);
+        std::process::exit(1);
+    }
+    
+    println!("Generated COE file: {}", output_path);
+    println!("  Code size: {} bytes ({} words)", text_data.len(), text_data.len() / 4);
+    println!();
+    println!("To load via UART Bootloader:");
+    println!("  1. Set SW[23]=1 and reset FPGA");
+    println!("  2. python tools/uart_loader.py {} /dev/ttyUSB0", output_path);
 }
 
 /// 解析 -o 输出选项

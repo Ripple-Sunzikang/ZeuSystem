@@ -1,0 +1,205 @@
+/*
+
+Xilinx Vivado v2017.4 (64-bit) [Major: 2017, Minor: 4]
+SW Build: 2086221 on Fri Dec 15 20:54:30 MST 2017
+IP Build: 2085800 on Fri Dec 15 22:25:07 MST 2017
+
+Process ID: 64392
+License: Customer
+
+Current time: 	Wed Jan 07 20:14:15 CST 2026
+Time zone: 	China Standard Time (Asia/Shanghai)
+
+OS: Linux
+OS Version: 6.14.0-37-generic
+OS Architecture: amd64
+Available processors (cores): 8
+
+Display: :0
+Screen size: 4920x2160
+Screen resolution (DPI): 95
+Available screens: 2
+Available disk space: 33 GB
+Default font: family=Dialog,name=Dialog,style=plain,size=12
+
+Java version: 	1.8.0_112 64-bit
+Java home: 	/opt/Xilinx/Vivado/2017.4/tps/lnx64/jre
+JVM executable location: 	/opt/Xilinx/Vivado/2017.4/tps/lnx64/jre/bin/java
+
+User name: 	vessel
+User home directory: /home/vessel
+User working directory: /home/vessel/SEU-RISCV-CPU
+User country: 	CN
+User language: 	zh
+User locale: 	zh_CN
+
+RDI_BASEROOT: /opt/Xilinx/Vivado
+HDI_APPROOT: /opt/Xilinx/Vivado/2017.4
+RDI_DATADIR: /opt/Xilinx/Vivado/2017.4/data
+RDI_BINDIR: /opt/Xilinx/Vivado/2017.4/bin
+
+Vivado preferences file location: /home/vessel/.Xilinx/Vivado/2017.4/vivado.xml
+Vivado preferences directory: /home/vessel/.Xilinx/Vivado/2017.4/
+Vivado layouts directory: /home/vessel/.Xilinx/Vivado/2017.4/layouts
+PlanAhead jar file location: 	/opt/Xilinx/Vivado/2017.4/lib/classes/planAhead.jar
+Vivado log file location: 	/home/vessel/SEU-RISCV-CPU/vivado.log
+Vivado journal file location: 	/home/vessel/SEU-RISCV-CPU/vivado.jou
+Engine tmp dir: 	./.Xil/Vivado-64392-Cookie
+
+GUI allocated memory:	188 MB
+GUI max memory:		3,052 MB
+Engine allocated memory: 954 MB
+
+Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
+
+*/
+
+// TclEventType: START_GUI
+// Tcl Message: start_gui 
+// [GUI Memory]: 78 MB (+79491kb) [00:00:10]
+// [Engine Memory]: 925 MB (+818031kb) [00:00:10]
+selectList(PAResourceQtoS.SyntheticaGettingStartedView_RECENT_PROJECTS, "/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.xpr", 0); // q (O, cj)
+// bs (cj):  Open Project : addNotify
+// Opening Vivado Project: /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.xpr. Version: Vivado v2017.4 
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// Tcl Message: open_project /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.xpr 
+// TclEventType: MSGMGR_MOVEMSG
+// TclEventType: FILE_SET_NEW
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_CURRENT
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: PROJECT_NEW
+// [GUI Memory]: 85 MB (+3241kb) [00:00:13]
+// [Engine Memory]: 996 MB (+25984kb) [00:00:13]
+// [Engine Memory]: 1,099 MB (+56424kb) [00:00:16]
+// Tcl Message: open_project /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.xpr 
+// Tcl Message: Scanning sources... Finished scanning sources 
+// HMemoryUtils.trashcanNow. Engine heap size: 1,129 MB. GUI used memory: 73 MB. Current time: 1/7/26 8:14:21 PM CST
+// Tcl Message: INFO: [IP_Flow 19-234] Refreshing IP repositories INFO: [IP_Flow 19-1704] No user IP repositories specified INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/opt/Xilinx/Vivado/2017.4/data/ip'. 
+// Tcl Message: open_project: Time (s): cpu = 00:00:14 ; elapsed = 00:00:06 . Memory (MB): peak = 6153.430 ; gain = 86.781 ; free physical = 6210 ; free virtual = 13712 
+// Project name: rvTest; location: /home/vessel/SEU-RISCV-CPU/rvTest; part: xc7a100tfgg484-1
+// [GUI Memory]: 91 MB (+1436kb) [00:00:18]
+dismissDialog("Open Project"); // bs (cj)
+// TclEventType: DG_ANALYSIS_MSG_RESET
+// [Engine Memory]: 1,193 MB (+41088kb) [00:00:20]
+// TclEventType: DG_GRAPH_GENERATED
+// Tcl Message: update_compile_order -fileset sources_1 
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Program and Debug, Generate Bitstream]", 20, false); // u (O, cj)
+// Run Command: PAResourceCommand.PACommandNames_RUN_BITGEN
+// x (cj): Synthesis is Out-of-date: addNotify
+selectButton(RDIResource.BaseDialog_YES, "Yes"); // a (x)
+// bs (cj):  Resetting Runs : addNotify
+dismissDialog("Synthesis is Out-of-date"); // x (cj)
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_RESET
+// TclEventType: RUN_MODIFY
+// Tcl Message: reset_run synth_1 
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_RESET
+// TclEventType: RUN_MODIFY
+// Tcl Message: reset_run IROM_synth_1 
+// 'cv' command handler elapsed time: 3 seconds
+// [GUI Memory]: 96 MB (+1033kb) [00:00:26]
+// TclEventType: LOAD_FEATURE
+dismissDialog("Resetting Runs"); // bs (cj)
+// bs (cj):  Generate Bitstream : addNotify
+// TclEventType: DG_GRAPH_STALE
+// Tcl Message: launch_runs impl_1 -to_step write_bitstream -jobs 8 
+// Tcl Message: INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'IROM'... 
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_ANALYSIS_MSG_RESET
+// TclEventType: DG_GRAPH_GENERATED
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RUN_LAUNCH
+// TclEventType: DG_ANALYSIS_MSG_RESET
+// TclEventType: DG_GRAPH_GENERATED
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// Tcl Message: [Wed Jan  7 20:14:31 2026] Launched IROM_synth_1, synth_1... Run output will be captured here: IROM_synth_1: /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/IROM_synth_1/runme.log synth_1: /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/runme.log [Wed Jan  7 20:14:31 2026] Launched impl_1... Run output will be captured here: /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/impl_1/runme.log 
+dismissDialog("Generate Bitstream"); // bs (cj)
+// TclEventType: DG_ANALYSIS_MSG_RESET
+// TclEventType: DG_GRAPH_GENERATED
+// [Engine Memory]: 1,267 MB (+14134kb) [00:00:29]
+// TclEventType: DG_GRAPH_GENERATED
+// [GUI Memory]: 103 MB (+1680kb) [00:00:31]
+// WARNING: HTimer (WrapperUtils Delayed Delete Timer) is taking too long to process. Increasing delay to 2000 ms.
+// HMemoryUtils.trashcanNow. Engine heap size: 1,267 MB. GUI used memory: 71 MB. Current time: 1/7/26 8:14:37 PM CST
+// TclEventType: RUN_COMPLETED
+// TclEventType: FILE_SET_CHANGE
+// [GUI Memory]: 129 MB (+22267kb) [00:08:26]
+// [Engine Memory]: 1,362 MB (+33153kb) [00:08:26]
+// HMemoryUtils.trashcanNow. Engine heap size: 1,362 MB. GUI used memory: 104 MB. Current time: 1/7/26 8:22:32 PM CST
+// TclEventType: RUN_COMPLETED
+// WARNING: HTimer (ActiveMsgMonitor Process Messages Timer) is taking too long to process. Increasing delay to 2000 ms.
+// TclEventType: RUN_STEP_COMPLETED
+// [GUI Memory]: 140 MB (+4119kb) [00:10:06]
+// [GUI Memory]: 149 MB (+2231kb) [00:11:36]
+// TclEventType: RUN_COMPLETED
+// ah (cj): Bitstream Generation Completed: addNotify
+// Elapsed time: 961 seconds
+selectRadioButton(PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER, "Open Hardware Manager"); // a (N, ah)
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a (ah)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER
+// Tcl Command: 'rdi::info_commands get_hw_probes'
+// Tcl Command: 'load_features labtools'
+// TclEventType: LOAD_FEATURE
+// bs (cj):  Open Hardware Manager : addNotify
+// TclEventType: HW_SESSION_OPEN
+// Tcl Message: open_hw 
+dismissDialog("Open Hardware Manager"); // bs (cj)
+// HMemoryUtils.trashcanNow. Engine heap size: 1,387 MB. GUI used memory: 107 MB. Current time: 1/7/26 8:30:37 PM CST
+// Elapsed time: 12 seconds
+selectButton(PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET, "Hardware_auto_connect_target"); // B (f, cj)
+// Run Command: PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET
+// TclEventType: HW_SERVER_UPDATE
+// Tcl Message: connect_hw_server 
+// Tcl Message: INFO: [Labtools 27-2285] Connecting to hw_server url TCP:localhost:3121 INFO: [Labtools 27-2222] Launching hw_server... INFO: [Labtools 27-2221] Launch Output:  ****** Xilinx hw_server v2017.4   **** Build date : Dec 15 2017-21:02:11     ** Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.   
+// bs (cj):  Auto Connect : addNotify
+// TclEventType: HW_TARGET_CHANGE
+// TclEventType: HW_TARGET_CLOSE
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_ADD
+// TclEventType: HW_TARGET_UPDATE
+// Tcl Message: open_hw_target 
+// Tcl Message: INFO: [Labtoolstcl 44-466] Opening hw_target localhost:3121/xilinx_tcf/Xilinx/1234-tulA 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROGRAM.FILE {/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/impl_1/miniRV_SoC.bit} [get_hw_devices xc7a100t_0] 
+// Tcl Message: current_hw_device [get_hw_devices xc7a100t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_CHANGE
+// TclEventType: HW_DEVICE_UPDATE
+// TclEventType: HW_DEVICE_CHANGE
+// [Engine Memory]: 1,774 MB (+360921kb) [00:16:44]
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: refresh_hw_device -update_hw_probes false [lindex [get_hw_devices xc7a100t_0] 0] 
+// Tcl Message: INFO: [Labtools 27-1434] Device xc7a100t (JTAG device index = 0) is programmed with a design that has no supported debug core(s) in it. 
+dismissDialog("Auto Connect"); // bs (cj)
+selectTreeTable(PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE, "xc7a100t_0 (1) ; Programmed", 2, "xc7a100t_0 (1)", 0, true); // t (O, cj) - Node
+selectTreeTable(PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE, "xc7a100t_0 (1) ; Programmed", 2, "xc7a100t_0 (1)", 0, true, false, false, false, true, false); // t (O, cj) - Popup Trigger - Node
+selectMenuItem(PAResourceCommand.PACommandNames_PROGRAM_FPGA, "Program Device..."); // ac (ai, cj)
+// Run Command: PAResourceCommand.PACommandNames_PROGRAM_FPGA
+// bA (cj): Program Device: addNotify
+selectButton(PAResourceOtoP.ProgramFpgaDialog_PROGRAM, "Program"); // a (bA)
+// bs (cj):  Program Device : addNotify
+// TclEventType: HW_DEVICE_CHANGE
+dismissDialog("Program Device"); // bA (cj)
+// Tcl Message: set_property PROBES.FILE {} [get_hw_devices xc7a100t_0] 
+// Tcl Message: set_property FULL_PROBES.FILE {} [get_hw_devices xc7a100t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROGRAM.FILE {/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/impl_1/miniRV_SoC.bit} [get_hw_devices xc7a100t_0] 
+// Tcl Message: program_hw_devices [get_hw_devices xc7a100t_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: INFO: [Labtools 27-3164] End of startup status: HIGH 
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_CHANGE
+// TclEventType: HW_DEVICE_UPDATE
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_DEVICE_PROBES_CHANGE
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// TclEventType: HW_DEVICE_PROBES_CHANGE
+// Tcl Message: refresh_hw_device [lindex [get_hw_devices xc7a100t_0] 0] 
+// Tcl Message: INFO: [Labtools 27-1434] Device xc7a100t (JTAG device index = 0) is programmed with a design that has no supported debug core(s) in it. 
+// 'I' command handler elapsed time: 3 seconds
+dismissDialog("Program Device"); // bs (cj)

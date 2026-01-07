@@ -159,3 +159,7 @@ set_property src_info {type:XDC file:1 line:87 export:INPUT save:INPUT read:READ
 set_property -dict { IOSTANDARD LVCMOS33 PACKAGE_PIN K4 } [get_ports line[0]]
 set_property src_info {type:XDC file:1 line:93 export:INPUT save:INPUT read:READ} [current_design]
 set_property -dict { IOSTANDARD LVCMOS33 PACKAGE_PIN A19 } [get_ports buzzer]
+set_property src_info {type:XDC file:1 line:97 export:INPUT save:INPUT read:READ} [current_design]
+set_property -dict { IOSTANDARD LVCMOS33 PACKAGE_PIN Y19 } [get_ports uart_rx]
+set_property src_info {type:XDC file:1 line:99 export:INPUT save:INPUT read:READ} [current_design]
+set_property -dict { IOSTANDARD LVCMOS33 PACKAGE_PIN V18 } [get_ports uart_tx]

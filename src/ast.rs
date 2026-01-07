@@ -11,6 +11,7 @@ pub enum Type {
 }
 
 impl Type {
+    /// 返回类型的实际大小（字节）
     pub fn size(&self) -> usize {
         match self {
             Type::Int => 4,
@@ -18,6 +19,18 @@ impl Type {
             Type::Void => 0,
             Type::Pointer(_) => 4,
             Type::Array(ty, len) => ty.size() * len,
+        }
+    }
+    
+    /// 返回在栈上的对齐大小（4字节对齐）
+    /// 用于栈上变量分配
+    pub fn aligned_size(&self) -> usize {
+        let s = self.size();
+        if s == 0 {
+            0
+        } else {
+            // 向上对齐到4字节
+            (s + 3) & !3
         }
     }
 }
@@ -78,6 +91,11 @@ pub enum Expression {
     },
     Call {
         name: String,
+        args: Vec<Expression>,
+    },
+    /// 间接函数调用（通过函数指针）
+    IndirectCall {
+        target: Box<Expression>,
         args: Vec<Expression>,
     },
     Index {

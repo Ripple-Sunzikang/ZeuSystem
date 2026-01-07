@@ -4,6 +4,58 @@
 use crate::ast::*;
 use std::collections::HashMap;
 
+/// 代码生成选项
+#[derive(Clone)]
+pub struct CodegenOptions {
+    /// 用户模式：生成独立用户程序，BIOS函数通过系统调用表调用
+    pub user_mode: bool,
+    /// 代码基地址
+    pub base_address: u32,
+    /// 系统调用表基地址
+    pub syscall_table_base: u32,
+}
+
+impl Default for CodegenOptions {
+    fn default() -> Self {
+        CodegenOptions {
+            user_mode: false,
+            base_address: 0,
+            syscall_table_base: 0x7F00,
+        }
+    }
+}
+
+/// BIOS 系统调用表
+/// 每个函数在表中占用 4 字节（函数指针）
+/// 用户程序通过读取表中的地址进行间接调用
+const SYSCALL_TABLE: &[(&str, usize)] = &[
+    ("bios_delay", 0),
+    ("bios_buzzer_on", 1),
+    ("bios_buzzer_off", 2),
+    ("bios_buzzer_beep", 3),
+    ("bios_uart_putc", 4),
+    ("bios_uart_puts", 5),
+    ("bios_uart_putnum", 6),
+    ("bios_uart_puthex", 7),
+    ("bios_uart_getc", 8),
+    ("bios_uart_available", 9),
+    ("bios_display_bcd", 10),
+    ("bios_led_write", 11),
+    ("bios_key_read", 12),
+    ("bios_key_init", 13),
+    ("bios_mul10", 14),
+    ("bios_multiply", 15),
+    ("bios_wdt_feed", 16),
+    ("bios_sw_read", 17),
+    ("bios_sw_get", 18),
+    ("bios_sw_read_high", 19),
+    ("bios_sw_read_mid", 20),
+    ("bios_sw_read_low", 21),
+    ("bios_btn_read", 22),
+    ("bios_btn_get", 23),
+    ("bios_btn_wait", 24),
+];
+
 pub struct Codegen {
     code: Vec<String>,
     label_counter: usize,
@@ -11,6 +63,8 @@ pub struct Codegen {
     stack_ptr: usize,
     loop_stack: Vec<(String, String)>,
     returned: bool,
+    string_literals: Vec<String>,  // 存储所有字符串字面量
+    options: CodegenOptions,       // 代码生成选项
 }
 
 impl Codegen {
@@ -22,6 +76,21 @@ impl Codegen {
             stack_ptr: 0,
             loop_stack: Vec::new(),
             returned: false,
+            string_literals: Vec::new(),
+            options: CodegenOptions::default(),
+        }
+    }
+    
+    pub fn with_options(options: CodegenOptions) -> Self {
+        Codegen {
+            code: Vec::new(),
+            label_counter: 0,
+            local_vars: HashMap::new(),
+            stack_ptr: 0,
+            loop_stack: Vec::new(),
+            returned: false,
+            string_literals: Vec::new(),
+            options,
         }
     }
 
@@ -90,31 +159,84 @@ impl Codegen {
         self.code.push(".globl _start".to_string());
         self.code.push("".to_string());
         
-        // 生成启动代码：初始化栈指针
-        self.code.push("_start:".to_string());
-        self.code.push("    # 初始化栈指针 sp = 0x7FFC (栈顶)".to_string());
-        self.code.push("    lui sp, 8".to_string());
-        self.code.push("    addi sp, sp, -4".to_string());
-        self.code.push("    # 跳转到 main".to_string());
-        self.code.push("    j main".to_string());
-        self.code.push("".to_string());
+        if self.options.user_mode {
+            // 用户模式：入口是 user_main，不初始化栈（由 BIOS 已初始化）
+            self.code.push("_start:".to_string());
+            self.code.push("    # User program entry (loaded by UART Bootloader)".to_string());
+            self.code.push("    # Stack is already initialized by BIOS".to_string());
+            self.code.push("    # Jump to user_main".to_string());
+            self.code.push("    j user_main".to_string());
+            self.code.push("".to_string());
+            
+            // 首先生成 user_main 函数（用户程序入口）
+            for func in &program.functions {
+                if func.name == "user_main" && func.body.is_some() {
+                    self.returned = false;
+                    self.generate_function(func)?;
+                }
+            }
 
-        // 首先生成 main 函数（BIOS 入口）
-        for func in &program.functions {
-            if func.name == "main" && func.body.is_some() {
+            // 然后生成其他函数（除了 BIOS 函数声明）
+            for func in &program.functions {
+                if func.name != "user_main" && func.body.is_some() && !self.is_bios_function(&func.name) {
+                    self.returned = false;
+                    self.generate_function(func)?;
+                }
+            }
+        } else {
+            // 普通模式：生成启动代码，初始化栈指针和系统调用表
+            self.code.push("_start:".to_string());
+            self.code.push("    # 初始化栈指针 sp = 0x7FFC (栈顶)".to_string());
+            self.code.push("    lui sp, 8".to_string());
+            self.code.push("    addi sp, sp, -4".to_string());
+            self.code.push("".to_string());
+            self.code.push("    # 初始化系统调用表 @ 0x7F00".to_string());
+            self.code.push("    # 用于 UART Bootloader 加载的用户程序调用 BIOS 函数".to_string());
+            self.code.push("    jal ra, _init_syscall_table".to_string());
+            self.code.push("".to_string());
+            self.code.push("    # 跳转到 main".to_string());
+            self.code.push("    j main".to_string());
+            self.code.push("".to_string());
+            
+            // 生成系统调用表初始化函数
+            self.generate_syscall_table_init();
+
+            // 首先生成 main 函数（BIOS 入口）
+            for func in &program.functions {
+                if func.name == "main" && func.body.is_some() {
+                    self.returned = false;
+                    self.generate_function(func)?;
+                }
+            }
+
+            // 然后生成其他函数
+            for func in &program.functions {
+                // 跳过只有声明没有定义的函数，也跳过 main（已经生成）
+                if func.body.is_none() || func.name == "main" {
+                    continue;
+                }
                 self.returned = false;
                 self.generate_function(func)?;
             }
         }
 
-        // 然后生成其他函数
-        for func in &program.functions {
-            // 跳过只有声明没有定义的函数，也跳过 main（已经生成）
-            if func.body.is_none() || func.name == "main" {
-                continue;
+        // 生成字符串字面量（内联在代码段末尾）
+        // 字符串存储在 IROM 中，通过 la 伪指令可以获取其地址
+        if !self.string_literals.is_empty() {
+            self.code.push("".to_string());
+            self.code.push("# String literals".to_string());
+            for (idx, s) in self.string_literals.iter().enumerate() {
+                self.code.push(format!(".str{}:", idx));
+                // 使用 .word 来存储字符串字节（每4字节一组）
+                // 这样可以保持4字节对齐，兼容汇编器
+                let bytes: Vec<u8> = s.bytes().chain(std::iter::once(0u8)).collect();
+                for chunk in bytes.chunks(4) {
+                    let word: u32 = chunk.iter().enumerate().fold(0u32, |acc, (i, &b)| {
+                        acc | ((b as u32) << (i * 8))
+                    });
+                    self.code.push(format!(".word {}", word));
+                }
             }
-            self.returned = false;
-            self.generate_function(func)?;
         }
 
         Ok(self.code.clone())
@@ -137,7 +259,7 @@ impl Codegen {
             if i < param_regs.len() {
                 self.emit(&format!("sw {}, {}(sp)", param_regs[i], offset));
             }
-            self.stack_ptr += param.ty.size();
+            self.stack_ptr += param.ty.aligned_size();
         }
 
         if let Some(body) = &func.body {
@@ -302,7 +424,7 @@ impl Codegen {
             } => {
                 let offset = self.stack_ptr;
                 self.local_vars.insert(name.clone(), offset);
-                self.stack_ptr += ty.size();
+                self.stack_ptr += ty.aligned_size();
 
                 if let Some(expr) = init {
                     self.generate_expression(expr)?;
@@ -324,8 +446,13 @@ impl Codegen {
                 self.emit_load_immediate(*c as i32 as i64);
                 Ok(())
             }
-            Expression::String(_) => {
-                Err("String literals not yet supported".to_string())
+            Expression::String(s) => {
+                // 将字符串添加到字符串表，获取索引
+                let idx = self.string_literals.len();
+                self.string_literals.push(s.clone());
+                // 生成加载字符串地址的代码
+                self.emit(&format!("la a0, .str{}", idx));
+                Ok(())
             }
             Expression::Identifier(name) => {
                 if let Some(offset) = self.local_vars.get(name) {
@@ -509,6 +636,12 @@ impl Codegen {
                 Ok(())
             }
             Expression::Call { name, args } => {
+                // 用户模式下，BIOS 函数通过系统调用表调用
+                if self.options.user_mode && self.is_bios_function(name) {
+                    return self.generate_syscall(name, args);
+                }
+                
+                // 普通函数调用
                 // 先把所有参数保存到临时栈位置
                 let base_offset = self.stack_ptr;
                 for (i, arg) in args.iter().enumerate() {
@@ -529,6 +662,36 @@ impl Codegen {
                 self.emit(&format!("jal ra, {}", name));
                 Ok(())
             }
+            Expression::IndirectCall { target, args } => {
+                // 间接函数调用（函数指针）
+                // 先把所有参数保存到临时栈位置
+                let base_offset = self.stack_ptr;
+                for (i, arg) in args.iter().enumerate() {
+                    self.generate_expression(arg)?;
+                    let offset = base_offset + i * 4;
+                    self.emit(&format!("sw a0, {}(sp)", offset));
+                }
+                self.stack_ptr += args.len() * 4;
+                
+                // 计算函数指针地址
+                self.generate_expression(target)?;
+                // 保存函数地址到 t0
+                self.emit("mv t0, a0");
+                
+                // 从栈加载参数到参数寄存器
+                for i in 0..args.len() {
+                    let offset = base_offset + i * 4;
+                    if i < 8 {
+                        let reg = format!("a{}", i);
+                        self.emit(&format!("lw {}, {}(sp)", reg, offset));
+                    }
+                }
+                self.stack_ptr -= args.len() * 4;
+
+                // 使用 jalr 进行间接调用
+                self.emit("jalr ra, t0, 0");
+                Ok(())
+            }
             Expression::Index { array, index } => {
                 self.generate_expression(array)?;
                 self.emit("sw a0, 0(sp)");
@@ -544,10 +707,117 @@ impl Codegen {
 
                 Ok(())
             }
+            Expression::Ternary { condition, then_expr, else_expr } => {
+                // 三元运算符: condition ? then_expr : else_expr
+                let else_label = self.new_label("ternary_else");
+                let end_label = self.new_label("ternary_end");
+                
+                // 计算条件
+                self.generate_expression(condition)?;
+                // 如果条件为0，跳转到else分支
+                self.emit(&format!("beq a0, zero, {}", else_label));
+                
+                // then 分支
+                self.generate_expression(then_expr)?;
+                self.emit(&format!("j {}", end_label));
+                
+                // else 分支
+                self.emit(&format!("{}:", else_label));
+                self.generate_expression(else_expr)?;
+                
+                // 结束
+                self.emit(&format!("{}:", end_label));
+                Ok(())
+            }
             Expression::Cast { ty: _, expr } => {
                 self.generate_expression(expr)
             }
-            _ => Err("Unsupported expression".to_string()),
+            expr => Err(format!("Unsupported expression: {:?}", expr)),
         }
     }
-}
+    
+    /// 检查函数是否是 BIOS 函数（需要通过系统调用表调用）
+    fn is_bios_function(&self, name: &str) -> bool {
+        SYSCALL_TABLE.iter().any(|(n, _)| *n == name)
+    }
+    
+    /// 获取 BIOS 函数在系统调用表中的索引
+    fn get_syscall_index(&self, name: &str) -> Option<usize> {
+        SYSCALL_TABLE.iter().find(|(n, _)| *n == name).map(|(_, idx)| *idx)
+    }
+    
+    /// 生成通过系统调用表的间接调用
+    fn generate_syscall(&mut self, name: &str, args: &[Expression]) -> Result<(), String> {
+        // 先把所有参数保存到临时栈位置
+        let base_offset = self.stack_ptr;
+        for (i, arg) in args.iter().enumerate() {
+            self.generate_expression(arg)?;
+            let offset = base_offset + i * 4;
+            self.emit(&format!("sw a0, {}(sp)", offset));
+        }
+        self.stack_ptr += args.len() * 4;
+        
+        // 从系统调用表加载函数地址
+        let syscall_idx = self.get_syscall_index(name).unwrap();
+        let syscall_addr = self.options.syscall_table_base + (syscall_idx as u32 * 4);
+        
+        self.emit(&format!("# Syscall: {} (index {})", name, syscall_idx));
+        
+        // 加载系统调用表中的函数指针
+        // syscall_addr = 0x7F00 + idx * 4
+        if syscall_addr < 2048 {
+            self.emit(&format!("lw t0, {}(zero)", syscall_addr));
+        } else {
+            // 需要使用 lui + lw
+            // RISC-V 地址计算: lui 加载高20位, lw 的12位立即数是有符号的
+            // 如果低12位 >= 0x800，需要 hi+1，lo 作为负数处理
+            let lo_raw = syscall_addr & 0xFFF;
+            let (hi, lo): (u32, i32) = if lo_raw >= 0x800 {
+                // 低12位高位为1，作为负数处理
+                ((syscall_addr >> 12) + 1, (lo_raw as i32) - 0x1000)
+            } else {
+                (syscall_addr >> 12, lo_raw as i32)
+            };
+            self.emit(&format!("lui t1, {}", hi));
+            self.emit(&format!("lw t0, {}(t1)", lo));
+        }
+        
+        // 从栈加载参数到参数寄存器
+        for i in 0..args.len() {
+            let offset = base_offset + i * 4;
+            if i < 8 {
+                let reg = format!("a{}", i);
+                self.emit(&format!("lw {}, {}(sp)", reg, offset));
+            }
+        }
+        self.stack_ptr -= args.len() * 4;
+        
+        // 使用 jalr 进行间接调用
+        self.emit("jalr ra, t0, 0");
+        Ok(())
+    }
+    
+    /// 生成系统调用表初始化代码
+    /// 将 BIOS 函数地址写入 DRAM 的 0x7F00 开始的区域
+    fn generate_syscall_table_init(&mut self) {
+        self.code.push("_init_syscall_table:".to_string());
+        self.code.push("    # Initialize syscall table at 0x7F00".to_string());
+        self.code.push("    # Each entry is a function pointer (4 bytes)".to_string());
+        
+        // 使用 t0 作为基地址寄存器，t1 作为临时寄存器
+        // 0x7F00 = 32512，可以用 lui 8 + addi -256 得到
+        // 或者直接用 li 伪指令
+        self.code.push("    lui t0, 8".to_string());           // t0 = 0x8000
+        self.code.push("    addi t0, t0, -256".to_string());   // t0 = 0x7F00
+        
+        // 为每个 BIOS 函数生成初始化代码
+        for (func_name, idx) in SYSCALL_TABLE.iter() {
+            let offset = (*idx as i32) * 4;
+            self.code.push(format!("    # syscall[{}] = {}", idx, func_name));
+            self.code.push(format!("    la t1, {}", func_name));
+            self.code.push(format!("    sw t1, {}(t0)", offset));
+        }
+        
+        self.code.push("    ret".to_string());
+        self.code.push("".to_string());
+    }}

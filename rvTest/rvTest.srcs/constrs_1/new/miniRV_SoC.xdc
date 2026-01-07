@@ -91,3 +91,9 @@ set_property PULLUP true [get_ports {line[*]}]
 
 # Buzzer output (A19)
 set_property -dict { IOSTANDARD LVCMOS33 PACKAGE_PIN A19 } [get_ports buzzer]
+
+# UART 串口接口
+# UART_RX - FPGA接收串口信息管脚
+set_property -dict { IOSTANDARD LVCMOS33 PACKAGE_PIN Y19 } [get_ports uart_rx]
+# UART_TX - FPGA发送串口信息管脚
+set_property -dict { IOSTANDARD LVCMOS33 PACKAGE_PIN V18 } [get_ports uart_tx]

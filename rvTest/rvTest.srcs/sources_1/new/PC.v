@@ -1,5 +1,7 @@
-    `include "defines.vh"
-    module PC(
+`timescale 1ns / 1ps
+`include "defines.vh"
+
+module PC(
       input wire rst,
       input wire clk,
       input wire[31:0] din,
@@ -16,8 +18,8 @@
           pc<=0;
         `endif
       end
-      else if(control_hazard) pc<=din;//¿ØÖÆÃ°ÏÕÔÚNPCÄ£¿éÇå¿ÕÁ½ÌõÖ¸ÁîÔÙÌø×ª£¨ÓÅÏÈ¼¶¸ßÓÚÊý¾ÝÃ°ÏÕ£©
-      else if(data_hazard) pc<=pc;//Êý¾ÝÃ°ÏÕÍ£¶Ù
+      else if(control_hazard) pc<=din;//ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ï¿½NPCÄ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã°ï¿½Õ£ï¿½
+      else if(data_hazard) pc<=pc;//ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½Í£ï¿½ï¿½
       else pc <= din;
     end
 

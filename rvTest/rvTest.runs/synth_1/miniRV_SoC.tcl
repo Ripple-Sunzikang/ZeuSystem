@@ -16,6 +16,8 @@ proc create_report { reportName command } {
     send_msg_id runtcl-5 warning "$msg"
   }
 }
+set_msg_config -id {HDL 9-1061} -limit 100000
+set_msg_config -id {HDL 9-1654} -limit 100000
 create_project -in_memory -part xc7a100tfgg484-1
 
 set_param project.singleFileAddWarning.threshold 0
@@ -24,7 +26,7 @@ set_param synth.vivado.isSynthRun true
 set_msg_config -source 4 -id {IP_Flow 19-2162} -severity warning -new_severity info
 set_property webtalk.parent_dir /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.cache/wt [current_project]
 set_property parent.project_path /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.xpr [current_project]
-set_property XPM_LIBRARIES XPM_CDC [current_project]
+set_property XPM_LIBRARIES {XPM_CDC XPM_MEMORY} [current_project]
 set_property default_lib xil_defaultlib [current_project]
 set_property target_language Verilog [current_project]
 set_property ip_output_repo /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.cache/ip [current_project]
@@ -47,11 +49,13 @@ read_verilog -library xil_defaultlib {
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/MEM_WB.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/NPC.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PC.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PRAM_Wrapper.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PWM.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/RF.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/SEXT.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Switch.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Timer.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/UART.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/WDT.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/controller.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/myCPU.v
@@ -67,6 +71,9 @@ set_property used_in_implementation false [get_files -all /home/vessel/SEU-RISCV
 
 read_ip -quiet /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/IROM_1/IROM.xci
 set_property used_in_implementation false [get_files -all /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/IROM_1/IROM_ooc.xdc]
+
+read_ip -quiet /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/PRAM_BRAM/PRAM_BRAM.xci
+set_property used_in_implementation false [get_files -all /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/PRAM_BRAM/PRAM_BRAM_ooc.xdc]
 
 # Mark all dcp files as not used in implementation to prevent them from being
 # stitched into the results of this synthesis run. Any black boxes in the

@@ -83,6 +83,12 @@ C 源代码 → 编译器 → RISC-V 汇编 → 汇编器 → 机器码 → COE�
 │  │  - bios_mul10()        乘10运算                  │   │
 │  │  - bios_multiply()     乘法运算                  │   │
 │  │  - bios_delay()        延时函数                  │   │
+│  │  - bios_uart_*()       UART串口通信              │   │
+│  │  - bios_buzzer_*()     蜂鸣器/PWM控制            │   │
+│  │  - bios_sw_*()         拨码开关读取              │   │
+│  │  - bios_btn_*()        按钮读取                  │   │
+│  │  - bios_wdt_feed()     看门狗喂狗                │   │
+│  │  - bios_bootloader()   UART Bootloader           │   │
 │  └─────────────────────────────────────────────────┘   │
 │                         ↓ 访问                          │
 ├─────────────────────────────────────────────────────────┤
@@ -91,6 +97,14 @@ C 源代码 → 编译器 → RISC-V 汇编 → 汇编器 → 机器码 → COE�
 │  │ 数码管    │  │ LED      │  │ 4x4键盘   │             │
 │  │ 0xFFFFFC00│  │0xFFFFFC60│  │0xFFFFFC10│             │
 │  └──────────┘  └──────────┘  └──────────┘             │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐             │
+│  │ UART     │  │ PWM/蜂鸣器│  │ 看门狗    │             │
+│  │0xFFFFFC40│  │0xFFFFFC30│  │0xFFFFFC50│             │
+│  └──────────┘  └──────────┘  └──────────┘             │
+│  ┌──────────┐  ┌──────────┐                           │
+│  │ 拨码开关  │  │ 按钮      │                           │
+│  │0xFFFFFC70│  │0xFFFFFC78│                           │
+│  └──────────┘  └──────────┘                           │
 ├─────────────────────────────────────────────────────────┤
 │                    miniRV CPU                           │
 │  5级流水线: IF → ID → EX → MEM → WB                    │
@@ -134,9 +148,11 @@ SEU-RISCV-CPU/
 │       └── validator.rs
 │
 ├── examples/                  # 示例程序
-│   ├── bios_v2.c             # BIOS 固件 (推荐)
+│   ├── bios_v2.c             # BIOS 固件 (推荐，含 UART Bootloader)
 │   ├── calculator_v2.c       # 计算器 - BIOS调用版 (推荐)
-│   └── calculator_withoutbios.c  # 计算器 - 独立版
+│   ├── calculator_withoutbios.c  # 计算器 - 独立版
+│   ├── sw_led_demo.c         # 拨码开关控制LED示例
+│   └── led_wave.c            # LED彩灯波浪效果示例
 │
 ├── output/                    # 编译输出
 │   ├── calc_v2.coe           # 最终 COE 文件
@@ -182,15 +198,17 @@ SEU-RISCV-CPU 编译器是用 Rust 编写的 C 语言子集编译器，直接生
 #### 控制流
 - `if` / `else if` / `else`
 - `while` 循环
+- `for` 循环
+- `break` / `continue`
 - `return` 语句
 - 函数调用
 
 #### 限制
-- 不支持 `for` 循环（可用 `while` 替代）
+- 不支持 `switch` / `do-while` （可用 `if` 和 `while` 替代）
 - 不支持数组声明（可用指针访问内存）
 - 不支持结构体
 - 不支持浮点数
-- 不支持字符串字面量
+- 不支持字符串字面量赋值给变量（但支持传给函数）
 
 ### 编译流程
 
@@ -414,10 +432,65 @@ int bios_multiply(int x, int y) {
 | 地址 | 用途 |
 |-----|------|
 | `0x0000` - `0x7FEF` | 程序代码和数据 |
+| `0x7F00` - `0x7FEF` | 系统调用表 (BIOS 函数指针) |
 | `0x7FF0` | BIOS 边沿检测状态存储 |
 | `0x7FFC` | 栈顶指针初始值 |
+| `0x10000` - `0x1FFFF` | PRAM 用户程序区 (UART Bootloader 加载) |
 
+### BIOS 完整函数列表
 
+BIOS v2.1 提供以下系统服务函数：
+
+| 分类 | 函数 | 说明 |
+|-----|------|------|
+| **延时** | `bios_delay(count)` | 软件延时循环 |
+| **蜂鸣器** | `bios_buzzer_on()` | 开启蜂鸣器 |
+| | `bios_buzzer_off()` | 关闭蜂鸣器 |
+| | `bios_buzzer_set(freq_div)` | 设置频率并开启 |
+| | `bios_buzzer_beep(duration)` | 蜂鸣指定时长 |
+| **UART** | `bios_uart_putc(c)` | 发送单个字符 |
+| | `bios_uart_puts(str)` | 发送字符串 |
+| | `bios_uart_putnum(num)` | 发送十进制数字 |
+| | `bios_uart_puthex(num)` | 发送十六进制数字 |
+| | `bios_uart_getc()` | 接收字符 (阻塞) |
+| | `bios_uart_available()` | 检查是否有数据 |
+| **显示** | `bios_display_bcd(value)` | 数码管 BCD 显示 |
+| | `bios_led_write(value)` | LED 写入 |
+| **键盘** | `bios_key_read()` | 读取按键 (带边沿检测) |
+| | `bios_key_init()` | 初始化键盘状态 |
+| **运算** | `bios_mul10(x)` | 乘 10 运算 |
+| | `bios_multiply(x, y)` | 软件乘法 |
+| **看门狗** | `bios_wdt_feed()` | 喂狗 (复位计数器) |
+| | `bios_wdt_read()` | 读取计数器值 |
+| **开关** | `bios_sw_read()` | 读取 24 位开关状态 |
+| | `bios_sw_get(num)` | 读取指定开关 |
+| | `bios_sw_read_high()` | 读取高 8 位 SW[23:16] |
+| | `bios_sw_read_mid()` | 读取中 8 位 SW[15:8] |
+| | `bios_sw_read_low()` | 读取低 8 位 SW[7:0] |
+| **按钮** | `bios_btn_read()` | 读取 5 位按钮状态 |
+| | `bios_btn_get(num)` | 读取指定按钮 |
+| | `bios_btn_wait()` | 等待任意按钮按下 |
+| | `bios_btn_wait_press(num)` | 等待指定按钮 |
+| **Bootloader** | `bios_bootloader()` | UART Bootloader 主函数 |
+| | `bios_jump_to_pram()` | 跳转到 PRAM 执行 |
+| | `bios_pram_write(addr, data)` | 写入 PRAM |
+| | `bios_pram_read(addr)` | 读取 PRAM |
+
+### UART Bootloader
+
+BIOS v2.1 支持通过 UART 串口动态加载用户程序：
+
+**启动模式选择**：
+- `SW[23] = 0`: 运行内置用户程序 (`user_main()`)
+- `SW[23] = 1`: 进入 UART Bootloader 模式
+
+**Bootloader 协议**：
+1. 主机发送 `'L'` 开始加载
+2. 发送 4 字节程序长度 (小端序，字数)
+3. 发送 N 个字 (每字 4 字节，小端序)
+4. 主机发送 `'G'` 跳转执行
+
+**UART 参数**：115200-8-N-1
 
 ---
 
@@ -535,7 +608,16 @@ miniRV SoC 使用内存映射 I/O (MMIO) 访问外设：
 | `0xFFFF_FC00` | `(int*)-1024` | 数码管 | 32位，每4位控制一个数字 |
 | `0xFFFF_FC10` | `(int*)-1008` | 键盘键值 | 0-15或0xFFFFFFFF(无效) |
 | `0xFFFF_FC12` | `(int*)-1006` | 键盘状态 | bit0=1表示有键按下 |
+| `0xFFFF_FC30` | `(int*)-976` | PWM最大值 | 蜂鸣器频率控制 |
+| `0xFFFF_FC34` | `(int*)-972` | PWM比较值 | 蜂鸣器占空比 |
+| `0xFFFF_FC38` | `(int*)-968` | PWM控制 | bit0=1使能 |
+| `0xFFFF_FC40` | `(int*)-960` | UART数据 | 读=接收，写=发送 |
+| `0xFFFF_FC44` | `(int*)-956` | UART状态 | bit0=TX忙，bit1=RX就绪 |
+| `0xFFFF_FC48` | `(int*)-952` | UART控制 | 写bit0=1清除RX就绪 |
+| `0xFFFF_FC50` | `(int*)-944` | 看门狗 | 写=喂狗，读=计数值 |
 | `0xFFFF_FC60` | `(int*)-928` | LED | 每位控制一个LED |
+| `0xFFFF_FC70` | `(int*)-912` | 拨码开关 | 24位开关状态 |
+| `0xFFFF_FC78` | `(int*)-904` | 按钮 | 5位按钮状态 |
 
 ### 数码管 (Digital_LED)
 
@@ -1206,12 +1288,20 @@ assign led = led_data;
 
 | 地址范围 | 设备 | 读/写 | 描述 |
 |---------|------|------|------|
-| `0x0000_0000` - `0x0000_FFFF` | DRAM | R/W | 数据存储器 |
+| `0x0000_0000` - `0x0000_FFFF` | DRAM | R/W | 数据存储器 (64KB) |
+| `0x0001_0000` - `0x0001_FFFF` | PRAM | R/W | 用户程序存储器 (Bootloader) |
 | `0xFFFF_FC00` | 数码管 | W | 32位 BCD 编码 |
 | `0xFFFF_FC10` | 键盘数据 | R/W | 键值或 0xFFFFFFFF |
 | `0xFFFF_FC12` | 键盘状态 | R | bit0=按键标志 |
 | `0xFFFF_FC20` | 定时器0 | R/W | 计数器值 |
 | `0xFFFF_FC24` | 定时器N | R/W | 重载值 |
+| `0xFFFF_FC30` | PWM最大值 | W | 蜂鸣器频率 |
+| `0xFFFF_FC34` | PWM比较值 | W | 蜂鸣器占空比 |
+| `0xFFFF_FC38` | PWM控制 | W | bit0=使能 |
+| `0xFFFF_FC40` | UART数据 | R/W | 读=接收，写=发送 |
+| `0xFFFF_FC44` | UART状态 | R | bit0=TX忙，bit1=RX就绪 |
+| `0xFFFF_FC48` | UART控制 | W | 写bit0=1清除RX就绪 |
+| `0xFFFF_FC50` | 看门狗 | R/W | 写=喂狗，读=计数值 |
 | `0xFFFF_FC60` | LED | W | 24位 LED 控制 |
 | `0xFFFF_FC70` | 开关 | R | 24位开关状态 |
 | `0xFFFF_FC78` | 按钮 | R | 5位按钮状态 |

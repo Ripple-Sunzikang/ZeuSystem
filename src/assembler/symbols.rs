@@ -18,6 +18,7 @@ pub struct Symbol {
 pub enum Section {
     Text,
     Data,
+    Rodata,
     Bss,
     Undefined,
 }

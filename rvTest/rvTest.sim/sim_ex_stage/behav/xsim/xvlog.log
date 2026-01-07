@@ -1,0 +1,6 @@
+INFO: [VRFC 10-2263] Analyzing Verilog file "/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ALU.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module ALU
+INFO: [VRFC 10-2263] Analyzing Verilog file "/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sim_1/new/EX_stage_tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module EX_stage_tb
+INFO: [VRFC 10-2263] Analyzing Verilog file "/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.sim/sim_ex_stage/behav/xsim/glbl.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module glbl

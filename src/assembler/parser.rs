@@ -37,7 +37,9 @@ impl Parser {
             match token {
                 Some(Token::Directive(name)) => {
                     self.advance();
-                    self.parse_directive(name, symbols, &mut current_section)?;
+                    if let Some(instr) = self.parse_directive(name, symbols, &mut current_section)? {
+                        instructions.push(instr);
+                    }
                 }
                 Some(Token::Label(name)) => {
                     let label = name;
@@ -87,7 +89,6 @@ impl Parser {
 
         Ok(instructions)
     }
-
     /// 计算指令大小（大多数指令4字节，伪指令可能更多）
     fn calculate_instruction_size(&self, name: &str, _instr: &Instruction) -> u32 {
         match name.to_lowercase().as_str() {
@@ -98,30 +99,35 @@ impl Parser {
         }
     }
 
-    fn parse_directive(&mut self, directive: String, symbols: &mut SymbolTable, current_section: &mut Section) -> Result<(), String> {
+    fn parse_directive(&mut self, directive: String, symbols: &mut SymbolTable, current_section: &mut Section) -> Result<Option<Instruction>, String> {
         match directive.as_str() {
             ".text" => {
                 *current_section = Section::Text;
-                Ok(())
+                Ok(None)
             }
             ".data" => {
                 *current_section = Section::Data;
-                Ok(())
+                Ok(None)
+            }
+            ".rodata" => {
+                *current_section = Section::Rodata;
+                Ok(None)
             }
             ".bss" => {
                 *current_section = Section::Bss;
-                Ok(())
+                Ok(None)
             }
             ".section" => {
                 if let Some(Token::Directive(name)) = self.current_token() {
                      match name.as_str() {
                          ".text" => *current_section = Section::Text,
                          ".data" => *current_section = Section::Data,
+                         ".rodata" => *current_section = Section::Rodata,
                          ".bss" => *current_section = Section::Bss,
                          _ => return Err(format!("Unknown section: {}", name)),
                      }
                      self.advance();
-                     Ok(())
+                     Ok(None)
                 } else {
                     Err("Expected section name after .section".to_string())
                 }
@@ -130,10 +136,40 @@ impl Parser {
                 if let Some(Token::Identifier(sym_name)) = self.current_token() {
                     symbols.add_symbol(sym_name.clone(), *current_section, Binding::Global)?;
                     self.advance();
-                    Ok(())
+                    Ok(None)
                 } else {
                     Err("Expected symbol name after .globl".to_string())
                 }
+            }
+            ".word" => {
+                // 解析 .word 的值
+                let value = match self.current_token() {
+                    Some(Token::Immediate(v)) => {
+                        let val = v.to_string();
+                        self.advance();
+                        val
+                    }
+                    Some(Token::Identifier(name)) => {
+                        let n = name.clone();
+                        self.advance();
+                        n
+                    }
+                    _ => return Err("Expected value after .word".to_string()),
+                };
+                // 更新段地址
+                symbols.advance_text(4);
+                // 返回一个 .word 伪指令
+                Ok(Some(Instruction {
+                    name: ".word".to_string(),
+                    operands: vec![value],
+                }))
+            }
+            ".align" => {
+                // 跳过 .align 指令（对齐由汇编器自动处理）
+                while !self.is_at_end() && !matches!(self.current_token(), Some(Token::Newline) | Some(Token::Eof)) {
+                    self.advance();
+                }
+                Ok(None)
             }
             _ => Err(format!("Unknown directive: {}", directive)),
         }

@@ -1,0 +1,45 @@
+
+****** xsim v2017.4 (64-bit)
+  **** SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
+  **** IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+    ** Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
+
+source xsim.dir/id_sim/xsim_script.tcl
+# xsim {id_sim} -wdb {id_waves.wdb} -autoloadwcfg -runall
+Vivado Simulator 2017.4
+Time resolution is 1 ps
+run -all
+========== IDé˜¶æ®µ(è¯‘ç )æ¨¡å—ä»¿çœŸæµ‹è¯• ==========
+
+=== å¯„å­˜å™¨å †å†™å…¥æµ‹è¯• ===
+[36000] å†™å¯„å­˜å™¨ x1 = 00001111 (æ¥æº:  ALU)
+[46000] å†™å¯„å­˜å™¨ x2 = 00002222 (æ¥æº:  ALU)
+[56000] å†™å¯„å­˜å™¨ x3 = 00003333 (æ¥æº:  MEM)
+[66000] å†™å¯„å­˜å™¨ x4 = 00000004 (æ¥æº: PC+4)
+[76000] å†™å¯„å­˜å™¨ x5 = aaaaaaaa (æ¥æº: SEXT)
+
+=== å¯„å­˜å™¨å †è¯»å–æµ‹è¯• ===
+[86000] è¯»å¯„å­˜å™¨ x0=00000000, x1=00001111
+[96000] è¯»å¯„å­˜å™¨ x2=00002222, x3=00003333
+[106000] è¯»å¯„å­˜å™¨ x4=00000004, x5=aaaaaaaa
+
+=== å†™å…¥x0æµ‹è¯•(åº”è¯¥æ— æ•ˆ) ===
+[116000] å†™å¯„å­˜å™¨ x0 = ffffffff (æ¥æº:  ALU)
+[126000] è¯»å¯„å­˜å™¨ x0=00000000, x1=00001111
+
+=== SEXTç«‹å³æ•°æ‰©å±•æµ‹è¯• ===
+[127000] SEXT                                                         ÿÿÿ‹(12ÿÿÿçÿÿÿÿÿÿ©ÿÿ•): din=1ffffff => ext=ffffffff
+[128000] SEXT                                                                     ÿÿÿ‹ÿÿÿ£ÿÿ°): din=000007f => ext=00000000
+[129000] SEXT                                                         ÿÿÿ‹(12ÿÿÿçÿÿÿÿÿÿ©ÿÿ•): din=1ffffff => ext=ffffffff
+[130000] SEXT                                                         ÿÿÿ‹(13ÿÿÿçÿÿÿÿÿÿ©ÿÿ•): din=1ffffff => ext=fffffffe
+[131000] SEXT                                                                 ÿÿÿåÿÿÿéÿ˜20ÿÿ): din=0345678 => ext=1a2b3000
+[132000] SEXT                                                         ÿÿÿ‹(21ÿÿÿçÿÿÿÿÿÿ©ÿÿ•): din=1ffffff => ext=fffffffe
+
+=== åŒæ—¶è¯»å†™æµ‹è¯•(å†™åè¯») ===
+[146000] åŒæ—¶å†™x10=deadbeef, è¯»x10=00000000 (åº”æ˜¾ç¤ºæ—§å€¼)
+[156000] ä¸‹ä¸ªå‘¨æœŸè¯»x10=deadbeef (åº”æ˜¾ç¤ºæ–°å€¼)
+
+========== IDé˜¶æ®µä»¿çœŸæµ‹è¯•å®Œæˆ ==========
+$finish called at time : 206 ns : File "/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sim_1/new/ID_stage_tb.v" Line 172
+exit
+INFO: [Common 17-206] Exiting xsim at Wed Jan  7 14:30:11 2026...

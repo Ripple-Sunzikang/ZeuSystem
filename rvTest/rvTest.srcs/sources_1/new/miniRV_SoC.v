@@ -24,7 +24,11 @@ module miniRV_SoC (
     input  wire [3:0]   line,
 
     // 蜂鸣器接口
-    output wire         buzzer
+    output wire         buzzer,
+
+    // UART 串口接口
+    input  wire         uart_rx,    // UART 接收
+    output wire         uart_tx     // UART 发送
 
 `ifdef RUN_TRACE
     ,// Debug Interface
@@ -122,6 +126,23 @@ module miniRV_SoC (
     wire [31:0]   wdt_wdata;
     wire [31:0]   wdt_rdata;
     wire          wdt_reset_out;  // 看门狗复位输出
+
+    // PRAM - Program RAM (用于 UART Bootloader 加载的用户程序)
+    wire [11:0]   pram_inst_addr;       // 指令读取地址 (来自 CPU IF 阶段) - 12位=4K words=16KB
+    wire [31:0]   pram_inst_data;       // 指令数据 (返回给 CPU)
+    wire          pram_inst_sel;        // PRAM 取指选择信号
+    wire [11:0]   pram_data_addr;       // 数据访问地址 (来自 Bridge) - 12位=4K words=16KB
+    wire [31:0]   pram_data_wdata;      // 写入数据
+    wire          pram_data_we;         // 写使能
+    wire [31:0]   pram_data_rdata;      // 读取数据
+
+    // UART
+    wire          uart_rst;
+    wire          uart_clk;
+    wire          uart_wen;
+    wire [31:0]   uart_addr;
+    wire [31:0]   uart_wdata;
+    wire [31:0]   uart_rdata;
     
 
     
@@ -150,7 +171,12 @@ module miniRV_SoC (
 
         // Interface to IROM
         .inst_addr          (inst_addr),
-        .inst               (inst),
+        .inst_from_irom     (inst),
+        
+        // Interface to PRAM (for XIP - eXecute In Place)
+        .inst_addr_dram     (pram_inst_addr),
+        .inst_from_dram     (pram_inst_data),
+        .inst_from_dram_sel (pram_inst_sel),
 
         // Interface to Bridge
         .Bus_addr           (Bus_addr),
@@ -246,7 +272,22 @@ module miniRV_SoC (
         .wen_to_wdt          (wdt_wen),
         .addr_to_wdt         (wdt_addr),
         .wdata_to_wdt        (wdt_wdata),
-        .rdata_from_wdt      (wdt_rdata)
+        .rdata_from_wdt      (wdt_rdata),
+
+        // Interface to UART
+        .rst_to_uart         (uart_rst),
+        .clk_to_uart         (uart_clk),
+        .wen_to_uart         (uart_wen),
+        .addr_to_uart        (uart_addr),
+        .wdata_to_uart       (uart_wdata),
+        .rdata_from_uart     (uart_rdata),
+
+        // Interface to PRAM (Program RAM for UART Bootloader)
+        .clk_to_pram         (cpu_clk),
+        .addr_to_pram        (pram_data_addr),
+        .wdata_to_pram       (pram_data_wdata),
+        .we_to_pram          (pram_data_we),
+        .rdata_from_pram     (pram_data_rdata)
     );
 
     DRAM Mem_DRAM (
@@ -345,6 +386,39 @@ module miniRV_SoC (
         .wdata(wdt_wdata),
         .rdata(wdt_rdata),
         .wdt_rst(wdt_reset_out)
+    );
+
+    // UART 串口模块
+    UART UART_0(
+        .rst(uart_rst),
+        .clk(uart_clk),
+        .wen(uart_wen),
+        .addr(uart_addr),
+        .wdata(uart_wdata),
+        .rdata(uart_rdata),
+        .uart_rx(uart_rx),
+        .uart_tx(uart_tx)
+    );
+
+    // PRAM - Program RAM (双端口, 用于 UART Bootloader 加载用户程序)
+    // 端口 A: 指令读取 (IF 阶段)
+    // 端口 B: 数据读写 (MEM 阶段, 用于程序加载)
+    // 
+    // 注意: 使用 PRAM_Wrapper 封装 Xilinx Block Memory Generator IP
+    // 需要先运行 scripts/create_pram_ip.tcl 创建 PRAM_BRAM IP
+    // 
+    // 如果不想使用 IP 核，可以改回使用原始 PRAM 模块:
+    // PRAM PRAM_0(...)
+    PRAM_Wrapper PRAM_0(
+        .clk        (cpu_clk),
+        // 端口 A - 指令读取
+        .addr_a     (pram_inst_addr),
+        .rdata_a    (pram_inst_data),
+        // 端口 B - 数据读写 (用于加载程序)
+        .addr_b     (pram_data_addr),
+        .wdata_b    (pram_data_wdata),
+        .we_b       (pram_data_we),
+        .rdata_b    (pram_data_rdata)
     );
 
 

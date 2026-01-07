@@ -16,6 +16,8 @@ int bios_key_read();
 int bios_mul10(int x);
 int bios_multiply(int x, int y);
 void bios_wdt_feed();
+void bios_uart_puts(char *str);
+void bios_uart_putnum(int num);
 
 // 用户主程序入口
 int user_main() {
@@ -50,6 +52,10 @@ int user_main() {
         if (key_val >= 0) {
             bios_wdt_feed();  // 有按键时也喂狗
             last_key = key_val;
+
+            // UART 调试输出
+            bios_uart_puts("Key: ");
+            bios_uart_putnum(key_val);
 
             if (key_val < 10) {
                 // 数字键: current = current * 10 + key_val
@@ -96,6 +102,11 @@ int user_main() {
 
             // 更新显示
             bios_display_bcd(current);
+
+            // UART 输出当前计算结果
+            bios_uart_puts(" -> Result: ");
+            bios_uart_putnum(current);
+            bios_uart_puts("\r\n");
 
             // LED 显示: [3:0]=last_key, [7:4]=op, [0]=1
             tmp = op << 4;

@@ -203,6 +203,11 @@ impl Parser {
         self.skip_newlines();
 
         match &self.current_token().token_type {
+            // 空语句 (只有分号)
+            TokenType::Semicolon => {
+                self.advance();
+                Ok(Statement::Block(Vec::new()))  // 空语句作为空块处理
+            }
             TokenType::LeftBrace => {
                 self.advance();
                 let stmts = self.parse_block()?;
@@ -309,7 +314,7 @@ impl Parser {
                 Ok(Statement::Continue)
             }
             TokenType::Int | TokenType::Char | TokenType::Void => {
-                let ty = self.parse_type()?;
+                let base_ty = self.parse_type()?;
                 self.skip_newlines();
 
                 let name = match &self.current_token().token_type {
@@ -319,6 +324,26 @@ impl Parser {
                         n
                     }
                     _ => return Err("Expected variable name".to_string()),
+                };
+
+                self.skip_newlines();
+
+                // 检查是否是数组声明 name[size]
+                let ty = if self.consume_if(&TokenType::LeftBracket) {
+                    self.skip_newlines();
+                    let size = match &self.current_token().token_type {
+                        TokenType::Number(n) => {
+                            let n = *n as usize;
+                            self.advance();
+                            n
+                        }
+                        _ => return Err("Expected array size".to_string()),
+                    };
+                    self.skip_newlines();
+                    self.expect(TokenType::RightBracket)?;
+                    Type::Array(Box::new(base_ty), size)
+                } else {
+                    base_ty
                 };
 
                 self.skip_newlines();
@@ -711,10 +736,16 @@ impl Parser {
                 }
                 self.expect(TokenType::RightParen)?;
 
+                // 支持直接函数调用和间接调用（函数指针）
                 if let Expression::Identifier(name) = expr {
+                    // 直接函数调用: func_name(args)
                     expr = Expression::Call { name, args };
                 } else {
-                    return Err("Invalid function call".to_string());
+                    // 间接函数调用: (*ptr)(args) 或 ptr(args)
+                    expr = Expression::IndirectCall { 
+                        target: Box::new(expr), 
+                        args 
+                    };
                 }
             } else if self.consume_if(&TokenType::Dot) {
                 let member = match &self.current_token().token_type {

@@ -1,0 +1,13 @@
+#-----------------------------------------------------------
+# Webtalk v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Wed Jan  7 14:28:36 2026
+# Process ID: 17742
+# Current directory: /home/vessel/SEU-RISCV-CPU/rvTest/sim_results/if_sim
+# Command line: wbtcv -mode batch -source /home/vessel/SEU-RISCV-CPU/rvTest/sim_results/if_sim/xsim.dir/if_sim/webtalk/xsim_webtalk.tcl -notrace
+# Log file: /home/vessel/SEU-RISCV-CPU/rvTest/sim_results/if_sim/webtalk.log
+# Journal file: /home/vessel/SEU-RISCV-CPU/rvTest/sim_results/if_sim/webtalk.jou
+#-----------------------------------------------------------
+source /home/vessel/SEU-RISCV-CPU/rvTest/sim_results/if_sim/xsim.dir/if_sim/webtalk/xsim_webtalk.tcl -notrace
+INFO: [Common 17-206] Exiting Webtalk at Wed Jan  7 14:28:37 2026...

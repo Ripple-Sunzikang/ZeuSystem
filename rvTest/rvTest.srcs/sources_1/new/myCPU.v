@@ -12,7 +12,12 @@
     `else
         output wire [13:0]  inst_addr,
     `endif
-        input  wire [31:0]  inst,
+        input  wire [31:0]  inst_from_irom,
+        
+        // Interface to PRAM for instruction fetch (XIP - eXecute In Place)
+        output wire [11:0]  inst_addr_dram,   // 12位=4K words=16KB
+        input  wire [31:0]  inst_from_dram,
+        output wire         inst_from_dram_sel,  // 1 = fetch from PRAM, 0 = fetch from IROM
             
         // Interface to Bridge
         output wire [31:0]  Bus_addr,
@@ -30,7 +35,7 @@
     `endif
     );
 
-    // TODO: ������Լ��ĵ�����CPU���
+    // TODO: ������Լ��ĵ�����CPU���
     //pc output signals
     wire[31:0] pc;
 
@@ -128,8 +133,15 @@
     .npc(npc)
     );//
 
-    //IROM part
-    assign inst_addr = pc[15:2];
+    //==========================================================================
+    // Instruction Fetch - 支持从 IROM 或 PRAM 取指
+    // PC[31:16] == 0x0000 -> 从 IROM 取指 (BIOS/固件)
+    // PC[31:16] == 0x0001 -> 从 PRAM 取指 (用户程序，通过 UART 加载)
+    //==========================================================================
+    assign inst_addr = pc[15:2];                                    // IROM 地址
+    assign inst_addr_dram = pc[13:2];                               // PRAM 指令地址 (12位=4K words)
+    assign inst_from_dram_sel = (pc[31:16] == 16'h0001) ? 1'b1 : 1'b0;  // 选择信号
+    wire [31:0] inst = inst_from_dram_sel ? inst_from_dram : inst_from_irom;  // MUX 选择指令源
 
     IF_ID U_IF_ID(
     .clk(cpu_clk),

@@ -1,0 +1,1 @@
+-debug "typical" "work.ID_stage_tb" -s "id_sim" 

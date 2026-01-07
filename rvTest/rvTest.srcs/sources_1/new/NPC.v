@@ -1,4 +1,6 @@
+`timescale 1ns / 1ps
 `include "defines.vh"
+
 module NPC(
   input wire[2:0] op,
   input wire[1:0] br,

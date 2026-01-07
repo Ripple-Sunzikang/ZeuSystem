@@ -1,0 +1,8 @@
+0.6
+2017.4
+Dec 15 2017
+20:57:24
+/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.sim/sim_mem_stage/behav/xsim/glbl.v,1513215259,verilog,,,,glbl,,,,,,,,
+/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sim_1/new/MEM_stage_tb.v,1767713658,verilog,,,/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/defines.vh,MEM_stage_tb,,,../../../../rvTest.srcs/sources_1/ip/cpuclk;../../../../rvTest.srcs/sources_1/new,,,,,
+/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Bridge.v,1767453943,verilog,,/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sim_1/new/MEM_stage_tb.v,/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/defines.vh,Bridge,,,../../../../rvTest.srcs/sources_1/ip/cpuclk;../../../../rvTest.srcs/sources_1/new,,,,,
+/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/defines.vh,1767444534,verilog,,,,,,,,,,,,

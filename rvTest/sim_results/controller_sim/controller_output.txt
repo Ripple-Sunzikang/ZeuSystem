@@ -1,0 +1,44 @@
+
+****** xsim v2017.4 (64-bit)
+  **** SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
+  **** IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+    ** Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
+
+source xsim.dir/controller_sim/xsim_script.tcl
+# xsim {controller_sim} -wdb {controller_waves.wdb} -autoloadwcfg -runall
+Vivado Simulator 2017.4
+Time resolution is 1 ps
+run -all
+========== 控制器模块仿真测试 ==========
+
+=== R型指令测试 ===
+[30000]                                                                              ADD: npc=000 rf_we=1 rf_wsel=000 alu_op=000 alub=000 sext=000 ram_we=0 rf_re=11
+[40000]                                                                              SUB: npc=000 rf_we=1 rf_wsel=000 alu_op=001 alub=000 sext=000 ram_we=0 rf_re=11
+[50000]                                                                              AND: npc=000 rf_we=1 rf_wsel=000 alu_op=010 alub=000 sext=000 ram_we=0 rf_re=11
+[60000]                                                                               OR: npc=000 rf_we=1 rf_wsel=000 alu_op=011 alub=000 sext=000 ram_we=0 rf_re=11
+[70000]                                                                              XOR: npc=000 rf_we=1 rf_wsel=000 alu_op=100 alub=000 sext=000 ram_we=0 rf_re=11
+[80000]                                                                              SLL: npc=000 rf_we=1 rf_wsel=000 alu_op=101 alub=000 sext=000 ram_we=0 rf_re=11
+[90000]                                                                              SRL: npc=000 rf_we=1 rf_wsel=000 alu_op=110 alub=000 sext=000 ram_we=0 rf_re=11
+[100000]                                                                              SRA: npc=000 rf_we=1 rf_wsel=000 alu_op=111 alub=000 sext=000 ram_we=0 rf_re=11
+
+=== I型指令测试 ===
+[110000]                                                                             ADDI: npc=000 rf_we=1 rf_wsel=000 alu_op=000 alub=001 sext=000 ram_we=0 rf_re=01
+[120000]                                                                             ANDI: npc=000 rf_we=1 rf_wsel=000 alu_op=010 alub=001 sext=000 ram_we=0 rf_re=01
+[130000]                                                                              ORI: npc=000 rf_we=1 rf_wsel=000 alu_op=011 alub=001 sext=000 ram_we=0 rf_re=01
+[140000]                                                                             XORI: npc=000 rf_we=1 rf_wsel=000 alu_op=100 alub=001 sext=000 ram_we=0 rf_re=01
+[150000]                                                                               LW: npc=000 rf_we=1 rf_wsel=001 alu_op=000 alub=001 sext=000 ram_we=0 rf_re=01
+[160000]                                                                             JALR: npc=110 rf_we=1 rf_wsel=010 alu_op=000 alub=001 sext=000 ram_we=0 rf_re=01
+
+=== S/B/U/J型指令测试 ===
+[170000]                                                                               SW: npc=000 rf_we=0 rf_wsel=000 alu_op=000 alub=001 sext=001 ram_we=1 rf_re=11
+[180000]                                                                              BEQ: npc=001 rf_we=0 rf_wsel=000 alu_op=001 alub=000 sext=010 ram_we=0 rf_re=11
+[190000]                                                                              BNE: npc=011 rf_we=0 rf_wsel=000 alu_op=001 alub=000 sext=010 ram_we=0 rf_re=11
+[200000]                                                                              BLT: npc=100 rf_we=0 rf_wsel=000 alu_op=001 alub=000 sext=010 ram_we=0 rf_re=11
+[210000]                                                                              BGE: npc=101 rf_we=0 rf_wsel=000 alu_op=001 alub=000 sext=010 ram_we=0 rf_re=11
+[220000]                                                                              LUI: npc=000 rf_we=1 rf_wsel=011 alu_op=001 alub=001 sext=011 ram_we=0 rf_re=00
+[230000]                                                                              JAL: npc=010 rf_we=1 rf_wsel=010 alu_op=001 alub=001 sext=100 ram_we=0 rf_re=00
+
+========== 控制器仿真测试完成 ==========
+$finish called at time : 280 ns : File "/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sim_1/new/controller_tb.v" Line 94
+exit
+INFO: [Common 17-206] Exiting xsim at Wed Jan  7 14:27:52 2026...
