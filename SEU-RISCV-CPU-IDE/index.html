@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEU-RISCV-CPU-IDE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+        }
+
+        .header {
+            background-color: #252526;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #3e3e42;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 18px;
+            color: #569cd6;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            background-color: #0e639c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background-color: #1177bb;
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .editor-container {
+            flex: 1;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .editor-header h2 {
+            margin: 0;
+            font-size: 16px;
+            color: #cccccc;
+        }
+
+        #editor {
+            flex: 1;
+            border: 1px solid #3e3e42;
+            border-radius: 4px;
+        }
+
+        .output-container {
+            width: 400px;
+            background-color: #1e1e1e;
+            border-left: 1px solid #3e3e42;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .output-tabs {
+            display: flex;
+            background-color: #252526;
+        }
+
+        .output-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            color: #cccccc;
+        }
+
+        .output-tab.active {
+            border-bottom-color: #569cd6;
+            color: #569cd6;
+        }
+
+        .output-content {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .output-panel {
+            display: none;
+            height: 100%;
+        }
+
+        .output-panel.active {
+            display: block;
+        }
+
+        .status-bar {
+            background-color: #252526;
+            padding: 5px 10px;
+            font-size: 12px;
+            color: #cccccc;
+            border-top: 1px solid #3e3e42;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #status-message {
+            color: #569cd6;
+        }
+
+        #status-error {
+            color: #f48771;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            border: none;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            resize: none;
+        }
+
+        textarea:focus {
+            outline: none;
+        }
+
+        .file-info {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #252526;
+            border-radius: 4px;
+        }
+
+        .file-info h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #cccccc;
+        }
+
+        .file-info ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .file-info li {
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #d4d4d4;
+        }
+
+        .options {
+            margin-bottom: 10px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .options label {
+            font-size: 14px;
+            color: #cccccc;
+        }
+
+        .options input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        .options input[type="text"] {
+            padding: 5px;
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            color: #d4d4d4;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>SEU-RISCV-CPU-IDE</h1>
+        <div class="header-buttons">
+            <button id="open-btn">打开</button>
+            <button id="save-btn">保存</button>
+            <button id="compile-btn">编译</button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="editor-container">
+            <div class="editor-header">
+                <h2>C代码编辑器</h2>
+                <div class="options">
+                    <label>
+                        <input type="checkbox" id="generate-coe" checked>
+                        生成COE文件
+                    </label>
+                    <label>
+                        输出名称: <input type="text" id="output-name" placeholder="output">
+                    </label>
+                </div>
+            </div>
+            <textarea id="code-editor">// 在此输入您的C代码</textarea>
+        </div>
+
+        <div class="output-container">
+            <div class="output-tabs">
+                <div class="output-tab active" data-tab="output">输出</div>
+                <div class="output-tab" data-tab="assembly">汇编代码</div>
+                <div class="output-tab" data-tab="coe">COE文件</div>
+                <div class="output-tab" data-tab="files">生成文件</div>
+            </div>
+            <div class="output-content">
+                <div class="output-panel active" id="output-panel">
+                    <textarea id="output-text" readonly></textarea>
+                </div>
+                <div class="output-panel" id="assembly-panel">
+                    <textarea id="assembly-text" readonly></textarea>
+                </div>
+                <div class="output-panel" id="coe-panel">
+                    <textarea id="coe-text" readonly></textarea>
+                </div>
+                <div class="output-panel" id="files-panel">
+                    <div class="file-info">
+                        <h3>生成的文件</h3>
+                        <ul id="generated-files"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="status-bar">
+        <div id="status-message">就绪</div>
+        <div id="status-error"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/c-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/matchbrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closebrackets.min.js"></script>
+    <script>
+        // 初始化CodeMirror编辑器
+        const editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+            mode: 'text/x-csrc',
+            theme: 'dracula',
+            lineNumbers: true,
+            autoCloseBrackets: true,
+            matchBrackets: true,
+            indentUnit: 4,
+            indentWithTabs: false,
+            lineWrapping: true,
+            extraKeys: {
+                'Ctrl-Space': 'autocomplete',
+                'Tab': (cm) => {
+                    if (cm.somethingSelected()) {
+                        cm.indentSelection('add');
+                    } else {
+                        // 当没有选中内容时，自动补全
+                        cm.showHint({
+                            hint: CodeMirror.hint.c,
+                            completeSingle: false
+                        });
+                    }
+                }
+            },
+            // 自动补全配置
+            hintOptions: {
+                completeSingle: false,
+                closeOnUnfocus: true
+            }
+        });
+
+        // 扩展C语言补全词汇表，添加BIOS函数和常用函数
+        CodeMirror.registerHelper('hint', 'c', (cm) => {
+            // 基础C语言关键字
+            const cKeywords = [
+                'auto', 'break', 'case', 'char', 'const', 'continue', 'default', 'do', 'double',
+                'else', 'enum', 'extern', 'float', 'for', 'goto', 'if', 'int', 'long',
+                'register', 'return', 'short', 'signed', 'sizeof', 'static', 'struct', 'switch',
+                'typedef', 'union', 'unsigned', 'void', 'volatile', 'while',
+                'asm', 'inline', 'restrict', '_Bool', '_Complex', '_Imaginary',
+                'alignas', 'alignof', 'decltype', 'noreturn', 'static_assert', 'thread_local'
+            ];
+            
+            // BIOS函数补全
+            const biosFunctions = [
+                'bios_wdt_feed', 'bios_led_write', 'bios_display_bcd', 'bios_sw_read',
+                'bios_delay', 'bios_uart_putc', 'bios_uart_getc', 'bios_uart_puts',
+                'bios_uart_gets', 'bios_multiply', 'bios_divide', 'bios_modulo',
+                'bios_compare', 'bios_abs', 'bios_max', 'bios_min'
+            ];
+            
+            // 常用C标准库函数
+            const stdFunctions = [
+                'printf', 'scanf', 'sprintf', 'sscanf',
+                'memcpy', 'memset', 'strcpy', 'strncpy', 'strcmp', 'strncmp',
+                'strcat', 'strncat', 'strlen', 'malloc', 'free', 'calloc', 'realloc'
+            ];
+            
+            // 合并所有补全项
+            const allKeywords = [...new Set([...cKeywords, ...biosFunctions, ...stdFunctions])];
+            
+            // 获取当前编辑位置的上下文
+            const cur = cm.getCursor();
+            const token = cm.getTokenAt(cur);
+            const start = token.start;
+            const end = cur.ch;
+            const word = token.string;
+            
+            // 筛选匹配的补全项
+            const list = allKeywords.filter(function(item) {
+                return item.toLowerCase().startsWith(word.toLowerCase());
+            });
+            
+            return {
+                list: list,
+                from: CodeMirror.Pos(cur.line, start),
+                to: CodeMirror.Pos(cur.line, end)
+            };
+        });
+
+        // 标签切换功能
+        document.querySelectorAll('.output-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // 移除所有活跃状态
+                document.querySelectorAll('.output-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.output-panel').forEach(p => p.classList.remove('active'));
+                
+                // 添加当前标签的活跃状态
+                const tabId = tab.dataset.tab;
+                tab.classList.add('active');
+                document.getElementById(`${tabId}-panel`).classList.add('active');
+            });
+        });
+
+        // 编译功能
+        document.getElementById('compile-btn').addEventListener('click', async () => {
+            const sourceCode = editor.getValue();
+            const generateCoe = document.getElementById('generate-coe').checked;
+            const outputName = document.getElementById('output-name').value || 'output';
+
+            showOutput('正在编译...', false);
+            setStatus('编译中...');
+            clearError();
+
+            try {
+                const result = await window.electronAPI.compileC(sourceCode, {
+                    generateCoe: generateCoe,
+                    outputName: outputName
+                });
+
+                if (result.success) {
+                    showOutput(result.output, false);
+                    setStatus('编译成功');
+                    
+                    // 显示生成的文件
+                    displayGeneratedFiles(result.generatedFiles);
+                    
+                    // 加载汇编和COE文件内容
+                    if (result.generatedFiles.s) {
+                        loadFileContent(result.generatedFiles.s, 'assembly-text');
+                    }
+                    if (result.generatedFiles.coe) {
+                        loadFileContent(result.generatedFiles.coe, 'coe-text');
+                    }
+                } else {
+                    showOutput(result.output || result.error, true);
+                    setError('编译失败');
+                }
+            } catch (error) {
+                showOutput('编译过程中发生错误: ' + error.message, true);
+                setError('编译错误');
+            }
+        });
+
+        // 显示输出
+        function showOutput(text, isError) {
+            const outputText = document.getElementById('output-text');
+            outputText.value = text;
+            outputText.scrollTop = outputText.scrollHeight;
+        }
+
+        // 设置状态
+        function setStatus(message) {
+            document.getElementById('status-message').textContent = message;
+        }
+
+        // 设置错误
+        function setError(message) {
+            document.getElementById('status-error').textContent = message;
+        }
+
+        // 清除错误
+        function clearError() {
+            document.getElementById('status-error').textContent = '';
+        }
+
+        // 存储生成的文件路径
+        let generatedFiles = {};
+
+        // 显示生成的文件
+        function displayGeneratedFiles(files) {
+            const filesList = document.getElementById('generated-files');
+            filesList.innerHTML = '';
+            generatedFiles = files;
+
+            if (files.s) {
+                const li = document.createElement('li');
+                li.textContent = `汇编文件: ${files.s}`;
+                filesList.appendChild(li);
+            }
+
+            if (files.elf) {
+                const li = document.createElement('li');
+                li.textContent = `ELF文件: ${files.elf}`;
+                filesList.appendChild(li);
+            }
+
+            if (files.coe) {
+                const li = document.createElement('li');
+                li.textContent = `COE文件: ${files.coe}`;
+                filesList.appendChild(li);
+            }
+        }
+
+        // 加载文件内容
+        async function loadFileContent(filePath, elementId) {
+            try {
+                const result = await window.electronAPI.readFile(filePath);
+                if (result.success) {
+                    document.getElementById(elementId).value = result.content;
+                } else {
+                    document.getElementById(elementId).value = '无法加载文件内容: ' + result.error;
+                }
+            } catch (error) {
+                console.error('Error loading file:', error);
+                document.getElementById(elementId).value = '无法加载文件内容: ' + error.message;
+            }
+        }
+
+        // 简单的path.join实现
+        function pathJoin(...args) {
+            return args.join('/').replace(/\/+/g, '/');
+        }
+
+        // 保存功能
+        document.getElementById('save-btn').addEventListener('click', async () => {
+            const sourceCode = editor.getValue();
+            const outputName = document.getElementById('output-name').value || 'output';
+
+            try {
+                const result = await window.electronAPI.showSaveDialog({
+                    title: '保存C文件',
+                    defaultPath: `../output/${outputName}.c`,
+                    filters: [
+                        { name: 'C Files', extensions: ['c'] },
+                        { name: 'All Files', extensions: ['*'] }
+                    ]
+                });
+
+                if (!result.canceled && result.filePath) {
+                    const saveResult = await window.electronAPI.saveFile(result.filePath, sourceCode);
+                    if (saveResult.success) {
+                        setStatus(`文件已保存: ${result.filePath}`);
+                        alert('文件保存成功！');
+                    } else {
+                        setError('保存失败: ' + saveResult.error);
+                        alert('保存失败: ' + saveResult.error);
+                    }
+                }
+            } catch (error) {
+                setError('保存过程中发生错误: ' + error.message);
+                alert('保存失败: ' + error.message);
+            }
+        });
+
+
+
+        // 打开文件功能
+        document.getElementById('open-btn').addEventListener('click', async () => {
+            try {
+                // 显示文件选择对话框
+                const result = await window.electronAPI.showOpenDialog({
+                    title: '打开C文件',
+                    defaultPath: '../',
+                    filters: [
+                        { name: 'C Files', extensions: ['c'] },
+                        { name: 'All Files', extensions: ['*'] }
+                    ],
+                    properties: ['openFile']
+                });
+
+                if (!result.canceled && result.filePaths && result.filePaths.length > 0) {
+                    const filePath = result.filePaths[0];
+                    // 读取文件内容
+                    const readResult = await window.electronAPI.readFile(filePath);
+                    if (readResult.success) {
+                        // 设置编辑器内容
+                        editor.setValue(readResult.content);
+                        // 更新输出名称
+                        const fileName = filePath.split('/').pop().split('\\').pop(); // 处理不同平台的路径分隔符
+                        const outputName = fileName.replace('.c', '');
+                        document.getElementById('output-name').value = outputName;
+                        setStatus(`已打开文件: ${filePath}`);
+                    } else {
+                        setError('读取文件失败: ' + readResult.error);
+                        alert('读取文件失败: ' + readResult.error);
+                    }
+                }
+            } catch (error) {
+                setError('打开文件过程中发生错误: ' + error.message);
+                alert('打开文件失败: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>
