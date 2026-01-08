@@ -1,0 +1,115 @@
+\contentsline {chapter}{\numberline {第一章\hspace {.3em}}项目背景与目标}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}背景与意义}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}项目目标与交付物}{1}{section.1.2}%
+\contentsline {section}{\numberline {1.3}设计原则与评价指标}{2}{section.1.3}%
+\contentsline {section}{\numberline {1.4}设计约束与取舍}{2}{section.1.4}%
+\contentsline {chapter}{\numberline {第二章\hspace {.3em}}系统总体架构与流程}{3}{chapter.2}%
+\contentsline {section}{\numberline {2.1}总体架构}{3}{section.2.1}%
+\contentsline {section}{\numberline {2.2}目录结构}{4}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}目录树（节选）}{4}{subsection.2.2.1}%
+\contentsline {section}{\numberline {2.3}从 C 到 FPGA 的流程}{5}{section.2.3}%
+\contentsline {chapter}{\numberline {第三章\hspace {.3em}}指令集与执行模型}{7}{chapter.3}%
+\contentsline {section}{\numberline {3.1}RV32I 子集支持}{7}{section.3.1}%
+\contentsline {section}{\numberline {3.2}指令格式与寄存器模型}{7}{section.3.2}%
+\contentsline {section}{\numberline {3.3}执行模型与内存系统}{8}{section.3.3}%
+\contentsline {section}{\numberline {3.4}汇编示例}{8}{section.3.4}%
+\contentsline {chapter}{\numberline {第四章\hspace {.3em}}编译器设计与实现}{10}{chapter.4}%
+\contentsline {section}{\numberline {4.1}总体架构}{10}{section.4.1}%
+\contentsline {section}{\numberline {4.2}词法与语法分析}{10}{section.4.2}%
+\contentsline {section}{\numberline {4.3}语义分析与代码生成}{11}{section.4.3}%
+\contentsline {section}{\numberline {4.4}汇编器与链接器}{11}{section.4.4}%
+\contentsline {chapter}{\numberline {第五章\hspace {.3em}}BIOS 固件与软件运行时}{12}{chapter.5}%
+\contentsline {section}{\numberline {5.1}BIOS 设计目标}{12}{section.5.1}%
+\contentsline {section}{\numberline {5.2}启动流程与 Bootloader}{12}{section.5.2}%
+\contentsline {section}{\numberline {5.3}BIOS 接口列表（节选）}{13}{section.5.3}%
+\contentsline {section}{\numberline {5.4}应用示例：计算器}{13}{section.5.4}%
+\contentsline {chapter}{\numberline {第六章\hspace {.3em}}软硬件协同设计}{14}{chapter.6}%
+\contentsline {section}{\numberline {6.1}协同设计目标}{14}{section.6.1}%
+\contentsline {section}{\numberline {6.2}调用约定与栈帧模型}{14}{section.6.2}%
+\contentsline {section}{\numberline {6.3}BIOS 系统调用表机制}{14}{section.6.3}%
+\contentsline {section}{\numberline {6.4}内存布局与软件补偿}{14}{section.6.4}%
+\contentsline {chapter}{\numberline {第七章\hspace {.3em}}CPU 微架构设计}{16}{chapter.7}%
+\contentsline {section}{\numberline {7.1}设计总览}{16}{section.7.1}%
+\contentsline {section}{\numberline {7.2}数据通路与控制通路分离}{16}{section.7.2}%
+\contentsline {section}{\numberline {7.3}五级流水线结构}{16}{section.7.3}%
+\contentsline {section}{\numberline {7.4}取指与下一 PC 逻辑}{17}{section.7.4}%
+\contentsline {subsection}{\numberline {7.4.1}PC/NPC 实现片段与解释}{18}{subsection.7.4.1}%
+\contentsline {subsection}{\numberline {7.4.2}IF/ID 与 ID/EX 寄存器片段}{18}{subsection.7.4.2}%
+\contentsline {section}{\numberline {7.5}译码与寄存器堆}{19}{section.7.5}%
+\contentsline {subsection}{\numberline {7.5.1}立即数扩展示意代码}{20}{subsection.7.5.1}%
+\contentsline {section}{\numberline {7.6}执行阶段（EX）}{20}{section.7.6}%
+\contentsline {subsection}{\numberline {7.6.1}ALU 运算与分支标志片段}{20}{subsection.7.6.1}%
+\contentsline {section}{\numberline {7.7}访存阶段（MEM）}{21}{section.7.7}%
+\contentsline {section}{\numberline {7.8}写回阶段（WB）}{21}{section.7.8}%
+\contentsline {section}{\numberline {7.9}流水线寄存器与阶段隔离}{22}{section.7.9}%
+\contentsline {section}{\numberline {7.10}关键控制信号说明}{22}{section.7.10}%
+\contentsline {section}{\numberline {7.11}模块级划分与职责}{23}{section.7.11}%
+\contentsline {section}{\numberline {7.12}指令流动的周期级示例}{23}{section.7.12}%
+\contentsline {section}{\numberline {7.13}不同指令类型的执行路径}{23}{section.7.13}%
+\contentsline {chapter}{\numberline {第八章\hspace {.3em}}控制逻辑与冒险处理}{25}{chapter.8}%
+\contentsline {section}{\numberline {8.1}控制信号生成}{25}{section.8.1}%
+\contentsline {section}{\numberline {8.2}数据冒险处理}{25}{section.8.2}%
+\contentsline {subsection}{\numberline {8.2.1}数据冒险检测与前递片段}{26}{subsection.8.2.1}%
+\contentsline {section}{\numberline {8.3}控制冒险处理}{26}{section.8.3}%
+\contentsline {subsection}{\numberline {8.3.1}控制冒险检测片段}{27}{subsection.8.3.1}%
+\contentsline {chapter}{\numberline {第九章\hspace {.3em}}流水线性能与时序分析}{28}{chapter.9}%
+\contentsline {section}{\numberline {9.1}理想吞吐与 CPI}{28}{section.9.1}%
+\contentsline {section}{\numberline {9.2}分支惩罚分析}{28}{section.9.2}%
+\contentsline {section}{\numberline {9.3}Load-Use 冒险与停顿}{28}{section.9.3}%
+\contentsline {section}{\numberline {9.4}时序与关键路径}{28}{section.9.4}%
+\contentsline {chapter}{\numberline {第十章\hspace {.3em}}存储系统与总线设计}{30}{chapter.10}%
+\contentsline {section}{\numberline {10.1}IROM 与 DRAM}{30}{section.10.1}%
+\contentsline {section}{\numberline {10.2}PRAM 与 Bootloader}{30}{section.10.2}%
+\contentsline {section}{\numberline {10.3}总线桥与地址解码}{30}{section.10.3}%
+\contentsline {section}{\numberline {10.4}MMIO 地址映射}{31}{section.10.4}%
+\contentsline {chapter}{\numberline {第十一章\hspace {.3em}}外设控制器设计}{33}{chapter.11}%
+\contentsline {section}{\numberline {11.1}数码管（7-Seg）}{33}{section.11.1}%
+\contentsline {section}{\numberline {11.2}4×4 矩阵键盘}{33}{section.11.2}%
+\contentsline {section}{\numberline {11.3}LED / Switch / Button}{33}{section.11.3}%
+\contentsline {section}{\numberline {11.4}UART}{33}{section.11.4}%
+\contentsline {section}{\numberline {11.5}Timer / PWM / WDT}{34}{section.11.5}%
+\contentsline {chapter}{\numberline {第十二章\hspace {.3em}}FPGA 实现与约束}{35}{chapter.12}%
+\contentsline {section}{\numberline {12.1}Vivado 工程与时钟系统}{35}{section.12.1}%
+\contentsline {section}{\numberline {12.2}资源利用率（综合）}{35}{section.12.2}%
+\contentsline {section}{\numberline {12.3}时序结果（实现）}{35}{section.12.3}%
+\contentsline {chapter}{\numberline {第十三章\hspace {.3em}}调试与验证方法论}{37}{chapter.13}%
+\contentsline {section}{\numberline {13.1}分层调试思路}{37}{section.13.1}%
+\contentsline {section}{\numberline {13.2}可观测点设计}{37}{section.13.2}%
+\contentsline {section}{\numberline {13.3}串口调试与日志}{37}{section.13.3}%
+\contentsline {section}{\numberline {13.4}常见问题与定位建议}{37}{section.13.4}%
+\contentsline {chapter}{\numberline {第十四章\hspace {.3em}}软件示例与实验验证}{39}{chapter.14}%
+\contentsline {section}{\numberline {14.1}示例程序}{39}{section.14.1}%
+\contentsline {section}{\numberline {14.2}功能验证方法}{39}{section.14.2}%
+\contentsline {chapter}{\numberline {第十五章\hspace {.3em}}教学实验设计与扩展}{41}{chapter.15}%
+\contentsline {section}{\numberline {15.1}实验目标与层次}{41}{section.15.1}%
+\contentsline {section}{\numberline {15.2}推荐实验列表}{41}{section.15.2}%
+\contentsline {section}{\numberline {15.3}实验扩展建议}{41}{section.15.3}%
+\contentsline {chapter}{\numberline {第十六章\hspace {.3em}}总结与展望}{43}{chapter.16}%
+\contentsline {chapter}{\numberline {附录 A\hspace {.3em}}编译与运行命令速查}{44}{appendix.A}%
+\contentsline {chapter}{\numberline {附录 B\hspace {.3em}}指令集支持清单（详细）}{45}{appendix.B}%
+\contentsline {chapter}{\numberline {附录 C\hspace {.3em}}BIOS API 完整清单}{46}{appendix.C}%
+\contentsline {chapter}{\numberline {附录 D\hspace {.3em}}MMIO 地址映射（完整）}{47}{appendix.D}%
+\contentsline {chapter}{\numberline {附录 E\hspace {.3em}}核心模块原理摘要}{48}{appendix.E}%
+\contentsline {section}{\numberline {E.1}miniRV\_SoC 顶层}{48}{section.E.1}%
+\contentsline {section}{\numberline {E.2}myCPU 核心}{49}{section.E.2}%
+\contentsline {section}{\numberline {E.3}controller 与 ALU}{50}{section.E.3}%
+\contentsline {section}{\numberline {E.4}冒险检测与流水线寄存器}{50}{section.E.4}%
+\contentsline {section}{\numberline {E.5}Bridge 与片上互连}{51}{section.E.5}%
+\contentsline {chapter}{\numberline {附录 F\hspace {.3em}}外设模块原理摘要}{52}{appendix.F}%
+\contentsline {section}{\numberline {F.1}数码管控制}{52}{section.F.1}%
+\contentsline {section}{\numberline {F.2}4×4 矩阵键盘}{52}{section.F.2}%
+\contentsline {section}{\numberline {F.3}UART}{52}{section.F.3}%
+\contentsline {section}{\numberline {F.4}Timer / PWM / WDT}{52}{section.F.4}%
+\contentsline {section}{\numberline {F.5}LED / Switch / Button}{53}{section.F.5}%
+\contentsline {chapter}{\numberline {附录 G\hspace {.3em}}编译器模块原理摘要}{54}{appendix.G}%
+\contentsline {section}{\numberline {G.1}前端：词法与语法}{54}{section.G.1}%
+\contentsline {section}{\numberline {G.2}语义分析与符号表}{54}{section.G.2}%
+\contentsline {section}{\numberline {G.3}代码生成与栈帧管理}{54}{section.G.3}%
+\contentsline {section}{\numberline {G.4}汇编与链接}{54}{section.G.4}%
+\contentsline {chapter}{\numberline {附录 H\hspace {.3em}}示例程序说明}{56}{appendix.H}%
+\contentsline {section}{\numberline {H.1}计算器}{56}{section.H.1}%
+\contentsline {section}{\numberline {H.2}LED 波浪灯}{56}{section.H.2}%
+\contentsline {section}{\numberline {H.3}拨码开关控制}{56}{section.H.3}%
+\contentsline {chapter}{\numberline {附录 I\hspace {.3em}}汇编与 COE 输出结构说明}{57}{appendix.I}%
+\contentsline {section}{\numberline {I.1}汇编输出组织}{57}{section.I.1}%
+\contentsline {section}{\numberline {I.2}COE 格式要点}{57}{section.I.2}%

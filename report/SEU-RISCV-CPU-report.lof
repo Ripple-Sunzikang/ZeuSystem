@@ -1,0 +1,49 @@
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {1.1}{\ignorespaces 项目全栈流程示意图}}{2}{figure.caption.6}%
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {2.1}{\ignorespaces miniRV SoC 顶层结构示意图}}{3}{figure.caption.7}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces 软件到硬件的流水线流程图}}{6}{figure.caption.8}%
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {3.1}{\ignorespaces R/I/S/B/U/J 指令格式示意图}}{8}{figure.caption.10}%
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {4.1}{\ignorespaces 编译器前端与后端流程示意图}}{10}{figure.caption.11}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces COE 输出格式示意图}}{11}{figure.caption.12}%
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {5.1}{\ignorespaces BIOS 启动流程示意图}}{12}{figure.caption.13}%
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {6.1}{\ignorespaces 软硬件协同调用链示意图}}{15}{figure.caption.14}%
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {7.1}{\ignorespaces 五级流水线结构示意图}}{17}{figure.caption.15}%
+\contentsline {figure}{\numberline {7.2}{\ignorespaces 数据通路与前递示意图}}{24}{figure.caption.16}%
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {8.1}{\ignorespaces 冒险检测与前递控制示意图}}{27}{figure.caption.17}%
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {9.1}{\ignorespaces 流水线时序波形示意图}}{29}{figure.caption.18}%
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {10.1}{\ignorespaces MMIO 总线与外设连接示意图}}{32}{figure.caption.19}%
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {11.1}{\ignorespaces 外设控制器结构示意图}}{34}{figure.caption.20}%
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {12.1}{\ignorespaces 开发板引脚与外设连接示意图}}{36}{figure.caption.23}%
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {13.1}{\ignorespaces 调试路径与观察点示意图}}{38}{figure.caption.24}%
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {14.1}{\ignorespaces 示例程序运行效果照片占位}}{40}{figure.caption.25}%
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {15.1}{\ignorespaces 教学实验流程示意图}}{42}{figure.caption.27}%
+\addvspace {10.0pt}
+\addvspace {10.0pt}
+\addvspace {10.0pt}
+\addvspace {10.0pt}
+\addvspace {10.0pt}
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {E.1}{\ignorespaces miniRV\_SoC 连接关系示意图}}{49}{figure.caption.29}%
+\contentsline {figure}{\numberline {E.2}{\ignorespaces myCPU 内部阶段与接口示意图}}{50}{figure.caption.31}%
+\contentsline {figure}{\numberline {E.3}{\ignorespaces 流水线寄存器与冒险处理示意图}}{51}{figure.caption.32}%
+\contentsline {figure}{\numberline {E.4}{\ignorespaces Bridge 地址译码示意图}}{51}{figure.caption.33}%
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {F.1}{\ignorespaces 外设控制逻辑示意图}}{53}{figure.caption.34}%
+\addvspace {10.0pt}
+\contentsline {figure}{\numberline {G.1}{\ignorespaces 编译器各阶段输入输出示意图}}{55}{figure.caption.35}%
+\addvspace {10.0pt}
+\addvspace {10.0pt}

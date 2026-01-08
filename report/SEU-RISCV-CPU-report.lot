@@ -1,0 +1,40 @@
+\addvspace {10.0pt}
+\addvspace {10.0pt}
+\contentsline {table}{\numberline {2.1}{\ignorespaces 项目目录结构与说明}}{4}{table.2.1}%
+\addvspace {10.0pt}
+\contentsline {table}{\numberline {3.1}{\ignorespaces 支持的指令子集（与控制器实现保持一致）}}{7}{table.caption.9}%
+\addvspace {10.0pt}
+\addvspace {10.0pt}
+\contentsline {table}{\numberline {5.1}{\ignorespaces BIOS 接口概要}}{13}{table.5.1}%
+\addvspace {10.0pt}
+\addvspace {10.0pt}
+\contentsline {table}{\numberline {7.1}{\ignorespaces 流水线寄存器关键内容（概览）}}{22}{table.7.1}%
+\contentsline {table}{\numberline {7.2}{\ignorespaces 控制信号与功能说明}}{22}{table.7.2}%
+\contentsline {table}{\numberline {7.3}{\ignorespaces CPU 核心模块与职责}}{23}{table.7.3}%
+\addvspace {10.0pt}
+\addvspace {10.0pt}
+\addvspace {10.0pt}
+\contentsline {table}{\numberline {10.1}{\ignorespaces MMIO 地址映射表}}{31}{table.10.1}%
+\addvspace {10.0pt}
+\addvspace {10.0pt}
+\contentsline {table}{\numberline {12.1}{\ignorespaces 综合资源利用率（miniRV\_SoC\_utilization\_synth.rpt）}}{35}{table.caption.21}%
+\contentsline {table}{\numberline {12.2}{\ignorespaces 实现时序摘要（miniRV\_SoC\_timing\_summary\_routed.rpt）}}{36}{table.caption.22}%
+\addvspace {10.0pt}
+\addvspace {10.0pt}
+\addvspace {10.0pt}
+\contentsline {table}{\numberline {15.1}{\ignorespaces 教学实验与目标示例}}{41}{table.caption.26}%
+\addvspace {10.0pt}
+\addvspace {10.0pt}
+\addvspace {10.0pt}
+\contentsline {table}{\numberline {B.1}{\ignorespaces 指令分类与说明}}{45}{table.B.1}%
+\addvspace {10.0pt}
+\contentsline {table}{\numberline {C.1}{\ignorespaces BIOS API（完整版）}}{46}{table.C.1}%
+\addvspace {10.0pt}
+\contentsline {table}{\numberline {D.1}{\ignorespaces 外设地址映射（完整）}}{47}{table.D.1}%
+\addvspace {10.0pt}
+\contentsline {table}{\numberline {E.1}{\ignorespaces miniRV\_SoC 顶层端口分组（概览）}}{48}{table.caption.28}%
+\contentsline {table}{\numberline {E.2}{\ignorespaces myCPU 接口分组（概览）}}{49}{table.caption.30}%
+\addvspace {10.0pt}
+\addvspace {10.0pt}
+\addvspace {10.0pt}
+\addvspace {10.0pt}
