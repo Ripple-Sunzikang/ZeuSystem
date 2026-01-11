@@ -101,6 +101,7 @@ module miniRV_SoC (
     wire [31:0]   timer_addr;
     wire [31:0]   timer_wdata;
     wire [31:0]   timer_rdata;
+    wire          timer_irq;
 
     // 4x4 矩阵键盘
     wire          keypad_rst;
@@ -143,6 +144,22 @@ module miniRV_SoC (
     wire [31:0]   uart_addr;
     wire [31:0]   uart_wdata;
     wire [31:0]   uart_rdata;
+
+    // CP0
+    wire          cp0_rst;
+    wire          cp0_clk;
+    wire          cp0_wen;
+    wire [31:0]   cp0_addr;
+    wire [31:0]   cp0_wdata;
+    wire [31:0]   cp0_rdata;
+    wire          cp0_irq_pending;
+    wire          cp0_exl;
+    wire [31:0]   cp0_epc;
+    wire [31:0]   cp0_vector;
+    wire          cp0_exception_valid;
+    wire [31:0]   cp0_exception_pc;
+    wire [31:0]   cp0_exception_code;
+    wire          cp0_eret;
     
 
     
@@ -168,6 +185,14 @@ module miniRV_SoC (
     myCPU Core_cpu (
         .cpu_rst            (cpu_rst_combined),
         .cpu_clk            (cpu_clk),
+        .irq_pending        (cp0_irq_pending),
+        .cp0_exl            (cp0_exl),
+        .cp0_epc            (cp0_epc),
+        .cp0_vector         (cp0_vector),
+        .cp0_exception_valid(cp0_exception_valid),
+        .cp0_exception_pc   (cp0_exception_pc),
+        .cp0_exception_code (cp0_exception_code),
+        .cp0_eret           (cp0_eret),
 
         // IROM 接口
         .inst_addr          (inst_addr),
@@ -282,6 +307,14 @@ module miniRV_SoC (
         .wdata_to_uart       (uart_wdata),
         .rdata_from_uart     (uart_rdata),
 
+        // CP0 接口
+        .rst_to_cp0          (cp0_rst),
+        .clk_to_cp0          (cp0_clk),
+        .wen_to_cp0          (cp0_wen),
+        .addr_to_cp0         (cp0_addr),
+        .wdata_to_cp0        (cp0_wdata),
+        .rdata_from_cp0      (cp0_rdata),
+
         // PRAM 接口（用于 UART Bootloader 的程序 RAM）
         .clk_to_pram         (cpu_clk),
         .addr_to_pram        (pram_data_addr),
@@ -351,7 +384,8 @@ module miniRV_SoC (
         .addr(timer_addr),
         .wen(timer_wen),
         .wdata(timer_wdata),
-        .rdata(timer_rdata)
+        .rdata(timer_rdata),
+        .irq(timer_irq)
     );
 
     // 4x4 矩阵键盘
@@ -398,6 +432,24 @@ module miniRV_SoC (
         .rdata(uart_rdata),
         .uart_rx(uart_rx),
         .uart_tx(uart_tx)
+    );
+
+    CP0 CP0_0(
+        .rst(cp0_rst),
+        .clk(cp0_clk),
+        .addr(cp0_addr),
+        .wen(cp0_wen),
+        .wdata(cp0_wdata),
+        .rdata(cp0_rdata),
+        .irq_in(timer_irq),
+        .exception_valid(cp0_exception_valid),
+        .exception_pc(cp0_exception_pc),
+        .exception_code(cp0_exception_code),
+        .eret(cp0_eret),
+        .irq_pending(cp0_irq_pending),
+        .exl(cp0_exl),
+        .epc(cp0_epc),
+        .vector(cp0_vector)
     );
 
     // PRAM - 程序 RAM（双端口，用于 UART Bootloader 加载用户程序）

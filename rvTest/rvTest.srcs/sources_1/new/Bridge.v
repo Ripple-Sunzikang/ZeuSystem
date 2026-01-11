@@ -85,6 +85,14 @@ module Bridge (
     output wire [31:0]  wdata_to_uart,
     input  wire [31:0]  rdata_from_uart,
 
+    // CP0 接口
+    output wire         rst_to_cp0,
+    output wire         clk_to_cp0,
+    output wire         wen_to_cp0,
+    output wire [31:0]  addr_to_cp0,
+    output wire [31:0]  wdata_to_cp0,
+    input  wire [31:0]  rdata_from_cp0,
+
     // PRAM 接口（用于 UART Bootloader 的程序 RAM）
     output wire         clk_to_pram,
     output wire [11:0]  addr_to_pram,    // 12位=4K字=16KB
@@ -101,8 +109,7 @@ module Bridge (
     wire access_led = (addr_from_cpu == `PERI_ADDR_LED) ? 1'b1 : 1'b0;
     wire access_sw  = (addr_from_cpu == `PERI_ADDR_SW ) ? 1'b1 : 1'b0;
     wire access_btn = (addr_from_cpu == `PERI_ADDR_BTN) ? 1'b1 : 1'b0;
-    wire access_timer = (addr_from_cpu == `PERI_ADDR_TIMER0 
-                      || addr_from_cpu == `PERI_ADDR_TIMERN) ? 1'b1 : 1'b0;
+    wire access_timer = (addr_from_cpu[31:4] == (`PERI_BASE_TIMER >> 4)) ? 1'b1 : 1'b0;
     // 键盘：解码整个 0xFFFF_FC10 ~ 0xFFFF_FC1F 窗口
     // 为兼容 Vivado，使用右移代替对字面量宏的位切片。
     wire access_keypad = (addr_from_cpu[31:4] == (`PERI_BASE_KEYPAD_4X4 >> 4)) ? 1'b1 : 1'b0;
@@ -112,8 +119,9 @@ module Bridge (
     wire access_wdt = (addr_from_cpu == `PERI_BASE_WDT) ? 1'b1 : 1'b0;
     // UART：解码 0xFFFF_FC40 ~ 0xFFFF_FC4F 窗口
     wire access_uart = (addr_from_cpu[31:4] == (`PERI_BASE_UART >> 4)) ? 1'b1 : 1'b0;
+    wire access_cp0 = (addr_from_cpu[31:4] == (`PERI_BASE_CP0 >> 4)) ? 1'b1 : 1'b0;
     
-    wire [10:0] access_bit = { access_pram,
+    wire [11:0] access_bit = { access_pram,
                                access_mem,
                                access_dig,
                                access_led,
@@ -123,7 +131,8 @@ module Bridge (
                                access_keypad,
                                access_pwm,
                                access_wdt,
-                               access_uart };
+                               access_uart,
+                               access_cp0 };
 
     // DRAM
     // assign rst_to_dram  = rst_from_cpu;
@@ -191,6 +200,13 @@ module Bridge (
     assign wen_to_uart   = we_from_cpu & access_uart;
     assign wdata_to_uart = wdata_from_cpu;
 
+    // CP0
+    assign rst_to_cp0   = rst_from_cpu;
+    assign clk_to_cp0   = clk_from_cpu;
+    assign addr_to_cp0  = addr_from_cpu;
+    assign wen_to_cp0   = we_from_cpu & access_cp0;
+    assign wdata_to_cp0 = wdata_from_cpu;
+
     // PRAM（用于 UART Bootloader 的程序 RAM）
     assign clk_to_pram   = clk_from_cpu;
     assign addr_to_pram  = addr_from_cpu[13:2];  // 12位字地址 (4K字)
@@ -198,20 +214,21 @@ module Bridge (
     assign we_to_pram    = we_from_cpu & access_pram;
 
     // 选择返回给 CPU 的读数据
-    // 访问位：access_bit[10:0] = {pram, mem, dig, led, sw, btn, timer, keypad, pwm, wdt, uart}
+    // 访问位：access_bit[11:0] = {pram, mem, dig, led, sw, btn, timer, keypad, pwm, wdt, uart, cp0}
     always @(*) begin
         casex (access_bit)
-            11'b10000000000: rdata_to_cpu = rdata_from_pram;   // PRAM（bit[10]）
-            11'b01000000000: rdata_to_cpu = rdata_from_dram;   // DRAM（bit[9]）
-            11'b00100000000: rdata_to_cpu = 32'h0;             // 数码管（bit[8]，只写）
-            11'b00010000000: rdata_to_cpu = 32'h0;             // LED（bit[7]，只写）
-            11'b00001000000: rdata_to_cpu = rdata_from_sw;     // 开关（bit[6]）
-            11'b00000100000: rdata_to_cpu = rdata_from_btn;    // 按键（bit[5]）
-            11'b00000010000: rdata_to_cpu = rdata_from_timer;  // 定时器（bit[4]）
-            11'b00000001000: rdata_to_cpu = rdata_from_keypad; // 键盘（bit[3]）
-            11'b00000000100: rdata_to_cpu = rdata_from_pwm;    // PWM（bit[2]）
-            11'b00000000010: rdata_to_cpu = rdata_from_wdt;    // WDT（bit[1]）
-            11'b00000000001: rdata_to_cpu = rdata_from_uart;   // UART（bit[0]）
+            12'b100000000000: rdata_to_cpu = rdata_from_pram;   // PRAM（bit[11]）
+            12'b010000000000: rdata_to_cpu = rdata_from_dram;   // DRAM（bit[10]）
+            12'b001000000000: rdata_to_cpu = 32'h0;             // 数码管（bit[9]，只写）
+            12'b000100000000: rdata_to_cpu = 32'h0;             // LED（bit[8]，只写）
+            12'b000010000000: rdata_to_cpu = rdata_from_sw;     // 开关（bit[7]）
+            12'b000001000000: rdata_to_cpu = rdata_from_btn;    // 按键（bit[6]）
+            12'b000000100000: rdata_to_cpu = rdata_from_timer;  // 定时器（bit[5]）
+            12'b000000010000: rdata_to_cpu = rdata_from_keypad; // 键盘（bit[4]）
+            12'b000000001000: rdata_to_cpu = rdata_from_pwm;    // PWM（bit[3]）
+            12'b000000000100: rdata_to_cpu = rdata_from_wdt;    // WDT（bit[2]）
+            12'b000000000010: rdata_to_cpu = rdata_from_uart;   // UART（bit[1]）
+            12'b000000000001: rdata_to_cpu = rdata_from_cp0;    // CP0（bit[0]）
             default:  rdata_to_cpu = 32'hFFFF_FFFF;
         endcase
     end

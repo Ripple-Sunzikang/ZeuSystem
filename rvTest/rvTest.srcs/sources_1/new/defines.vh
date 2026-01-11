@@ -68,6 +68,7 @@
 `define PERI_BASE_WIFI        32'hFFFF_FD00
 `define PERI_BASE_BEEP        32'hFFFF_FD10
 `define PERI_BASE_MIC         32'hFFFF_FD20
+`define PERI_BASE_CP0         32'hFFFF_FD30
 
 // 7 段数码管（写 32 位）
 `define PERI_ADDR_DIG    (`PERI_BASE_7SEG + 32'h0)
@@ -80,8 +81,20 @@
 // 定时器
 `define PERI_ADDR_TIMER0 (`PERI_BASE_TIMER + 32'h0)
 `define PERI_ADDR_TIMERN (`PERI_BASE_TIMER + 32'h4)
+`define PERI_ADDR_TIMERCMP (`PERI_BASE_TIMER + 32'h8)
+`define PERI_ADDR_TIMERIRQ (`PERI_BASE_TIMER + 32'hC)
 
 // LED / 开关 / 按钮（按钮不在表内：沿用原先布局，放在 Switch 段内偏移 0x8）
 `define PERI_ADDR_LED    (`PERI_BASE_LED + 32'h0)
 `define PERI_ADDR_SW     (`PERI_BASE_SWITCH + 32'h0)
 `define PERI_ADDR_BTN    (`PERI_BASE_SWITCH + 32'h8)
+
+// CP0 (异常/中断控制)
+`define PERI_ADDR_CP0_STATUS (`PERI_BASE_CP0 + 32'h0)
+`define PERI_ADDR_CP0_EPC    (`PERI_BASE_CP0 + 32'h4)
+`define PERI_ADDR_CP0_CAUSE  (`PERI_BASE_CP0 + 32'h8)
+`define PERI_ADDR_CP0_VECTOR (`PERI_BASE_CP0 + 32'hC)
+
+`define EXC_CAUSE_ILLEGAL 32'h00000002
+`define EXC_CAUSE_TIMER   32'h00000007
+`define EXC_VECTOR_DEFAULT 32'h00000100

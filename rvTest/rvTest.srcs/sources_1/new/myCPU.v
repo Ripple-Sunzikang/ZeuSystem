@@ -5,6 +5,14 @@
     module myCPU (
         input  wire         cpu_rst,
         input  wire         cpu_clk,
+        input  wire         irq_pending,
+        input  wire         cp0_exl,
+        input  wire [31:0]  cp0_epc,
+        input  wire [31:0]  cp0_vector,
+        output wire         cp0_exception_valid,
+        output wire [31:0]  cp0_exception_pc,
+        output wire [31:0]  cp0_exception_code,
+        output wire         cp0_eret,
 
         // IROM 接口
     `ifdef RUN_TRACE
@@ -58,6 +66,8 @@
     wire dram_we;
     wire[3:0] alu_op;
     wire[1:0] rf_re;
+    wire ID_illegal;
+    wire ID_mret;
 
     // SEXT 输出信号
     wire[31:0] ext;
@@ -79,6 +89,8 @@
     wire[31:0] EX_rD1;
     wire[31:0] EX_rD2;
     wire[31:0] EX_ext;
+    wire EX_illegal;
+    wire EX_mret;
 
     // ALU 输出信号
     wire[31:0] alu_c;
@@ -112,7 +124,14 @@
     wire data_hazard;
 
     // 控制冒险检测输出信号
+    wire control_hazard_raw;
     wire control_hazard;
+
+    wire trap_illegal;
+    wire trap_irq;
+    wire trap_taken;
+    wire[31:0] trap_pc;
+    wire[31:0] trap_code;
 
     PC PC_0(
     .rst(cpu_rst),
@@ -128,6 +147,10 @@
     .br(alu_f),
     .offset(EX_ext),
     .rs_imm(alu_c),
+    .trap_taken(trap_taken),
+    .trap_vector(cp0_vector),
+    .eret(EX_mret),
+    .epc(cp0_epc),
     .pc(pc),
     .pc4(pc4),
     .npc(npc)
@@ -158,6 +181,7 @@
     .opcode(ID_inst[6:0]),
     .funct3(ID_inst[14:12]),
     .funct7(ID_inst[31:25]),
+    .rs2(ID_inst[24:20]),
     .npc_op(npc_op),
     .rf_we(rf_we),
     .rf_wsel(rf_wsel),
@@ -165,7 +189,9 @@
     .alub_sel(alub_sel),
     .ram_we(dram_we),
     .alu_op(alu_op),
-    .rf_re(rf_re)
+    .rf_re(rf_re),
+    .illegal_inst(ID_illegal),
+    .is_mret(ID_mret)
     );//
 
     SEXT SEX_0(
@@ -205,6 +231,8 @@
     .ID_rD1(new_rD1),
     .ID_rD2(new_rD2),
     .ID_ext(ext),
+    .ID_illegal(ID_illegal),
+    .ID_mret(ID_mret),
 
     .EX_npc_op(EX_npc_op),
     .EX_ram_we(EX_ram_we),
@@ -217,6 +245,8 @@
     .EX_rD1(EX_rD1),
     .EX_rD2(EX_rD2),
     .EX_ext(EX_ext),
+    .EX_illegal(EX_illegal),
+    .EX_mret(EX_mret),
 
     .control_hazard(control_hazard),// 两种冒险共用同一清空逻辑
     .data_hazard(data_hazard)
@@ -236,8 +266,8 @@
     .clk(cpu_clk),
     .rst(cpu_rst),
 
-    .EX_ram_we(EX_ram_we),
-    .EX_rf_we(EX_rf_we),
+    .EX_ram_we(EX_ram_we & ~trap_taken & ~EX_mret),
+    .EX_rf_we(EX_rf_we & ~trap_taken & ~EX_mret),
     .EX_rf_wsel(EX_rf_wsel),
     .EX_wR(EX_wR),
     .EX_pc4(EX_pc4),
@@ -320,8 +350,21 @@
     control_hazard_detection U_control_hazard_detection(
     .EX_npc_op(EX_npc_op),
     .alu_f(alu_f),
-    .control_hazard(control_hazard)
+    .control_hazard(control_hazard_raw)
     );//
+
+    assign trap_illegal = EX_illegal;
+    assign trap_irq = irq_pending & ~cp0_exl & ~EX_mret;
+    assign trap_taken = trap_illegal | trap_irq;
+    assign trap_pc = EX_pc4 - 4;
+    assign trap_code = trap_illegal ? `EXC_CAUSE_ILLEGAL : `EXC_CAUSE_TIMER;
+
+    assign cp0_exception_valid = trap_taken;
+    assign cp0_exception_pc = trap_pc;
+    assign cp0_exception_code = trap_code;
+    assign cp0_eret = EX_mret;
+
+    assign control_hazard = control_hazard_raw | trap_taken | EX_mret;
 
     `ifdef RUN_TRACE
         // 调试接口

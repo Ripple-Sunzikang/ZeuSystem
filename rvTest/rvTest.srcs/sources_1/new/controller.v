@@ -6,6 +6,7 @@ module controller(
     input  wire [6:0] opcode,
     input  wire [6:0] funct7,
     input  wire [2:0] funct3,
+    input  wire [4:0] rs2,
     // NPC 控制信号
     output wire [2:0] npc_op,
     // 寄存器堆控制信号
@@ -18,7 +19,9 @@ module controller(
     output wire [2:0] sext_op,
     // 数据存储器控制信号
     output wire       ram_we,
-    output wire [1:0] rf_re    
+    output wire [1:0] rf_re,
+    output wire       illegal_inst,
+    output wire       is_mret
 );
 
     // 控制器内部逻辑
@@ -67,6 +70,8 @@ module controller(
     wire inst_lui  = (opcode == 7'b0110111) ? 1'b1 : 1'b0;
     // J型
     wire inst_jal  = (opcode == 7'b1101111) ? 1'b1 : 1'b0;
+    // 系统指令（最小支持 mret）
+    wire inst_mret = (opcode == 7'b1110011) & (funct3 == 3'b000) & (funct7 == 7'b0011000) & (rs2 == 5'b00010);
 
 
     
@@ -79,7 +84,7 @@ module controller(
                     (inst_bge)  ? `NPC_BGE  : `NPC_PC4;
     
     // 寄存器堆控制
-    assign rf_we    = (inst_sw | b_typ) ? 1'b0 : 1'b1;
+    assign rf_we    = ((inst_sw | b_typ | inst_mret) ? 1'b0 : 1'b1) & ~illegal_inst;
     assign rf_wsel  = (inst_lw)              ? `WB_DM   :
                       (inst_jalr | inst_jal) ? `WB_PC_4 :
                       (inst_lui)             ? `WB_SEXT : `WB_ALU;
@@ -109,12 +114,23 @@ module controller(
                      (inst_jal)? `SEXT_J : `SEXT_I;
     
     // 数据存储器控制
-    assign ram_we   = (inst_sw)? 1'b1 : 1'b0;
+    wire ram_we_raw = (inst_sw) ? 1'b1 : 1'b0;
 
     assign rf_re    = (inst_lw  || inst_jalr || i_typ) ? 2'b01 :
                       (inst_lui || inst_jal)           ? 2'b00 : 2'b11;
 
+    assign is_mret = inst_mret;
 
+    wire supported_inst = inst_add | inst_sub | inst_and | inst_or | inst_xor |
+                          inst_sll | inst_srl | inst_sra | inst_mul | inst_mulh |
+                          inst_mulhsu | inst_mulhu | inst_div | inst_divu | inst_rem |
+                          inst_remu | inst_addi | inst_andi | inst_ori | inst_xori |
+                          inst_slli | inst_srli | inst_srai | inst_lw | inst_jalr |
+                          inst_sw | inst_beq | inst_bne | inst_blt | inst_bge |
+                          inst_lui | inst_jal | inst_mret;
 
+    assign illegal_inst = ~supported_inst;
+
+    assign ram_we = ram_we_raw & ~illegal_inst;
 
 endmodule

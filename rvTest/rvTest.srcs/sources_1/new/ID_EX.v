@@ -14,6 +14,8 @@ module ID_EX(
   input wire[31:0] ID_rD1,
   input wire[31:0] ID_rD2,
   input wire[31:0] ID_ext,
+  input wire ID_illegal,
+  input wire ID_mret,
 
   output reg[2:0] EX_npc_op,
   output reg EX_ram_we,
@@ -26,6 +28,8 @@ module ID_EX(
   output reg[31:0] EX_rD1,
   output reg[31:0] EX_rD2,
   output reg[31:0] EX_ext,
+  output reg EX_illegal,
+  output reg EX_mret,
 
   input wire control_hazard,// 两种冒险共用同一清空逻辑
   input wire data_hazard
@@ -95,6 +99,18 @@ always @(posedge clk or posedge rst) begin
   if(rst) EX_ext<=0;
   else if(control_hazard | data_hazard) EX_ext<=0;
   else EX_ext <= ID_ext;
+end
+
+always @(posedge clk or posedge rst) begin
+  if(rst) EX_illegal<=0;
+  else if(control_hazard | data_hazard) EX_illegal<=0;
+  else EX_illegal <= ID_illegal;
+end
+
+always @(posedge clk or posedge rst) begin
+  if(rst) EX_mret<=0;
+  else if(control_hazard | data_hazard) EX_mret<=0;
+  else EX_mret <= ID_mret;
 end
 
 endmodule
