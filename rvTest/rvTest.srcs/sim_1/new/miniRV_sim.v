@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
-// Minimal simulation top placeholder.
-// This file exists to satisfy the Vivado project file list.
-// If you want to run behavioral simulation, replace this with a real testbench.
+// 最小化仿真顶层占位。
+// 该文件仅用于满足 Vivado 工程文件列表。
+// 如需进行行为级仿真，请替换为真实的测试平台。
 module miniRV_sim;
 endmodule

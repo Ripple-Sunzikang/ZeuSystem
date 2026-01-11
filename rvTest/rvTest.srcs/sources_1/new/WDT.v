@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Watchdog Timer (WDT) Module for RISC-V CPU
+// RISC-V CPU 看门狗定时器（WDT）模块
 // 地址: 0xFFFF_FC50 (PERI_BASE_WDT)
 // 
 // 功能:

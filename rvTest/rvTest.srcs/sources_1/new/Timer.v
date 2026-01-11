@@ -16,7 +16,7 @@ module Timer(
     reg [31:0] CNT0;
     reg [31:0] CNT1;
 
-    //Frequency divider coefficient
+    // 分频系数寄存器
     always@(posedge clk or posedge rst)begin
         if(rst) begin
             FRE <= 32'b1;

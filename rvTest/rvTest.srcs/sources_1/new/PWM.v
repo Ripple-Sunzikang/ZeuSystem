@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// PWM Module for RISC-V CPU
+// RISC-V CPU PWM 模块
 // 基地址: 0xFFFF_FC30 (PERI_BASE_PWM)
 // 
 // 寄存器映射 (32位对齐):

@@ -17,11 +17,11 @@ module PRAM_Wrapper (
     input  wire         clk,
     
     // 端口 A - 指令读取 (只读)
-    input  wire [11:0]  addr_a,      // 12位地址 = 4K words
+    input  wire [11:0]  addr_a,      // 12位地址 = 4K字
     output wire [31:0]  rdata_a,
     
     // 端口 B - 数据读写
-    input  wire [11:0]  addr_b,      // 12位地址 = 4K words
+    input  wire [11:0]  addr_b,      // 12位地址 = 4K字
     input  wire [31:0]  wdata_b,
     input  wire         we_b,
     output wire [31:0]  rdata_b

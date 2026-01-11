@@ -3,7 +3,7 @@
 `include "defines.vh"
 
 module miniRV_SoC (
-    input  wire         fpga_rst,   // High active
+    input  wire         fpga_rst,   // 高电平有效
     input  wire         fpga_clk,
 
     input  wire [23:0]  sw,
@@ -31,12 +31,12 @@ module miniRV_SoC (
     output wire         uart_tx     // UART 发送
 
 `ifdef RUN_TRACE
-    ,// Debug Interface
-    output wire         debug_wb_have_inst, // ��ǰʱ�������Ƿ���ָ��д�� (�Ե�����CPU�����ڸ�λ�����1)
-    output wire [31:0]  debug_wb_pc,        // ��ǰд�ص�ָ���PC (��wb_have_inst=0�������Ϊ����ֵ)
-    output              debug_wb_ena,       // ָ��д��ʱ���Ĵ����ѵ�дʹ�� (��wb_have_inst=0�������Ϊ����ֵ)
-    output wire [ 4:0]  debug_wb_reg,       // ָ��д��ʱ��д��ļĴ����� (��wb_ena��wb_have_inst=0�������Ϊ����ֵ)
-    output wire [31:0]  debug_wb_value      // ָ��д��ʱ��д��Ĵ�����ֵ (��wb_ena��wb_have_inst=0�������Ϊ����ֵ)
+    ,// 调试接口
+    output wire         debug_wb_have_inst, // 当前周期是否有写回指令
+    output wire [31:0]  debug_wb_pc,        // 写回指令对应的PC（无效时为0）
+    output              debug_wb_ena,       // 写回寄存器使能（无效时为0）
+    output wire [ 4:0]  debug_wb_reg,       // 写回寄存器号（无效时为0）
+    output wire [31:0]  debug_wb_value      // 写回数据（无效时为0）
 `endif
 );
 
@@ -44,7 +44,7 @@ module miniRV_SoC (
     wire        pll_clk;
     wire        cpu_clk;
 
-    // Interface between CPU and IROM
+    // CPU 与 IROM 接口
 `ifdef RUN_TRACE
     wire [15:0] inst_addr;
 `else
@@ -52,13 +52,13 @@ module miniRV_SoC (
 `endif
     wire [31:0] inst;
 
-    // Interface between CPU and Bridge
+    // CPU 与 Bridge 接口
     wire [31:0] Bus_rdata;
     wire [31:0] Bus_addr;
     wire        Bus_we;
     wire [31:0] Bus_wdata;
     
-    // Interface between bridge and DRAM
+    // Bridge 与 DRAM 接口
     // wire         rst_bridge2dram;
     wire         clk_bridge2dram;
     wire [31:0]  addr_bridge2dram;
@@ -66,35 +66,35 @@ module miniRV_SoC (
     wire         we_bridge2dram;
     wire [31:0]  wdata_bridge2dram;
     
-    // Interface between bridge and peripherals
-    // TODO: �ڴ˶���������������I/O�ӿڵ�·ģ��������ź�
-    //digital LEDs
+    // Bridge 与外设接口
+    // TODO: 在此处扩展更多 I/O 接口的连线与信号
+    // 数码管
     wire          dig_rst;
     wire          dig_clk;
     wire [31:0]   dig_addr;
     wire          dig_we;
     wire [31:0]   dig_wdata;
 
-    //LEDs
+    // LED
     wire          led_rst;
     wire          led_clk;
     wire [31:0]   led_addr;
     wire          led_we;
     wire [31:0]   led_wdata;
 
-    //switches
+    // 开关
     wire          sw_rst;
     wire          sw_clk;
     wire [31:0]   sw_addr;
     wire [31:0]   sw_rdata;
 
-    //buttons
+    // 按键
     wire          btn_rst;
     wire          btn_clk;
     wire [31:0]   btn_addr;
     wire [31:0]   btn_rdata;
 
-    //TIMER
+    // 定时器
     wire          timer_rst;
     wire          timer_clk;
     wire          timer_wen;
@@ -102,7 +102,7 @@ module miniRV_SoC (
     wire [31:0]   timer_wdata;
     wire [31:0]   timer_rdata;
 
-    // Keypad 4x4
+    // 4x4 矩阵键盘
     wire          keypad_rst;
     wire          keypad_clk;
     wire          keypad_wen;
@@ -110,7 +110,7 @@ module miniRV_SoC (
     wire [31:0]   keypad_wdata;
     wire [31:0]   keypad_rdata;
 
-    // PWM (drives buzzer)
+    // PWM（驱动蜂鸣器）
     wire          pwm_rst;
     wire          pwm_clk;
     wire          pwm_wen;
@@ -118,7 +118,7 @@ module miniRV_SoC (
     wire [31:0]   pwm_wdata;
     wire [31:0]   pwm_rdata;
 
-    // Watchdog Timer (WDT)
+    // 看门狗定时器（WDT）
     wire          wdt_rst;
     wire          wdt_clk;
     wire          wdt_wen;
@@ -127,11 +127,11 @@ module miniRV_SoC (
     wire [31:0]   wdt_rdata;
     wire          wdt_reset_out;  // 看门狗复位输出
 
-    // PRAM - Program RAM (用于 UART Bootloader 加载的用户程序)
-    wire [11:0]   pram_inst_addr;       // 指令读取地址 (来自 CPU IF 阶段) - 12位=4K words=16KB
+    // PRAM - 程序 RAM（用于 UART Bootloader 加载的用户程序）
+    wire [11:0]   pram_inst_addr;       // 指令读取地址 (来自 CPU IF 阶段) - 12位=4K字=16KB
     wire [31:0]   pram_inst_data;       // 指令数据 (返回给 CPU)
     wire          pram_inst_sel;        // PRAM 取指选择信号
-    wire [11:0]   pram_data_addr;       // 数据访问地址 (来自 Bridge) - 12位=4K words=16KB
+    wire [11:0]   pram_data_addr;       // 数据访问地址 (来自 Bridge) - 12位=4K字=16KB
     wire [31:0]   pram_data_wdata;      // 写入数据
     wire          pram_data_we;         // 写使能
     wire [31:0]   pram_data_rdata;      // 读取数据
@@ -147,10 +147,10 @@ module miniRV_SoC (
 
     
 `ifdef RUN_TRACE
-    // Trace����ʱ��ֱ��ʹ���ⲿ����ʱ��
+    // 跟踪模式下直接使用外部时钟
     assign cpu_clk = fpga_clk;
 `else
-    // �°�ʱ��ʹ��PLL��Ƶ���ʱ��
+    // 板上时钟使用 PLL 分频生成 CPU 时钟
     assign cpu_clk = pll_clk & pll_lock;
     cpuclk Clkgen (
         // .resetn     (!fpga_rst),
@@ -169,23 +169,23 @@ module miniRV_SoC (
         .cpu_rst            (cpu_rst_combined),
         .cpu_clk            (cpu_clk),
 
-        // Interface to IROM
+        // IROM 接口
         .inst_addr          (inst_addr),
         .inst_from_irom     (inst),
         
-        // Interface to PRAM (for XIP - eXecute In Place)
+        // PRAM 接口（XIP：就地执行）
         .inst_addr_dram     (pram_inst_addr),
         .inst_from_dram     (pram_inst_data),
         .inst_from_dram_sel (pram_inst_sel),
 
-        // Interface to Bridge
+        // Bridge 接口
         .Bus_addr           (Bus_addr),
         .Bus_rdata          (Bus_rdata),
         .Bus_we             (Bus_we),
         .Bus_wdata          (Bus_wdata)
 
 `ifdef RUN_TRACE
-        ,// Debug Interface
+        ,// 调试接口
         .debug_wb_have_inst (debug_wb_have_inst),
         .debug_wb_pc        (debug_wb_pc),
         .debug_wb_ena       (debug_wb_ena),
@@ -200,7 +200,7 @@ module miniRV_SoC (
     );
     
     Bridge Bridge (       
-        // Interface to CPU
+        // CPU 接口
         .rst_from_cpu       (fpga_rst),
         .clk_from_cpu       (cpu_clk),
         .addr_from_cpu      (Bus_addr),
@@ -208,7 +208,7 @@ module miniRV_SoC (
         .wdata_from_cpu     (Bus_wdata),
         .rdata_to_cpu       (Bus_rdata),
         
-        // Interface to DRAM
+        // DRAM 接口
         // .rst_to_dram    (rst_bridge2dram),
         .clk_to_dram        (clk_bridge2dram),
         .addr_to_dram       (addr_bridge2dram),
@@ -216,33 +216,33 @@ module miniRV_SoC (
         .we_to_dram         (we_bridge2dram),
         .wdata_to_dram      (wdata_bridge2dram),
         
-        // Interface to 7-seg digital LEDs
+        // 7段数码管接口
         .rst_to_dig         (dig_rst),
         .clk_to_dig         (dig_clk),
         .addr_to_dig        (dig_addr),
         .we_to_dig          (dig_we),
         .wdata_to_dig       (dig_wdata),
 
-        // Interface to LEDs
+        // LED 接口
         .rst_to_led         (led_rst),
         .clk_to_led         (led_clk),
         .addr_to_led        (led_addr),
         .we_to_led          (led_we),
         .wdata_to_led       (led_wdata),
 
-        // Interface to switches
+        // 开关接口
         .rst_to_sw          (sw_rst),
         .clk_to_sw          (sw_clk),
         .addr_to_sw         (sw_addr),
         .rdata_from_sw      (sw_rdata),
 
-        // Interface to buttons
+        // 按键接口
         .rst_to_btn         (btn_rst),
         .clk_to_btn         (btn_clk),
         .addr_to_btn        (btn_addr),
         .rdata_from_btn     (btn_rdata),
 
-        // Interface to Timer
+        // 定时器接口
         .rst_to_timer       (timer_rst),
         .clk_to_timer       (timer_clk),
         .addr_to_timer      (timer_addr),
@@ -250,7 +250,7 @@ module miniRV_SoC (
         .wdata_to_timer     (timer_wdata),
         .rdata_from_timer   (timer_rdata),
 
-        // Interface to Keypad
+        // 键盘接口
         .rst_to_keypad       (keypad_rst),
         .clk_to_keypad       (keypad_clk),
         .wen_to_keypad       (keypad_wen),
@@ -258,7 +258,7 @@ module miniRV_SoC (
         .wdata_to_keypad     (keypad_wdata),
         .rdata_from_keypad   (keypad_rdata),
 
-        // Interface to PWM (drives buzzer)
+        // PWM 接口（驱动蜂鸣器）
         .rst_to_pwm          (pwm_rst),
         .clk_to_pwm          (pwm_clk),
         .wen_to_pwm          (pwm_wen),
@@ -266,7 +266,7 @@ module miniRV_SoC (
         .wdata_to_pwm        (pwm_wdata),
         .rdata_from_pwm      (pwm_rdata),
 
-        // Interface to WDT
+        // WDT 接口
         .rst_to_wdt          (wdt_rst),
         .clk_to_wdt          (wdt_clk),
         .wen_to_wdt          (wdt_wen),
@@ -274,7 +274,7 @@ module miniRV_SoC (
         .wdata_to_wdt        (wdt_wdata),
         .rdata_from_wdt      (wdt_rdata),
 
-        // Interface to UART
+        // UART 接口
         .rst_to_uart         (uart_rst),
         .clk_to_uart         (uart_clk),
         .wen_to_uart         (uart_wen),
@@ -282,7 +282,7 @@ module miniRV_SoC (
         .wdata_to_uart       (uart_wdata),
         .rdata_from_uart     (uart_rdata),
 
-        // Interface to PRAM (Program RAM for UART Bootloader)
+        // PRAM 接口（用于 UART Bootloader 的程序 RAM）
         .clk_to_pram         (cpu_clk),
         .addr_to_pram        (pram_data_addr),
         .wdata_to_pram       (pram_data_wdata),
@@ -298,7 +298,7 @@ module miniRV_SoC (
         .d          (wdata_bridge2dram)
     );
     
-    //Digital LED
+    // 数码管
      Digital_LED Digital_LED_0(
         .rst(fpga_rst),
         .clk(dig_clk),
@@ -316,7 +316,7 @@ module miniRV_SoC (
         .DN_DP(DN_DP)
     );
 
-    //LED
+    // LED
     LED LED_0(
         .rst(fpga_rst),
         .clk(led_clk),
@@ -326,7 +326,7 @@ module miniRV_SoC (
         .led(led)
     );
 
-    //Switch
+    // 开关
     Switch Switch_0(
         .rst(fpga_rst),
         .clk(sw_clk),
@@ -335,7 +335,7 @@ module miniRV_SoC (
         .rdata(sw_rdata)
     );
 
-    //button
+    // 按键
     Button Button_0(
         .rst(fpga_rst),
         .clk(btn_clk),
@@ -344,7 +344,7 @@ module miniRV_SoC (
         .button(button)
     );
 
-    //Timer
+    // 定时器
     Timer Timer_0(
         .rst(fpga_rst),
         .clk(timer_clk),
@@ -354,7 +354,7 @@ module miniRV_SoC (
         .rdata(timer_rdata)
     );
 
-    // 4x4 Keypad
+    // 4x4 矩阵键盘
     Keypad4x4 Keypad4x4_0(
         .rst(fpga_rst),
         .clk(keypad_clk),
@@ -366,7 +366,7 @@ module miniRV_SoC (
         .rdata(keypad_rdata)
     );
 
-    // PWM (drives buzzer on pin A19)
+    // PWM（驱动蜂鸣器，引脚 A19）
     PWM PWM_0(
         .rst(fpga_rst | wdt_reset_out),
         .clk(pwm_clk),
@@ -377,7 +377,7 @@ module miniRV_SoC (
         .pwm_out(buzzer)
     );
 
-    // Watchdog Timer
+    // 看门狗定时器
     WDT WDT_0(
         .rst(fpga_rst),
         .clk(wdt_clk),
@@ -400,7 +400,7 @@ module miniRV_SoC (
         .uart_tx(uart_tx)
     );
 
-    // PRAM - Program RAM (双端口, 用于 UART Bootloader 加载用户程序)
+    // PRAM - 程序 RAM（双端口，用于 UART Bootloader 加载用户程序）
     // 端口 A: 指令读取 (IF 阶段)
     // 端口 B: 数据读写 (MEM 阶段, 用于程序加载)
     // 

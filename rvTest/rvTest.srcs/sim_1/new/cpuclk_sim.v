@@ -1,8 +1,8 @@
 `timescale 1ns / 1ps
 module cpuclk_sim();
-    // input
+    // 输入
     reg fpga_clk = 0;
-    // output
+    // 输出
     wire clk_lock;
     wire pll_clk;
     wire cpu_clk;

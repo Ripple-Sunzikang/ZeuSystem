@@ -24,7 +24,7 @@ module RF(
 );
 
     // 寄存器堆内部存储结构：32个32位寄存器
-    reg [31:0] rf [0:31]; // 32 registers of 32 bits each
+    reg [31:0] rf [0:31]; // 32个32位寄存器
 
     // 寄存器读操作（在时钟下降沿读取，避免组合逻辑冒险）
     always @(negedge clk) begin 

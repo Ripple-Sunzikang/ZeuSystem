@@ -13,7 +13,7 @@ module Button(
 
 
 // --- 固定的计时参数 ---
-localparam DEBOUNCE_CYCLES = 500_000; // 10ms @ 50MHz (cpu_clk)
+localparam DEBOUNCE_CYCLES = 500_000; // 50MHz下约10ms（cpu_clk）
 localparam COUNTER_WIDTH   = 19;
 
 // --- 状态机状态定义 ---
@@ -88,7 +88,7 @@ always@(posedge clk or posedge rst)begin
                 end
 
                 // CHECK状态是瞬时的，其逻辑已合并到WAIT状态的末尾，以简化代码
-                // default case to prevent latches
+                // 默认分支，避免锁存器
                 default: begin
                     state[i] <= S_IDLE;
                 end

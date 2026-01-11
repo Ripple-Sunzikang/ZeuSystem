@@ -19,7 +19,7 @@ module Keypad4x4(
     localparam integer ROW_PERIOD_CYCLES = 12_500;
     localparam integer DEBOUNCE_FRAMES   = 5; // 约 5ms：更“实时”，同时保持稳定
 
-    // ========== Input Synchronization (防亚稳态) ==========
+    // ========== 输入同步（防亚稳态） ==========
     reg [3:0] line_sync1;
     reg [3:0] line_sync2;
     wire [3:0] line_s = line_sync2;  // 同步后的 line 信号
@@ -37,7 +37,7 @@ module Keypad4x4(
 
     reg        scan_enable;
 
-    // Column idle level capture (helps tolerate different pull-up/pull-down wiring)
+    // 列空闲电平捕获（适应不同上拉/下拉接法）
     reg [3:0]  idle_line;
     reg        idle_valid;
 
@@ -50,15 +50,15 @@ module Keypad4x4(
     reg [3:0]  last_frame_code;
     reg [3:0]  stable_frames;
 
-    // Course-spec compatible outputs:
-    // - KEY VALUE register @ 0xFFFF_FC10: returns a mapped hex-nibble value (1,2,3,A,...)
-    // - STATUS register    @ 0xFFFF_FC12: 1 if any key is pressed, else 0
-    // Key value is latched on a stable press and kept until cleared or overwritten.
+    // 课程规范兼容输出：
+    // - KEY VALUE 寄存器 @ 0xFFFF_FC10：返回映射后的十六进制值（1,2,3,A,...）
+    // - STATUS 寄存器 @ 0xFFFF_FC12：有按键按下为1，否则为0
+    // 按键值在稳定按下后锁存，直到被清除或覆盖。
     reg [31:0] keyvalue_latched;
     reg        pressed_latched;
 
-    // Debug latches: capture raw row/line at the first detected press in a frame.
-    // This makes (row,line) readings stable while holding a key.
+    // 调试锁存：在一帧内首次检测到按下时捕获原始 row/line。
+    // 这样按住按键时 (row,line) 读数保持稳定。
     reg [3:0]  row_dbg_latched;
     reg [3:0]  line_dbg_latched;
     reg [1:0]  row_idx_dbg_latched;
@@ -66,14 +66,14 @@ module Keypad4x4(
 
     integer j;
 
-    // Show latched debug as soon as a press is detected in the current frame,
-    // even before pressed_latched is updated at frame end.
-    // (frame_pressed is asserted immediately on first detection.)
+    // 在当前帧检测到按下后立即显示锁存的调试值，
+    // 即使 pressed_latched 尚未在帧末更新。
+    // （frame_pressed 在首次检测时立即置位。）
     wire show_latched_dbg = frame_pressed | pressed_latched;
 
     wire row_tick = (row_cnt == ROW_PERIOD_CYCLES - 1);
 
-    // Use synchronized line signal to avoid metastability
+    // 使用同步后的 line 信号避免亚稳态
     wire [3:0] line_xor_idle = line_s ^ idle_line;
 
     function [1:0] first_one_idx;
@@ -98,20 +98,20 @@ module Keypad4x4(
 
     wire any_line_active = idle_valid ? (line_s != idle_line) : (line_s != 4'b1111);
 
-    // NOTE (measured on board):
-    // - `row[3:0]` pins are wired to the keypad *columns* (scanned by driving one low).
-    // - `line[3:0]` pins are wired to the keypad *rows* (sensed as active-low).
-    // - Both dimensions are reversed in bit order.
-    // Therefore we convert raw indices into logical (row,col) indices matching the layout used in map_key().
+    // 注意（板上实测）：
+    // - row[3:0] 引脚接到键盘“列”（通过逐列拉低扫描）。
+    // - line[3:0] 引脚接到键盘“行”（低电平有效）。
+    // - 行列的位序均为反向。
+    // 因此需要将原始索引转换为逻辑（行、列），与 map_key() 的布局一致。
     wire [1:0] line_idx_active_raw = idle_valid ? first_one_idx(line_xor_idle) : first_zero_idx(line_s);
-    wire [1:0] row_idx_logical = 2'd3 - line_idx_active_raw; // line bit order reversed
-    wire [1:0] col_idx_logical = 2'd3 - row_idx;            // scan order reversed
+    wire [1:0] row_idx_logical = 2'd3 - line_idx_active_raw; // line 位序反向
+    wire [1:0] col_idx_logical = 2'd3 - row_idx;            // 扫描顺序反向
 
     function [3:0] map_key;
         input [1:0] r;
         input [1:0] c;
         begin
-            // Key layout (row 0..3, col 0..3):
+            // 键位布局（行0..3，列0..3）：
             // 1 2 3 A
             // 4 5 6 B
             // 7 8 9 C
@@ -165,13 +165,13 @@ module Keypad4x4(
             row_idx_dbg_latched <= 2'd0;
             col_idx_dbg_latched <= 2'd0;
         end else begin
-            // Write-to-clear (compatible with reference usage: sw x0, 0(key_reg))
+            // 写清除（兼容参考用法：sw x0, 0(key_reg)）
             if (wen && addr[31:4] == (`PERI_BASE_KEYPAD_4X4 >> 4) && addr[3:0] == 4'h0) begin
                 keyvalue_latched <= 32'hFFFF_FFFF;
             end
 
-            // Optional CTRL register (keep existing behavior for debug):
-            // bit2: scan enable
+            // 可选 CTRL 寄存器（保留原有调试行为）：
+            // bit2：扫描使能
             if (wen && addr[31:4] == (`PERI_BASE_KEYPAD_4X4 >> 4) && addr[3:0] == 4'h8) begin
                 scan_enable <= wdata[2];
             end
@@ -192,7 +192,7 @@ module Keypad4x4(
                     row_cnt <= row_cnt + 14'd1;
                 end
 
-                // 更新 row 输出（active-low）
+                // 更新 row 输出（低电平有效）
                 case (row_idx)
                     2'd0: row <= 4'b1110;
                     2'd1: row <= 4'b1101;
@@ -200,14 +200,14 @@ module Keypad4x4(
                     2'd3: row <= 4'b0111;
                 endcase
 
-                // 在一帧内收集按键信息：检测到任意一列(实际 wiring 在 row[])有按键就记录
+                // 在一帧内收集按键信息：检测到任意一列（实际连线在 row[]）有按键就记录
                 if (any_line_active) begin
                     if (!frame_pressed) begin
                         frame_pressed <= 1'b1;
-                        // Logical (row,col) for map_key(): row from line[], col from scan index (row_idx)
+                        // map_key() 的逻辑（行、列）：行来自 line[]，列来自扫描索引 row_idx
                         frame_code <= {row_idx_logical, col_idx_logical};
 
-                        // Latch raw signals for debug
+                        // 锁存原始信号用于调试
                         row_dbg_latched <= row;
                         line_dbg_latched <= line_s;
                         row_idx_dbg_latched <= row_idx_logical;
@@ -217,12 +217,12 @@ module Keypad4x4(
 
                 // 帧结束：row_idx=3 且 row_tick
                 if (row_idx == 2'd3 && row_tick) begin : frame_end
-                    // Compute next stable frame count (used to align pressed with debounced key value)
-                    // stable_frames counts consecutive frames with the same frame_code.
+                    // 计算下一次稳定帧计数（用于让 pressed 与消抖后的键值对齐）
+                    // stable_frames 统计连续相同 frame_code 的帧数。
                     reg [3:0] stable_frames_next;
                     stable_frames_next = 4'd0;
 
-                    // If no key is pressed in this frame, capture idle column level
+                    // 若本帧无按键按下，捕获空闲列电平
                     if (!frame_pressed) begin
                         idle_line <= line_s;
                         idle_valid <= 1'b1;
@@ -242,11 +242,11 @@ module Keypad4x4(
 
                         stable_frames <= stable_frames_next;
 
-                        // Align STATUS with debounced keyvalue:
-                        // pressed_latched only becomes 1 after the key has been stable long enough.
+                        // 让 STATUS 与消抖后的键值对齐：
+                        // pressed_latched 只有在按键稳定足够长后才置 1。
                         pressed_latched <= (stable_frames_next >= DEBOUNCE_FRAMES[3:0]);
 
-                        // Stable reached (first time): latch mapped key value
+                        // 首次达到稳定：锁存映射后的按键值
                         if (stable_frames_next == DEBOUNCE_FRAMES[3:0]) begin
                             keyvalue_latched <= {28'h0, map_key(frame_code[3:2], frame_code[1:0])};
                         end
@@ -264,15 +264,15 @@ module Keypad4x4(
         end
     end
 
-    // MMIO read data (combinational)
-    // IMPORTANT: keep this combinational (reference design does so), otherwise the pipelined CPU
-    // may sample stale/cleared values when it interleaves reads with other MMIO accesses.
+    // MMIO 读数据（组合逻辑）
+    // 重要：保持组合逻辑（参考设计如此），否则流水线 CPU
+    // 在与其他 MMIO 访问交错读取时可能采到过期/被清除的值。
     always @(*) begin
         rdata = 32'b0;
 
-        // Spec-compatible registers:
-        // 0xFFFF_FC10 (offset 0x0): key value (latched), default 0xFFFF_FFFF
-        // 0xFFFF_FC12 (offset 0x2): status (pressed=1 else 0)
+        // 规范兼容寄存器：
+        // 0xFFFF_FC10（偏移 0x0）：按键值（锁存），默认 0xFFFF_FFFF
+        // 0xFFFF_FC12（偏移 0x2）：状态（按下=1，否则0）
         if (addr[31:4] == (`PERI_BASE_KEYPAD_4X4 >> 4) && addr[3:0] == 4'h0) begin
             rdata = keyvalue_latched;
         end else if (addr[31:4] == (`PERI_BASE_KEYPAD_4X4 >> 4) && addr[3:0] == 4'h2) begin
@@ -280,13 +280,13 @@ module Keypad4x4(
         end else if (addr[31:4] == (`PERI_BASE_KEYPAD_4X4 >> 4) && addr[3:0] == 4'h8) begin
             rdata = {29'b0, scan_enable, 2'b0};
         end else if (addr[31:4] == (`PERI_BASE_KEYPAD_4X4 >> 4) && addr[3:0] == 4'hC) begin
-            // 0xFC1C: Debug register
-            // While holding a key, show latched (row,line) captured at first detection in a frame.
-            // [3:0]   = line_dbg (latched if pressed_latched else live)
-            // [7:4]   = row_dbg  (latched if pressed_latched else live)
+            // 0xFC1C：调试寄存器
+            // 按住按键时，显示该帧首次检测到的锁存 (row,line)。
+            // [3:0]   = line_dbg（pressed_latched 为1时锁存，否则实时）
+            // [7:4]   = row_dbg（pressed_latched 为1时锁存，否则实时）
             // [11:8]  = idle_line
             // [15:12] = {row_idx_dbg_latched, col_idx_dbg_latched}
-            // (Higher bits are zero.)
+            // （更高位为 0。）
             rdata = {
                 16'b0,
                 row_idx_dbg_latched,

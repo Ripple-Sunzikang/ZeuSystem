@@ -5,16 +5,16 @@
 
 module ALU(
     input  wire [ 2:0] alu_op,
-    input  wire [ 2:0] alub_sel,      // Reg or Imm from SEXT
+    input  wire [ 2:0] alub_sel,      // 来自SEXT的寄存器/立即数选择
     input  wire [31:0] rs1,
     input  wire [31:0] rs2,
     input  wire [31:0] imm,
     output wire  [31:0] alu_c,
-    output wire  [ 1:0] br      //flag
+    output wire  [ 1:0] br      // 分支标志
 
 );
 
-    // inner logic of ALU
+    // ALU内部逻辑
     reg [31:0] A;
     reg [31:0] B;
     reg [31:0] C_tmp;

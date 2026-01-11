@@ -13,7 +13,7 @@ module NPC(
 
 assign pc4 = pc+4;
 
-//br logic in ALU 
+// ALU中的分支比较结果
 always @(*) begin
   if(op == `NPC_JMPR) npc = rs_imm;
   else if(op == `NPC_BNE && br != 0) npc = pc+offset-8;//分支预测失败，需要跳转，则清空流水线，回退两条指令

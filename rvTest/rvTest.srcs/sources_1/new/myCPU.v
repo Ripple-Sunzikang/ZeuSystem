@@ -6,7 +6,7 @@
         input  wire         cpu_rst,
         input  wire         cpu_clk,
 
-        // Interface to IROM
+        // IROM 接口
     `ifdef RUN_TRACE
         output wire [15:0]  inst_addr,
     `else
@@ -14,19 +14,19 @@
     `endif
         input  wire [31:0]  inst_from_irom,
         
-        // Interface to PRAM for instruction fetch (XIP - eXecute In Place)
-        output wire [11:0]  inst_addr_dram,   // 12位=4K words=16KB
+        // PRAM 取指接口（XIP：就地执行）
+        output wire [11:0]  inst_addr_dram,   // 12位=4K字=16KB
         input  wire [31:0]  inst_from_dram,
-        output wire         inst_from_dram_sel,  // 1 = fetch from PRAM, 0 = fetch from IROM
+        output wire         inst_from_dram_sel,  // 1=从PRAM取指，0=从IROM取指
             
-        // Interface to Bridge
+        // Bridge 接口
         output wire [31:0]  Bus_addr,
         input  wire [31:0]  Bus_rdata,
         output wire         Bus_we,
         output wire [31:0]  Bus_wdata
 
     `ifdef RUN_TRACE
-        ,// Debug Interface
+        ,// 调试接口
         output wire         debug_wb_have_inst,
         output wire [31:0]  debug_wb_pc,
         output              debug_wb_ena,
@@ -35,21 +35,21 @@
     `endif
     );
 
-    // TODO: ������Լ��ĵ�����CPU���
-    //pc output signals
+    // TODO: 这里可根据需要扩展/调整 CPU 功能
+    // PC 输出信号
     wire[31:0] pc;
 
-    //npc output signals
+    // NPC 输出信号
     wire[31:0] npc;
     wire[31:0] pc4;
 
-    //IROM output signals (is located in the above segment, the interface with IROM)
+    // IROM 输出信号（上方为与 IROM 的接口）
 
-    //IF_ID output signals
+    // IF_ID 输出信号
     wire[31:0] ID_inst;
     wire[31:0] ID_pc4;
 
-    //control output signals
+    // 控制信号输出
     wire[2:0] npc_op;
     wire rf_we;
     wire[2:0] rf_wsel;
@@ -59,15 +59,15 @@
     wire[2:0] alu_op;
     wire[1:0] rf_re;
 
-    //sext output signals
+    // SEXT 输出信号
     wire[31:0] ext;
 
-    //register files output signals
+    // 寄存器堆输出信号
     wire[31:0] rD1;
     wire[31:0] rD2;
     wire[31:0] wD;
 
-    //ID_EX output signals
+    // ID_EX 输出信号
     wire[2:0] EX_npc_op;
     wire EX_ram_we;
     wire[2:0] EX_alu_op;
@@ -80,11 +80,11 @@
     wire[31:0] EX_rD2;
     wire[31:0] EX_ext;
 
-    //alu output signals
+    // ALU 输出信号
     wire[31:0] alu_c;
     wire[1:0]alu_f;
 
-    //EX_MEM output signals
+    // EX_MEM 输出信号
     wire MEM_ram_we;
     wire MEM_rf_we;
     wire[2:0] MEM_rf_wsel;
@@ -94,10 +94,10 @@
     wire[31:0] MEM_rD2;
     wire[31:0] MEM_ext;
 
-    //dram output signals
+    // DRAM 输出信号
     wire[31:0] rd;
 
-    //MEM_WB output signals
+    // MEM_WB 输出信号
     wire WB_rf_we;
     wire[2:0] WB_rf_wsel;
     wire[4:0] WB_wR;
@@ -106,12 +106,12 @@
     wire[31:0] WB_rd;
     wire[31:0] WB_ext;
 
-    //data_hazard_detection output signals
+    // 数据冒险检测输出信号
     wire[31:0] new_rD1;
     wire[31:0] new_rD2;
     wire data_hazard;
 
-    //control_hazard_detection output signals
+    // 控制冒险检测输出信号
     wire control_hazard;
 
     PC PC_0(
@@ -134,12 +134,12 @@
     );//
 
     //==========================================================================
-    // Instruction Fetch - 支持从 IROM 或 PRAM 取指
+    // 取指阶段 - 支持从 IROM 或 PRAM 取指
     // PC[31:16] == 0x0000 -> 从 IROM 取指 (BIOS/固件)
     // PC[31:16] == 0x0001 -> 从 PRAM 取指 (用户程序，通过 UART 加载)
     //==========================================================================
     assign inst_addr = pc[15:2];                                    // IROM 地址
-    assign inst_addr_dram = pc[13:2];                               // PRAM 指令地址 (12位=4K words)
+    assign inst_addr_dram = pc[13:2];                               // PRAM 指令地址 (12位=4K字)
     assign inst_from_dram_sel = (pc[31:16] == 16'h0001) ? 1'b1 : 1'b0;  // 选择信号
     wire [31:0] inst = inst_from_dram_sel ? inst_from_dram : inst_from_irom;  // MUX 选择指令源
 
@@ -149,7 +149,7 @@
     .IF_inst(inst),
     .IF_pc4(pc4),
     .data_hazard(data_hazard),
-    .control_hazard(control_hazard),  //control_hazard has the top priority!!
+    .control_hazard(control_hazard),  // 控制冒险优先级最高
     .ID_inst(ID_inst),
     .ID_pc4(ID_pc4)
     );//
@@ -181,13 +181,13 @@
     .wR(WB_wR),
     .rf_we(WB_rf_we),
     .rf_wsel(WB_rf_wsel),
-    .pc4(WB_pc4), //from npc
-    .ext(WB_ext), //from sext
-    .aluc(WB_alu_c), //from alu
-    .rdom(WB_rd),  //from dram
+    .pc4(WB_pc4), // 来自 NPC
+    .ext(WB_ext), // 来自 SEXT
+    .aluc(WB_alu_c), // 来自 ALU
+    .rdom(WB_rd),  // 来自 DRAM
     .rD1(rD1),
     .rD2(rD2),
-    .wD(wD) //only for debug
+    .wD(wD) // 仅用于调试
     );//
 
     ID_EX U_ID_EX(
@@ -218,7 +218,7 @@
     .EX_rD2(EX_rD2),
     .EX_ext(EX_ext),
 
-    .control_hazard(control_hazard),//two hazard have the same flush
+    .control_hazard(control_hazard),// 两种冒险共用同一清空逻辑
     .data_hazard(data_hazard)
     );//
 
@@ -255,11 +255,11 @@
     .MEM_ext(MEM_ext)
     );//
 
-    //dram part 
+    // DRAM 部分
     assign Bus_addr = MEM_alu_c; 
-    assign rd = Bus_rdata;    //lw read 
-    assign Bus_we = MEM_ram_we; //sw mem
-    assign Bus_wdata = MEM_rD2;   //sw
+    assign rd = Bus_rdata;    // lw 读取
+    assign Bus_we = MEM_ram_we; // sw 写存储
+    assign Bus_wdata = MEM_rD2;   // sw 数据
 
     MEM_WB U_MEM_WB(
     .clk(cpu_clk),
@@ -285,7 +285,7 @@
     data_hazard_detection U_datahazard_detection(
     .ID_rR1(ID_inst[19:15]),
     .ID_rR2(ID_inst[24:20]),
-    .ID_rf_re(rf_re), //read enable
+    .ID_rf_re(rf_re), // 读使能
     .ID_rD1(rD1),
     .ID_rD2(rD2),
 
@@ -324,12 +324,12 @@
     );//
 
     `ifdef RUN_TRACE
-        // Debug Interface
-        assign debug_wb_have_inst = (WB_pc4 == 32'b0) ? 0 : 1; //if pc4 == 0,it must be nop
+        // 调试接口
+        assign debug_wb_have_inst = (WB_pc4 == 32'b0) ? 0 : 1; // 若 pc4==0 则为 nop
         assign debug_wb_pc        = (debug_wb_have_inst) ? (WB_pc4 - 4) : 32'b0;
         assign debug_wb_ena       = (debug_wb_have_inst && WB_rf_we) ? 1'b1 : 1'b0;
         assign debug_wb_reg       = (debug_wb_ena) ? WB_wR : 5'b0;
-        assign debug_wb_value     = (debug_wb_ena) ? wD : 32'b0;  //wD is only for debug
+        assign debug_wb_value     = (debug_wb_ena) ? wD : 32'b0;  // wD 仅用于调试
     `endif
 
     endmodule

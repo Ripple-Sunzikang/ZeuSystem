@@ -5,7 +5,7 @@
       input wire[31:0] IF_inst,
       input wire[31:0] IF_pc4,
       input wire data_hazard,
-      input wire control_hazard,  //control_hazard has the top priority!!
+      input wire control_hazard,  // 控制冒险优先级最高
       output reg[31:0] ID_inst,
       output reg[31:0] ID_pc4
     );

@@ -27,7 +27,7 @@ module ID_EX(
   output reg[31:0] EX_rD2,
   output reg[31:0] EX_ext,
 
-  input wire control_hazard,//two hazard have the same flush
+  input wire control_hazard,// 两种冒险共用同一清空逻辑
   input wire data_hazard
 );
 

@@ -2,7 +2,7 @@
 module data_hazard_detection(
   input wire[4:0] ID_rR1,
   input wire[4:0] ID_rR2,
-  input wire[1:0] ID_rf_re, //read enable
+  input wire[1:0] ID_rf_re, // 读使能
   input wire[31:0] ID_rD1,
   input wire[31:0] ID_rD2,
 
@@ -31,20 +31,20 @@ module data_hazard_detection(
 
   output reg[31:0] new_rD1,
   output reg[31:0] new_rD2,
-  output wire data_hazard   //if only we counter with load-use, it will be 1,stop pipeline
+  output wire data_hazard   // 仅在出现load-use冒险时为1，用于暂停流水线
 );
 
-//Because the implemention is stopping,the load-use instruction is regarded as a normal R type instrucion,so don't have special process.
-//Acordding to the final situaion,I maybe consider the forward delivery
+// 由于实现采用停顿，load-use 指令被当作普通 R 型处理，不做特殊流程
+// 根据最终情况，后续可考虑加入前递
 
-//three data hazards
-//A,ID and EX
+// 三种数据冒险
+// A：ID 与 EX
 wire rR1_a = (ID_rR1 == EX_wR) & EX_rf_we &  ID_rf_re[0] & (ID_rR1 != 5'b0);
 wire rR2_a = (ID_rR2 == EX_wR) & EX_rf_we &  ID_rf_re[1] & (ID_rR2 != 5'b0);
-//B,ID and MEM
+// B：ID 与 MEM
 wire rR1_b = (ID_rR1 == MEM_wR) & MEM_rf_we &  ID_rf_re[0] & (ID_rR1 != 5'b0);
 wire rR2_b = (ID_rR2 == MEM_wR) & MEM_rf_we &  ID_rf_re[1] & (ID_rR2 != 5'b0);
-//C,ID and WB
+// C：ID 与 WB
 wire rR1_c = (ID_rR1 == WB_wR) & WB_rf_we &  ID_rf_re[0] & (ID_rR1 != 5'b0);
 wire rR2_c = (ID_rR2 == WB_wR) & WB_rf_we &  ID_rf_re[1] & (ID_rR2 != 5'b0);
 

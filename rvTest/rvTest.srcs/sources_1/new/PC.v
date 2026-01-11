@@ -18,8 +18,8 @@ module PC(
           pc<=0;
         `endif
       end
-      else if(control_hazard) pc<=din;//����ð����NPCģ���������ָ������ת�����ȼ���������ð�գ�
-      else if(data_hazard) pc<=pc;//����ð��ͣ��
+      else if(control_hazard) pc<=din;// 控制冒险：采用NPC给出的跳转地址，优先级高于数据冒险
+      else if(data_hazard) pc<=pc;// 数据冒险暂停
       else pc <= din;
     end
 
