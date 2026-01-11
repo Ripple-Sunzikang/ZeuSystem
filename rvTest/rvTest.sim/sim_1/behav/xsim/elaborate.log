@@ -1,16 +1,12 @@
 Vivado Simulator 2017.4
 Copyright 1986-1999, 2001-2016 Xilinx, Inc. All Rights Reserved.
-Running: /opt/Xilinx/Vivado/2017.4/bin/unwrapped/lnx64.o/xelab -wto 996e63e4862d405abd584214c71bf515 --incr --debug typical --relax --mt 8 -L dist_mem_gen_v8_0_12 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot miniRV_SoC_behav xil_defaultlib.miniRV_SoC xil_defaultlib.glbl -log elaborate.log 
+Running: /opt/Xilinx/Vivado/2017.4/bin/unwrapped/lnx64.o/xelab -wto 996e63e4862d405abd584214c71bf515 --incr --debug typical --relax --mt 8 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot miniRV_sim_behav xil_defaultlib.miniRV_sim xil_defaultlib.glbl -log elaborate.log 
 Using 8 slave threads.
 Starting static elaboration
 Completed static elaboration
 Starting simulation data flow analysis
 Completed simulation data flow analysis
 Time Resolution for simulation is 1ps
-Compiling module unisims_ver.BUFG
-Compiling module unisims_ver.PLLE2_ADV(CLKFBOUT_MULT=17,CLKIN...
-Compiling module xil_defaultlib.cpuclk_clk_wiz
-Compiling module xil_defaultlib.cpuclk
 Compiling module xil_defaultlib.PC
 Compiling module xil_defaultlib.NPC
 Compiling module xil_defaultlib.IF_ID
@@ -24,21 +20,6 @@ Compiling module xil_defaultlib.MEM_WB
 Compiling module xil_defaultlib.data_hazard_detection
 Compiling module xil_defaultlib.control_hazard_detection
 Compiling module xil_defaultlib.myCPU
-Compiling module dist_mem_gen_v8_0_12.dist_mem_gen_v8_0_12(C_FAMILY="a...
-Compiling module xil_defaultlib.IROM
-Compiling module xil_defaultlib.Bridge
-Compiling module dist_mem_gen_v8_0_12.dist_mem_gen_v8_0_12(C_FAMILY="a...
-Compiling module xil_defaultlib.DRAM
-Compiling module xil_defaultlib.Digital_LED
-Compiling module xil_defaultlib.LED
-Compiling module xil_defaultlib.Switch
-Compiling module xil_defaultlib.Button
-Compiling module xil_defaultlib.Timer
-Compiling module xil_defaultlib.Keypad4x4
-Compiling module xil_defaultlib.PWM
-Compiling module xil_defaultlib.WDT
-Compiling module xil_defaultlib.UART
-Compiling module xil_defaultlib.miniRV_SoC
+Compiling module xil_defaultlib.miniRV_sim
 Compiling module xil_defaultlib.glbl
-ERROR: [XSIM 43-3409] Failed to compile generated C file xsim.dir/miniRV_SoC_behav/obj/xsim_1.c.
-ERROR: [XSIM 43-3915] Encountered a fatal error. Cannot continue. Exiting... 
+Built simulation snapshot miniRV_sim_behav
