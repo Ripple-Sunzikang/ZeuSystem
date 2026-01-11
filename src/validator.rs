@@ -17,7 +17,7 @@ pub fn verify_assembly(asm_code: &str) -> Result<(), String> {
     // 使用 riscv32-unknown-elf-gcc 编译
     let output = Command::new("riscv32-unknown-elf-gcc")
         .arg("-c")
-        .arg("-march=rv32i")
+        .arg("-march=rv32im")
         .arg("-mabi=ilp32")
         .arg(temp_asm)
         .arg("-o")
@@ -32,7 +32,7 @@ pub fn verify_assembly(asm_code: &str) -> Result<(), String> {
 
     // 尝试链接（可选）
     let _link_output = Command::new("riscv32-unknown-elf-gcc")
-        .arg("-march=rv32i")
+        .arg("-march=rv32im")
         .arg("-mabi=ilp32")
         .arg(temp_obj)
         .arg("-o")
@@ -75,7 +75,7 @@ pub fn validate_syntax(asm_code: &str) -> Result<(), String> {
             // 检查是否是有效的RV32I指令
             match instr {
                 // 算术指令
-                "add" | "sub" | "mul" | "div" | "rem" | "and" | "or" | "xor" | "sll" | "srl" | "sra" |
+                "add" | "sub" | "mul" | "div" | "and" | "or" | "xor" | "sll" | "srl" | "sra" |
                 // 立即数指令
                 "addi" | "andi" | "ori" | "xori" | "slli" | "srli" | "srai" |
                 // 比较指令
@@ -106,4 +106,3 @@ pub fn validate_syntax(asm_code: &str) -> Result<(), String> {
 
     Ok(())
 }
-

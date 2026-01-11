@@ -56,7 +56,7 @@ C 源代码 → 编译器 → RISC-V 汇编 → 汇编器 → 机器码 → COE�
 ### 目标硬件
 
 - **CPU**: miniRV（5级流水线 RISC-V 处理器）
-- **指令集**: RV32I 子集（不含 slt/mul/div）
+- **指令集**: RV32IM 子集（不含 slt/rem）
 - **开发板型号**: XC7A100T FGG484C-1
 
 ---
@@ -710,7 +710,7 @@ int *led = (int*)-928;
 
 | 特性 | 描述 |
 |-----|------|
-| 架构 | RISC-V 32位 (RV32I子集) |
+| 架构 | RISC-V 32位 (RV32IM子集) |
 | 流水线 | 5级 (IF-ID-EX-MEM-WB) |
 | 数据通路 | 前递 (Forwarding) |
 | 冒险处理 | Load-Use 检测与暂停 |
@@ -719,7 +719,7 @@ int *led = (int*)-928;
 
 **支持的指令**:
 ```
-R-type: add, sub, and, or, xor, sll, srl, sra
+R-type: add, sub, mul, div, and, or, xor, sll, srl, sra
 I-type: addi, andi, ori, xori, slli, srli, srai, lw
 S-type: sw
 B-type: beq, bne, blt, bge, bltu, bgeu
@@ -727,7 +727,7 @@ J-type: jal, jalr
 U-type: lui, auipc
 ```
 
-**不支持的指令**: `mul`, `div`, `rem`, `slt`, `slti` 等
+**不支持的指令**: `rem`, `slt`, `slti` 等
 
 ### Store-Load Hazard
 

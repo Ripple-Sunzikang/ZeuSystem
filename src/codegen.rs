@@ -478,15 +478,9 @@ impl Codegen {
                 match op {
                     BinaryOp::Add => self.emit("add a0, a1, a0"),
                     BinaryOp::Subtract => self.emit("sub a0, a1, a0"),
-                    BinaryOp::Multiply => {
-                        self.emit_bios_binary_call("bios_multiply");
-                    }
-                    BinaryOp::Divide => {
-                        self.emit_bios_binary_call("bios_divide");
-                    }
-                    BinaryOp::Modulo => {
-                        self.emit_bios_binary_call("bios_modulo");
-                    }
+                    BinaryOp::Multiply => self.emit("mul a0, a1, a0"),
+                    BinaryOp::Divide => self.emit("div a0, a1, a0"),
+                    BinaryOp::Modulo => self.emit("rem a0, a1, a0"),
                     BinaryOp::Equal => {
                         // a1 == a0 ? 1 : 0
                         // 使用 beq 模拟: if a1 == a0, result=1, else result=0
