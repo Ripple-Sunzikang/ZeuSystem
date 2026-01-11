@@ -2,8 +2,8 @@
 # Vivado v2017.4 (64-bit)
 # SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
 # IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
-# Start of session at: Sun Jan 11 10:03:36 2026
-# Process ID: 64249
+# Start of session at: Sun Jan 11 12:18:38 2026
+# Process ID: 129841
 # Current directory: /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1
 # Command line: vivado -log miniRV_SoC.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source miniRV_SoC.tcl
 # Log file: /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/miniRV_SoC.vds

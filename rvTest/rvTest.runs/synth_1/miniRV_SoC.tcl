@@ -38,6 +38,7 @@ read_verilog -library xil_defaultlib {
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ALU.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Bridge.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Button.v
+  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/CP0.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Control_Hazard_Detection.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Data_Hazard_Detection.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v

@@ -2,8 +2,8 @@
 # Vivado v2017.4 (64-bit)
 # SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
 # IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
-# Start of session at: Sun Jan 11 10:03:36 2026
-# Process ID: 64249
+# Start of session at: Sun Jan 11 12:18:38 2026
+# Process ID: 129841
 # Current directory: /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1
 # Command line: vivado -log miniRV_SoC.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source miniRV_SoC.tcl
 # Log file: /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/miniRV_SoC.vds
@@ -15,13 +15,13 @@ Starting synth_design
 Attempting to get a license for feature 'Synthesis' and/or device 'xc7a100t'
 INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100t'
 INFO: Launching helper process for spawning children vivado processes
-INFO: Helper process launched with PID 64361 
+INFO: Helper process launched with PID 129850 
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 1276.613 ; gain = 88.000 ; free physical = 2781 ; free virtual = 13774
+Starting RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 1276.613 ; gain = 88.000 ; free physical = 6299 ; free virtual = 16101
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-638] synthesizing module 'miniRV_SoC' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/miniRV_SoC.v:5]
-INFO: [Synth 8-638] synthesizing module 'cpuclk' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-64249-Cookie/realtime/cpuclk_stub.v:5]
-INFO: [Synth 8-256] done synthesizing module 'cpuclk' (1#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-64249-Cookie/realtime/cpuclk_stub.v:5]
+INFO: [Synth 8-638] synthesizing module 'cpuclk' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-129841-Cookie/realtime/cpuclk_stub.v:5]
+INFO: [Synth 8-256] done synthesizing module 'cpuclk' (1#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-129841-Cookie/realtime/cpuclk_stub.v:5]
 INFO: [Synth 8-638] synthesizing module 'myCPU' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/myCPU.v:5]
 INFO: [Synth 8-638] synthesizing module 'PC' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PC.v:4]
 INFO: [Synth 8-256] done synthesizing module 'PC' (2#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PC.v:4]
@@ -35,7 +35,7 @@ INFO: [Synth 8-638] synthesizing module 'SEXT' [/home/vessel/SEU-RISCV-CPU/rvTes
 INFO: [Synth 8-256] done synthesizing module 'SEXT' (6#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/SEXT.v:5]
 INFO: [Synth 8-638] synthesizing module 'RF' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/RF.v:5]
 INFO: [Synth 8-256] done synthesizing module 'RF' (7#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/RF.v:5]
-WARNING: [Synth 8-350] instance 'RF_0' of module 'RF' requires 14 connections, but only 13 given [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/myCPU.v:177]
+WARNING: [Synth 8-350] instance 'RF_0' of module 'RF' requires 14 connections, but only 13 given [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/myCPU.v:203]
 INFO: [Synth 8-638] synthesizing module 'ID_EX' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:2]
 INFO: [Synth 8-256] done synthesizing module 'ID_EX' (8#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:2]
 INFO: [Synth 8-638] synthesizing module 'ALU' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ALU.v:6]
@@ -50,12 +50,12 @@ INFO: [Synth 8-256] done synthesizing module 'data_hazard_detection' (12#1) [/ho
 INFO: [Synth 8-638] synthesizing module 'control_hazard_detection' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Control_Hazard_Detection.v:2]
 INFO: [Synth 8-256] done synthesizing module 'control_hazard_detection' (13#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Control_Hazard_Detection.v:2]
 INFO: [Synth 8-256] done synthesizing module 'myCPU' (14#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/myCPU.v:5]
-INFO: [Synth 8-638] synthesizing module 'IROM' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-64249-Cookie/realtime/IROM_stub.v:6]
-INFO: [Synth 8-256] done synthesizing module 'IROM' (15#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-64249-Cookie/realtime/IROM_stub.v:6]
+INFO: [Synth 8-638] synthesizing module 'IROM' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-129841-Cookie/realtime/IROM_stub.v:6]
+INFO: [Synth 8-256] done synthesizing module 'IROM' (15#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-129841-Cookie/realtime/IROM_stub.v:6]
 INFO: [Synth 8-638] synthesizing module 'Bridge' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Bridge.v:5]
 INFO: [Synth 8-256] done synthesizing module 'Bridge' (16#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Bridge.v:5]
-INFO: [Synth 8-638] synthesizing module 'DRAM' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-64249-Cookie/realtime/DRAM_stub.v:6]
-INFO: [Synth 8-256] done synthesizing module 'DRAM' (17#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-64249-Cookie/realtime/DRAM_stub.v:6]
+INFO: [Synth 8-638] synthesizing module 'DRAM' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-129841-Cookie/realtime/DRAM_stub.v:6]
+INFO: [Synth 8-256] done synthesizing module 'DRAM' (17#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-129841-Cookie/realtime/DRAM_stub.v:6]
 INFO: [Synth 8-638] synthesizing module 'Digital_LED' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:5]
 INFO: [Synth 8-226] default block is never used [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:89]
 WARNING: [Synth 8-5788] Register DN_data_reg in module Digital_LED is has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:64]
@@ -72,7 +72,6 @@ INFO: [Synth 8-638] synthesizing module 'Button' [/home/vessel/SEU-RISCV-CPU/rvT
 	Parameter S_CHECK bound to: 2'b10 
 INFO: [Synth 8-256] done synthesizing module 'Button' (21#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Button.v:5]
 INFO: [Synth 8-638] synthesizing module 'Timer' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Timer.v:5]
-WARNING: [Synth 8-5788] Register rdata_reg in module Timer is has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Timer.v:49]
 INFO: [Synth 8-256] done synthesizing module 'Timer' (22#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Timer.v:5]
 INFO: [Synth 8-638] synthesizing module 'Keypad4x4' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Keypad4x4.v:5]
 	Parameter ROW_PERIOD_CYCLES bound to: 12500 - type: integer 
@@ -90,11 +89,13 @@ INFO: [Synth 8-638] synthesizing module 'UART' [/home/vessel/SEU-RISCV-CPU/rvTes
 	Parameter UART_CTRL bound to: -952 - type: integer 
 	Parameter UART_BAUD bound to: -948 - type: integer 
 INFO: [Synth 8-256] done synthesizing module 'UART' (26#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/UART.v:20]
+INFO: [Synth 8-638] synthesizing module 'CP0' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/CP0.v:5]
+INFO: [Synth 8-256] done synthesizing module 'CP0' (27#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/CP0.v:5]
 INFO: [Synth 8-638] synthesizing module 'PRAM_Wrapper' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PRAM_Wrapper.v:16]
-INFO: [Synth 8-638] synthesizing module 'PRAM_BRAM' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-64249-Cookie/realtime/PRAM_BRAM_stub.v:6]
-INFO: [Synth 8-256] done synthesizing module 'PRAM_BRAM' (27#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-64249-Cookie/realtime/PRAM_BRAM_stub.v:6]
-INFO: [Synth 8-256] done synthesizing module 'PRAM_Wrapper' (28#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PRAM_Wrapper.v:16]
-INFO: [Synth 8-256] done synthesizing module 'miniRV_SoC' (29#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/miniRV_SoC.v:5]
+INFO: [Synth 8-638] synthesizing module 'PRAM_BRAM' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-129841-Cookie/realtime/PRAM_BRAM_stub.v:6]
+INFO: [Synth 8-256] done synthesizing module 'PRAM_BRAM' (28#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-129841-Cookie/realtime/PRAM_BRAM_stub.v:6]
+INFO: [Synth 8-256] done synthesizing module 'PRAM_Wrapper' (29#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PRAM_Wrapper.v:16]
+INFO: [Synth 8-256] done synthesizing module 'miniRV_SoC' (30#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/miniRV_SoC.v:5]
 WARNING: [Synth 8-3331] design UART has unconnected port wdata[31]
 WARNING: [Synth 8-3331] design UART has unconnected port wdata[30]
 WARNING: [Synth 8-3331] design UART has unconnected port wdata[29]
@@ -197,7 +198,7 @@ WARNING: [Synth 8-3331] design PWM has unconnected port addr[13]
 WARNING: [Synth 8-3331] design PWM has unconnected port addr[12]
 INFO: [Common 17-14] Message 'Synth 8-3331' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:08 ; elapsed = 00:00:08 . Memory (MB): peak = 1326.145 ; gain = 137.531 ; free physical = 2797 ; free virtual = 13765
+Finished RTL Elaboration : Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 1328.145 ; gain = 139.531 ; free physical = 6250 ; free virtual = 16053
 ---------------------------------------------------------------------------------
 
 Report Check Netlist: 
@@ -206,23 +207,23 @@ Report Check Netlist:
 +------+------------------+-------+---------+-------+------------------+
 |1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
 +------+------------------+-------+---------+-------+------------------+
-WARNING: [Synth 8-3295] tying undriven pin RF_0:rst to constant 0 [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/myCPU.v:177]
+WARNING: [Synth 8-3295] tying undriven pin RF_0:rst to constant 0 [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/myCPU.v:203]
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 1326.145 ; gain = 137.531 ; free physical = 2803 ; free virtual = 13771
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 1328.145 ; gain = 139.531 ; free physical = 6251 ; free virtual = 16054
 ---------------------------------------------------------------------------------
 INFO: [Device 21-403] Loading part xc7a100tfgg484-1
 INFO: [Project 1-570] Preparing netlist for logic optimization
 
 Processing XDC Constraints
 Initializing timing engine
-Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-64249-Cookie/dcp4/DRAM_in_context.xdc] for cell 'Mem_DRAM'
-Finished Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-64249-Cookie/dcp4/DRAM_in_context.xdc] for cell 'Mem_DRAM'
-Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-64249-Cookie/dcp5/cpuclk_in_context.xdc] for cell 'Clkgen'
-Finished Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-64249-Cookie/dcp5/cpuclk_in_context.xdc] for cell 'Clkgen'
-Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-64249-Cookie/dcp6/IROM_in_context.xdc] for cell 'Mem_IROM'
-Finished Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-64249-Cookie/dcp6/IROM_in_context.xdc] for cell 'Mem_IROM'
-Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-64249-Cookie/dcp7/PRAM_BRAM_in_context.xdc] for cell 'PRAM_0/PRAM_BRAM_inst'
-Finished Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-64249-Cookie/dcp7/PRAM_BRAM_in_context.xdc] for cell 'PRAM_0/PRAM_BRAM_inst'
+Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-129841-Cookie/dcp4/DRAM_in_context.xdc] for cell 'Mem_DRAM'
+Finished Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-129841-Cookie/dcp4/DRAM_in_context.xdc] for cell 'Mem_DRAM'
+Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-129841-Cookie/dcp5/cpuclk_in_context.xdc] for cell 'Clkgen'
+Finished Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-129841-Cookie/dcp5/cpuclk_in_context.xdc] for cell 'Clkgen'
+Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-129841-Cookie/dcp6/IROM_in_context.xdc] for cell 'Mem_IROM'
+Finished Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-129841-Cookie/dcp6/IROM_in_context.xdc] for cell 'Mem_IROM'
+Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-129841-Cookie/dcp7/PRAM_BRAM_in_context.xdc] for cell 'PRAM_0/PRAM_BRAM_inst'
+Finished Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/.Xil/Vivado-129841-Cookie/dcp7/PRAM_BRAM_in_context.xdc] for cell 'PRAM_0/PRAM_BRAM_inst'
 Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/constrs_1/new/miniRV_SoC.xdc]
 Finished Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/constrs_1/new/miniRV_SoC.xdc]
 INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/constrs_1/new/miniRV_SoC.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/miniRV_SoC_propImpl.xdc].
@@ -234,16 +235,16 @@ Completed Processing XDC Constraints
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.01 . Memory (MB): peak = 1708.824 ; gain = 0.000 ; free physical = 2300 ; free virtual = 13513
+Constraint Validation Runtime : Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00 . Memory (MB): peak = 1710.816 ; gain = 0.000 ; free physical = 6060 ; free virtual = 15867
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:00:22 ; elapsed = 00:00:30 . Memory (MB): peak = 1708.824 ; gain = 520.211 ; free physical = 2578 ; free virtual = 13616
+Finished Constraint Validation : Time (s): cpu = 00:00:18 ; elapsed = 00:00:25 . Memory (MB): peak = 1710.816 ; gain = 522.203 ; free physical = 6137 ; free virtual = 15940
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7a100tfgg484-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:00:22 ; elapsed = 00:00:30 . Memory (MB): peak = 1708.824 ; gain = 520.211 ; free physical = 2578 ; free virtual = 13616
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:18 ; elapsed = 00:00:25 . Memory (MB): peak = 1710.816 ; gain = 522.203 ; free physical = 6137 ; free virtual = 15940
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
@@ -253,7 +254,7 @@ Applied set_property DONT_TOUCH = true for Mem_DRAM. (constraint file  auto gene
 Applied set_property DONT_TOUCH = true for Mem_IROM. (constraint file  auto generated constraint, line ).
 Applied set_property DONT_TOUCH = true for PRAM_0/PRAM_BRAM_inst. (constraint file  auto generated constraint, line ).
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:22 ; elapsed = 00:00:30 . Memory (MB): peak = 1708.824 ; gain = 520.211 ; free physical = 2578 ; free virtual = 13616
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:19 ; elapsed = 00:00:25 . Memory (MB): peak = 1710.816 ; gain = 522.203 ; free physical = 6137 ; free virtual = 15940
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-5546] ROM "inst_jalr" won't be mapped to RAM because it is too sparse
 INFO: [Synth 8-5546] ROM "inst_jal" won't be mapped to RAM because it is too sparse
@@ -311,6 +312,9 @@ INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To p
 INFO: [Synth 8-5545] ROM "C_tmp" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
 INFO: [Synth 8-5545] ROM "C_tmp" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
 INFO: [Synth 8-5546] ROM "inst_from_dram_sel" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5545] ROM "access_sw" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "access_btn" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "access_timer" won't be mapped to RAM because address size (28) is larger than maximum supported(25)
 INFO: [Synth 8-5546] ROM "access_pram" won't be mapped to RAM because it is too sparse
 INFO: [Synth 8-5546] ROM "access_mem" won't be mapped to RAM because it is too sparse
 INFO: [Synth 8-5545] ROM "access_dig" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
@@ -319,11 +323,10 @@ INFO: [Synth 8-5545] ROM "access_keypad" won't be mapped to RAM because address 
 INFO: [Synth 8-5545] ROM "access_pwm" won't be mapped to RAM because address size (28) is larger than maximum supported(25)
 INFO: [Synth 8-5545] ROM "access_wdt" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
 INFO: [Synth 8-5545] ROM "access_uart" won't be mapped to RAM because address size (28) is larger than maximum supported(25)
-INFO: [Synth 8-5545] ROM "access_sw" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
-INFO: [Synth 8-5545] ROM "access_btn" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "access_cp0" won't be mapped to RAM because address size (28) is larger than maximum supported(25)
 WARNING: [Synth 8-6014] Unused sequential element cnt_reg was removed.  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:28]
-INFO: [Synth 8-5545] ROM "rdata" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
-WARNING: [Synth 8-6014] Unused sequential element CNT1_reg was removed.  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Timer.v:33]
+WARNING: [Synth 8-6014] Unused sequential element CNT1_reg was removed.  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Timer.v:35]
+WARNING: [Synth 8-6014] Unused sequential element CNT0_reg was removed.  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Timer.v:45]
 INFO: [Synth 8-5544] ROM "row" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
 INFO: [Synth 8-5544] ROM "first_one_idx" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
 INFO: [Synth 8-5544] ROM "first_zero_idx" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
@@ -347,8 +350,12 @@ INFO: [Synth 8-5544] ROM "rx_fifo_reg[14]" won't be mapped to Block RAM because 
 INFO: [Synth 8-5544] ROM "rx_fifo_reg[15]" won't be mapped to Block RAM because address size (4) smaller than threshold (5)
 WARNING: [Synth 8-6014] Unused sequential element tx_bit_cnt_reg was removed.  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/UART.v:105]
 WARNING: [Synth 8-6014] Unused sequential element rx_rd_ptr_reg was removed.  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/UART.v:68]
+INFO: [Synth 8-5545] ROM "status_ie" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "cause_reg" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "epc_reg" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "vector_reg" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:25 ; elapsed = 00:00:33 . Memory (MB): peak = 1708.824 ; gain = 520.211 ; free physical = 2539 ; free virtual = 13576
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:20 ; elapsed = 00:00:27 . Memory (MB): peak = 1710.816 ; gain = 522.203 ; free physical = 6139 ; free virtual = 15942
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -375,7 +382,7 @@ Detailed RTL Component Info :
 	   2 Input     32 Bit         XORs := 1     
 	   2 Input      3 Bit         XORs := 1     
 +---Registers : 
-	               32 Bit    Registers := 54    
+	               32 Bit    Registers := 56    
 	               24 Bit    Registers := 2     
 	               19 Bit    Registers := 5     
 	               16 Bit    Registers := 7     
@@ -385,11 +392,11 @@ Detailed RTL Component Info :
 	                4 Bit    Registers := 13    
 	                3 Bit    Registers := 7     
 	                2 Bit    Registers := 8     
-	                1 Bit    Registers := 14    
+	                1 Bit    Registers := 19    
 +---Multipliers : 
 	                32x32  Multipliers := 3     
 +---Muxes : 
-	   2 Input     32 Bit        Muxes := 41    
+	   2 Input     32 Bit        Muxes := 45    
 	   4 Input     32 Bit        Muxes := 5     
 	  16 Input     32 Bit        Muxes := 1     
 	   5 Input     32 Bit        Muxes := 1     
@@ -403,15 +410,15 @@ Detailed RTL Component Info :
 	   4 Input      4 Bit        Muxes := 1     
 	   7 Input      3 Bit        Muxes := 1     
 	   5 Input      3 Bit        Muxes := 1     
-	   2 Input      3 Bit        Muxes := 5     
+	   2 Input      3 Bit        Muxes := 6     
 	   2 Input      2 Bit        Muxes := 4     
 	   3 Input      2 Bit        Muxes := 1     
 	   4 Input      2 Bit        Muxes := 1     
 	   8 Input      2 Bit        Muxes := 1     
-	   2 Input      1 Bit        Muxes := 148   
+	   2 Input      1 Bit        Muxes := 159   
 	   3 Input      1 Bit        Muxes := 1     
 	   4 Input      1 Bit        Muxes := 20    
-	   5 Input      1 Bit        Muxes := 1     
+	   5 Input      1 Bit        Muxes := 5     
 	  11 Input      1 Bit        Muxes := 1     
 ---------------------------------------------------------------------------------
 Finished RTL Component Statistics 
@@ -432,7 +439,7 @@ Detailed RTL Component Info :
 	   2 Input     32 Bit       Adders := 1     
 	   3 Input     32 Bit       Adders := 1     
 +---Muxes : 
-	   2 Input     32 Bit        Muxes := 6     
+	   2 Input     32 Bit        Muxes := 8     
 Module IF_ID 
 Detailed RTL Component Info : 
 +---Registers : 
@@ -463,7 +470,7 @@ Detailed RTL Component Info :
 	                5 Bit    Registers := 1     
 	                4 Bit    Registers := 1     
 	                3 Bit    Registers := 3     
-	                1 Bit    Registers := 2     
+	                1 Bit    Registers := 4     
 +---Muxes : 
 	   2 Input     32 Bit        Muxes := 4     
 	   2 Input      5 Bit        Muxes := 1     
@@ -507,13 +514,16 @@ Detailed RTL Component Info :
 	   2 Input      1 Bit        Muxes := 1     
 Module myCPU 
 Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     32 Bit       Adders := 1     
 +---Muxes : 
 	   2 Input     32 Bit        Muxes := 1     
+	   2 Input      3 Bit        Muxes := 1     
 	   2 Input      1 Bit        Muxes := 1     
 Module Bridge 
 Detailed RTL Component Info : 
 +---Muxes : 
-	   2 Input      1 Bit        Muxes := 10    
+	   2 Input      1 Bit        Muxes := 12    
 Module Digital_LED 
 Detailed RTL Component Info : 
 +---Registers : 
@@ -546,13 +556,12 @@ Detailed RTL Component Info :
 	   2 Input      1 Bit        Muxes := 50    
 Module Timer 
 Detailed RTL Component Info : 
-+---Adders : 
-	   2 Input     32 Bit       Adders := 1     
 +---Registers : 
-	               32 Bit    Registers := 3     
+	               32 Bit    Registers := 2     
+	                1 Bit    Registers := 1     
 +---Muxes : 
-	   2 Input     32 Bit        Muxes := 2     
-	   2 Input      1 Bit        Muxes := 3     
+	   2 Input     32 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 2     
 Module Keypad4x4 
 Detailed RTL Component Info : 
 +---Adders : 
@@ -622,6 +631,15 @@ Detailed RTL Component Info :
 	   4 Input      1 Bit        Muxes := 20    
 	   5 Input      1 Bit        Muxes := 1     
 	  11 Input      1 Bit        Muxes := 1     
+Module CP0 
+Detailed RTL Component Info : 
++---Registers : 
+	               32 Bit    Registers := 3     
+	                1 Bit    Registers := 2     
++---Muxes : 
+	   2 Input     32 Bit        Muxes := 3     
+	   2 Input      1 Bit        Muxes := 10    
+	   5 Input      1 Bit        Muxes := 4     
 ---------------------------------------------------------------------------------
 Finished RTL Hierarchical Component Statistics
 ---------------------------------------------------------------------------------
@@ -675,10 +693,12 @@ DSP Report: Generating DSP C_tmp0, operation Mode is: (PCIN>>17)+A*B.
 DSP Report: operator C_tmp0 is absorbed into DSP C_tmp0.
 DSP Report: operator C_tmp0 is absorbed into DSP C_tmp0.
 INFO: [Synth 8-5546] ROM "inst_from_dram_sel" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5545] ROM "access_cp0" won't be mapped to RAM because address size (28) is larger than maximum supported(25)
 INFO: [Synth 8-5545] ROM "access_uart" won't be mapped to RAM because address size (28) is larger than maximum supported(25)
 INFO: [Synth 8-5545] ROM "access_wdt" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
 INFO: [Synth 8-5545] ROM "access_pwm" won't be mapped to RAM because address size (28) is larger than maximum supported(25)
 INFO: [Synth 8-5545] ROM "access_keypad" won't be mapped to RAM because address size (28) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "access_timer" won't be mapped to RAM because address size (28) is larger than maximum supported(25)
 INFO: [Synth 8-5545] ROM "access_btn" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
 INFO: [Synth 8-5545] ROM "access_sw" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
 INFO: [Synth 8-5545] ROM "access_led" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
@@ -686,8 +706,8 @@ INFO: [Synth 8-5545] ROM "access_dig" won't be mapped to RAM because address siz
 INFO: [Synth 8-5546] ROM "access_mem" won't be mapped to RAM because it is too sparse
 INFO: [Synth 8-5546] ROM "access_pram" won't be mapped to RAM because it is too sparse
 WARNING: [Synth 8-6014] Unused sequential element cnt_reg was removed.  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v:28]
-INFO: [Synth 8-5545] ROM "rdata" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
-WARNING: [Synth 8-6014] Unused sequential element CNT1_reg was removed.  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Timer.v:33]
+WARNING: [Synth 8-6014] Unused sequential element CNT1_reg was removed.  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Timer.v:35]
+WARNING: [Synth 8-6014] Unused sequential element CNT0_reg was removed.  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Timer.v:45]
 WARNING: [Synth 8-6014] Unused sequential element rx_wr_ptr_reg was removed.  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/UART.v:68]
 WARNING: [Synth 8-6014] Unused sequential element rx_rd_ptr_reg was removed.  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/UART.v:68]
 WARNING: [Synth 8-6014] Unused sequential element tx_bit_cnt_reg was removed.  [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/UART.v:105]
@@ -774,19 +794,6 @@ WARNING: [Synth 8-3332] Sequential element (state_reg[4][1]) is unused and will 
 WARNING: [Synth 8-3332] Sequential element (rdata_reg[31]) is unused and will be removed from module Button.
 WARNING: [Synth 8-3332] Sequential element (stable_frames_reg[3]) is unused and will be removed from module Keypad4x4.
 WARNING: [Synth 8-3332] Sequential element (Switch_0/rdata_reg[31]) is unused and will be removed from module miniRV_SoC.
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][20] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][28] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][12] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][16] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][24] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][8] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][18] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][26] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][10] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][30] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][14] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][22] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][6] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][19] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][27] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][11] )
@@ -800,12 +807,25 @@ INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][29] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][13] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][21] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][18] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][26] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][10] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][30] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][14] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][22] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][6] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][16] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][24] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][8] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][28] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][12] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][20] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][0] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][1] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][2] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][3] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][4] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (Core_cpu/\RF_0/rf_reg[0][5] )
 WARNING: [Synth 8-3332] Sequential element (RF_0/rf_reg[0][31]) is unused and will be removed from module myCPU.
 WARNING: [Synth 8-3332] Sequential element (RF_0/rf_reg[0][30]) is unused and will be removed from module myCPU.
 WARNING: [Synth 8-3332] Sequential element (RF_0/rf_reg[0][29]) is unused and will be removed from module myCPU.
@@ -839,7 +859,7 @@ WARNING: [Synth 8-3332] Sequential element (RF_0/rf_reg[0][2]) is unused and wil
 WARNING: [Synth 8-3332] Sequential element (RF_0/rf_reg[0][1]) is unused and will be removed from module myCPU.
 WARNING: [Synth 8-3332] Sequential element (RF_0/rf_reg[0][0]) is unused and will be removed from module myCPU.
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:01:56 ; elapsed = 00:02:05 . Memory (MB): peak = 1744.043 ; gain = 555.430 ; free physical = 2323 ; free virtual = 13470
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:01:07 ; elapsed = 00:01:14 . Memory (MB): peak = 1753.488 ; gain = 564.875 ; free physical = 4999 ; free virtual = 15184
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start ROM, RAM, DSP and Shift Register Reporting
@@ -875,13 +895,13 @@ Start Applying XDC Timing Constraints
 INFO: [Synth 8-5578] Moved timing constraint from pin 'Clkgen/clk_out1' to pin 'Clkgen/bbstub_clk_out1/O'
 INFO: [Synth 8-5819] Moved 1 constraints on hierarchical pins to their respective driving/loading pins
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:02:02 ; elapsed = 00:02:13 . Memory (MB): peak = 1821.043 ; gain = 632.430 ; free physical = 2229 ; free virtual = 13285
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:01:12 ; elapsed = 00:01:21 . Memory (MB): peak = 1825.488 ; gain = 636.875 ; free physical = 4871 ; free virtual = 15021
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:02:15 ; elapsed = 00:02:27 . Memory (MB): peak = 1987.941 ; gain = 799.328 ; free physical = 2072 ; free virtual = 13157
+Finished Timing Optimization : Time (s): cpu = 00:01:20 ; elapsed = 00:01:29 . Memory (MB): peak = 1994.582 ; gain = 805.969 ; free physical = 4715 ; free virtual = 14856
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -892,16 +912,16 @@ Report RTL Partitions:
 ---------------------------------------------------------------------------------
 Start Technology Mapping
 ---------------------------------------------------------------------------------
-INFO: [Synth 8-5844] Detected registers with asynchronous reset at DSP/BRAM block boundary. Consider using synchronous reset for optimal packing [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:83]
-INFO: [Synth 8-5844] Detected registers with asynchronous reset at DSP/BRAM block boundary. Consider using synchronous reset for optimal packing [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:83]
-INFO: [Synth 8-5844] Detected registers with asynchronous reset at DSP/BRAM block boundary. Consider using synchronous reset for optimal packing [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:83]
-INFO: [Synth 8-5844] Detected registers with asynchronous reset at DSP/BRAM block boundary. Consider using synchronous reset for optimal packing [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:83]
-INFO: [Synth 8-5844] Detected registers with asynchronous reset at DSP/BRAM block boundary. Consider using synchronous reset for optimal packing [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:83]
-INFO: [Synth 8-5844] Detected registers with asynchronous reset at DSP/BRAM block boundary. Consider using synchronous reset for optimal packing [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:83]
-INFO: [Synth 8-5844] Detected registers with asynchronous reset at DSP/BRAM block boundary. Consider using synchronous reset for optimal packing [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:83]
-INFO: [Synth 8-5844] Detected registers with asynchronous reset at DSP/BRAM block boundary. Consider using synchronous reset for optimal packing [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:83]
+INFO: [Synth 8-5844] Detected registers with asynchronous reset at DSP/BRAM block boundary. Consider using synchronous reset for optimal packing [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:87]
+INFO: [Synth 8-5844] Detected registers with asynchronous reset at DSP/BRAM block boundary. Consider using synchronous reset for optimal packing [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:87]
+INFO: [Synth 8-5844] Detected registers with asynchronous reset at DSP/BRAM block boundary. Consider using synchronous reset for optimal packing [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:87]
+INFO: [Synth 8-5844] Detected registers with asynchronous reset at DSP/BRAM block boundary. Consider using synchronous reset for optimal packing [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:87]
+INFO: [Synth 8-5844] Detected registers with asynchronous reset at DSP/BRAM block boundary. Consider using synchronous reset for optimal packing [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:87]
+INFO: [Synth 8-5844] Detected registers with asynchronous reset at DSP/BRAM block boundary. Consider using synchronous reset for optimal packing [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:87]
+INFO: [Synth 8-5844] Detected registers with asynchronous reset at DSP/BRAM block boundary. Consider using synchronous reset for optimal packing [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:87]
+INFO: [Synth 8-5844] Detected registers with asynchronous reset at DSP/BRAM block boundary. Consider using synchronous reset for optimal packing [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/ID_EX.v:87]
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:02:22 ; elapsed = 00:02:34 . Memory (MB): peak = 2045.941 ; gain = 857.328 ; free physical = 2085 ; free virtual = 13105
+Finished Technology Mapping : Time (s): cpu = 00:01:23 ; elapsed = 00:01:33 . Memory (MB): peak = 2056.582 ; gain = 867.969 ; free physical = 4614 ; free virtual = 14783
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -925,7 +945,7 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:02:23 ; elapsed = 00:02:35 . Memory (MB): peak = 2045.941 ; gain = 857.328 ; free physical = 2091 ; free virtual = 13111
+Finished IO Insertion : Time (s): cpu = 00:01:24 ; elapsed = 00:01:34 . Memory (MB): peak = 2056.582 ; gain = 867.969 ; free physical = 4705 ; free virtual = 14862
 ---------------------------------------------------------------------------------
 
 Report Check Netlist: 
@@ -938,7 +958,7 @@ Report Check Netlist:
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:02:23 ; elapsed = 00:02:35 . Memory (MB): peak = 2045.941 ; gain = 857.328 ; free physical = 2091 ; free virtual = 13112
+Finished Renaming Generated Instances : Time (s): cpu = 00:01:24 ; elapsed = 00:01:34 . Memory (MB): peak = 2056.582 ; gain = 867.969 ; free physical = 4705 ; free virtual = 14862
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -950,25 +970,25 @@ Report RTL Partitions:
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:02:24 ; elapsed = 00:02:36 . Memory (MB): peak = 2045.941 ; gain = 857.328 ; free physical = 2099 ; free virtual = 13119
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:01:25 ; elapsed = 00:01:35 . Memory (MB): peak = 2056.582 ; gain = 867.969 ; free physical = 4727 ; free virtual = 14877
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:02:24 ; elapsed = 00:02:36 . Memory (MB): peak = 2045.941 ; gain = 857.328 ; free physical = 2099 ; free virtual = 13119
+Finished Renaming Generated Ports : Time (s): cpu = 00:01:25 ; elapsed = 00:01:35 . Memory (MB): peak = 2056.582 ; gain = 867.969 ; free physical = 4727 ; free virtual = 14877
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:02:24 ; elapsed = 00:02:36 . Memory (MB): peak = 2045.941 ; gain = 857.328 ; free physical = 2107 ; free virtual = 13127
+Finished Handling Custom Attributes : Time (s): cpu = 00:01:25 ; elapsed = 00:01:35 . Memory (MB): peak = 2056.582 ; gain = 867.969 ; free physical = 4735 ; free virtual = 14885
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:02:24 ; elapsed = 00:02:36 . Memory (MB): peak = 2045.941 ; gain = 857.328 ; free physical = 2107 ; free virtual = 13127
+Finished Renaming Generated Nets : Time (s): cpu = 00:01:25 ; elapsed = 00:01:35 . Memory (MB): peak = 2056.582 ; gain = 867.969 ; free physical = 4735 ; free virtual = 14885
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -993,19 +1013,19 @@ Report Cell Usage:
 |3     |PRAM_BRAM |     1|
 |4     |cpuclk    |     1|
 |5     |BUFG      |     1|
-|6     |CARRY4    |  1338|
+|6     |CARRY4    |  1349|
 |7     |DSP48E1   |     8|
-|8     |LUT1      |   118|
-|9     |LUT2      |   562|
-|10    |LUT3      |  2717|
-|11    |LUT4      |   449|
-|12    |LUT5      |  2307|
-|13    |LUT6      |  1554|
-|14    |MUXF7     |   341|
+|8     |LUT1      |   148|
+|9     |LUT2      |   557|
+|10    |LUT3      |  2788|
+|11    |LUT4      |   494|
+|12    |LUT5      |  2288|
+|13    |LUT6      |  1612|
+|14    |MUXF7     |   338|
 |15    |MUXF8     |     8|
-|16    |FDCE      |  1138|
-|17    |FDPE      |   105|
-|18    |FDRE      |  1088|
+|16    |FDCE      |  1267|
+|17    |FDPE      |   109|
+|18    |FDRE      |  1056|
 |19    |LDC       |     4|
 |20    |IBUF      |    36|
 |21    |OBUF      |    46|
@@ -1015,35 +1035,36 @@ Report Instance Areas:
 +------+----------------+-------------+------+
 |      |Instance        |Module       |Cells |
 +------+----------------+-------------+------+
-|1     |top             |             | 11950|
+|1     |top             |             | 12239|
 |2     |  LED_0         |LED          |    24|
 |3     |  Switch_0      |Switch       |    24|
 |4     |  Button_0      |Button       |   270|
-|5     |  Core_cpu      |myCPU        | 10252|
-|6     |    NPC_0       |NPC          |    16|
-|7     |    ALU_0       |ALU          |  5732|
-|8     |    PC_0        |PC           |    99|
-|9     |    RF_0        |RF           |  1897|
-|10    |    U_EX_MEM    |EX_MEM       |   482|
-|11    |    U_ID_EX     |ID_EX        |  1605|
-|12    |    U_IF_ID     |IF_ID        |   180|
-|13    |    U_MEM_WB    |MEM_WB       |   241|
-|14    |  Digital_LED_0 |Digital_LED  |   156|
-|15    |  Keypad4x4_0   |Keypad4x4    |   138|
-|16    |  PRAM_0        |PRAM_Wrapper |    64|
-|17    |  PWM_0         |PWM          |   121|
-|18    |  Timer_0       |Timer        |   248|
-|19    |  UART_0        |UART         |   434|
-|20    |  WDT_0         |WDT          |    69|
+|5     |  CP0_0         |CP0          |   102|
+|6     |  Core_cpu      |myCPU        | 10419|
+|7     |    ALU_0       |ALU          |  5723|
+|8     |    NPC_0       |NPC          |    16|
+|9     |    PC_0        |PC           |   128|
+|10    |    RF_0        |RF           |  1888|
+|11    |    U_EX_MEM    |EX_MEM       |   570|
+|12    |    U_ID_EX     |ID_EX        |  1609|
+|13    |    U_IF_ID     |IF_ID        |   268|
+|14    |    U_MEM_WB    |MEM_WB       |   217|
+|15    |  Digital_LED_0 |Digital_LED  |   156|
+|16    |  Keypad4x4_0   |Keypad4x4    |   137|
+|17    |  PRAM_0        |PRAM_Wrapper |    64|
+|18    |  PWM_0         |PWM          |   124|
+|19    |  Timer_0       |Timer        |   266|
+|20    |  UART_0        |UART         |   434|
+|21    |  WDT_0         |WDT          |    69|
 +------+----------------+-------------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:02:24 ; elapsed = 00:02:36 . Memory (MB): peak = 2045.941 ; gain = 857.328 ; free physical = 2107 ; free virtual = 13127
+Finished Writing Synthesis Report : Time (s): cpu = 00:01:25 ; elapsed = 00:01:35 . Memory (MB): peak = 2056.582 ; gain = 867.969 ; free physical = 4735 ; free virtual = 14885
 ---------------------------------------------------------------------------------
-Synthesis finished with 0 errors, 0 critical warnings and 274 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:02:17 ; elapsed = 00:02:23 . Memory (MB): peak = 2045.941 ; gain = 474.648 ; free physical = 2168 ; free virtual = 13187
-Synthesis Optimization Complete : Time (s): cpu = 00:02:24 ; elapsed = 00:02:36 . Memory (MB): peak = 2045.949 ; gain = 857.328 ; free physical = 2168 ; free virtual = 13187
+Synthesis finished with 0 errors, 0 critical warnings and 276 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:01:20 ; elapsed = 00:01:24 . Memory (MB): peak = 2056.582 ; gain = 485.297 ; free physical = 4804 ; free virtual = 14953
+Synthesis Optimization Complete : Time (s): cpu = 00:01:25 ; elapsed = 00:01:35 . Memory (MB): peak = 2056.590 ; gain = 867.969 ; free physical = 4804 ; free virtual = 14953
 INFO: [Project 1-571] Translating synthesized netlist
-INFO: [Netlist 29-17] Analyzing 1735 Unisim elements for replacement
+INFO: [Netlist 29-17] Analyzing 1743 Unisim elements for replacement
 INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
@@ -1052,10 +1073,10 @@ INFO: [Project 1-111] Unisim Transformation Summary:
   LDC => LDCE: 4 instances
 
 INFO: [Common 17-83] Releasing license: Synthesis
-300 Infos, 158 Warnings, 0 Critical Warnings and 0 Errors encountered.
+308 Infos, 159 Warnings, 0 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:02:29 ; elapsed = 00:02:40 . Memory (MB): peak = 2077.957 ; gain = 916.168 ; free physical = 2372 ; free virtual = 13393
+synth_design: Time (s): cpu = 00:01:29 ; elapsed = 00:01:38 . Memory (MB): peak = 2088.598 ; gain = 926.809 ; free physical = 5069 ; free virtual = 15206
 INFO: [Common 17-1381] The checkpoint '/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/synth_1/miniRV_SoC.dcp' has been generated.
 INFO: [runtcl-4] Executing : report_utilization -file miniRV_SoC_utilization_synth.rpt -pb miniRV_SoC_utilization_synth.pb
-report_utilization: Time (s): cpu = 00:00:00.06 ; elapsed = 00:00:00.09 . Memory (MB): peak = 2101.969 ; gain = 0.000 ; free physical = 2374 ; free virtual = 13396
-INFO: [Common 17-206] Exiting Vivado at Sun Jan 11 10:06:37 2026...
+report_utilization: Time (s): cpu = 00:00:00.05 ; elapsed = 00:00:00.09 . Memory (MB): peak = 2112.609 ; gain = 0.000 ; free physical = 5085 ; free virtual = 15239
+INFO: [Common 17-206] Exiting Vivado at Sun Jan 11 12:20:28 2026...

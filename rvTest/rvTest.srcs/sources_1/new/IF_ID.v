@@ -12,8 +12,8 @@
     
     
     always @(posedge clk or posedge rst) begin
-      if(rst) ID_inst<=0;
-      else if(control_hazard) ID_inst<=0;
+      if(rst) ID_inst<=32'h0000_0013;  // NOP: addi x0, x0, 0
+      else if(control_hazard) ID_inst<=32'h0000_0013;  // NOP: addi x0, x0, 0
       else if(data_hazard) ID_inst<=ID_inst;
       else ID_inst<=IF_inst;
     end
