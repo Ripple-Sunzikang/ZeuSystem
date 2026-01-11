@@ -12,7 +12,7 @@ module controller(
     output wire [2:0] rf_wsel,
     output wire       rf_we,
     // ALU 控制信号
-    output wire [2:0] alu_op,
+    output wire [3:0] alu_op,
     output wire [2:0] alub_sel,
     // 立即数扩展控制信号
     output wire [2:0] sext_op,
@@ -38,6 +38,14 @@ module controller(
     wire inst_sll  = r_typ & (funct7 == 7'b0000000) & (funct3 == 3'b001);
     wire inst_srl  = r_typ & (funct7 == 7'b0000000) & (funct3 == 3'b101);
     wire inst_sra  = r_typ & (funct7 == 7'b0100000) & (funct3 == 3'b101);
+    wire inst_mul    = r_typ & (funct7 == 7'b0000001) & (funct3 == 3'b000);
+    wire inst_mulh   = r_typ & (funct7 == 7'b0000001) & (funct3 == 3'b001);
+    wire inst_mulhsu = r_typ & (funct7 == 7'b0000001) & (funct3 == 3'b010);
+    wire inst_mulhu  = r_typ & (funct7 == 7'b0000001) & (funct3 == 3'b011);
+    wire inst_div    = r_typ & (funct7 == 7'b0000001) & (funct3 == 3'b100);
+    wire inst_divu   = r_typ & (funct7 == 7'b0000001) & (funct3 == 3'b101);
+    wire inst_rem    = r_typ & (funct7 == 7'b0000001) & (funct3 == 3'b110);
+    wire inst_remu   = r_typ & (funct7 == 7'b0000001) & (funct3 == 3'b111);
     // I型
     wire inst_addi = i_typ & (funct3 == 3'b000);
     wire inst_andi = i_typ & (funct3 == 3'b111);
@@ -83,7 +91,15 @@ module controller(
                       (inst_xor | inst_xori)                                 ? `ALU_XOR :
                       (inst_sll | inst_slli)                                 ? `ALU_SLL :
                       (inst_srl | inst_srli)                                 ? `ALU_SRL :
-                      (inst_sra | inst_srai)                                 ? `ALU_SRA : `ALU_SUB;
+                      (inst_sra | inst_srai)                                 ? `ALU_SRA :
+                      (inst_mul)                                             ? `ALU_MUL :
+                      (inst_mulh)                                            ? `ALU_MULH :
+                      (inst_mulhsu)                                          ? `ALU_MULHSU :
+                      (inst_mulhu)                                           ? `ALU_MULHU :
+                      (inst_div)                                             ? `ALU_DIV :
+                      (inst_divu)                                            ? `ALU_DIVU :
+                      (inst_rem)                                             ? `ALU_REM :
+                      (inst_remu)                                            ? `ALU_REMU : `ALU_SUB;
     assign alub_sel = (r_typ | b_typ) ? `ALU_DATA_2 : `ALU_Data_Imm;
     
     // 立即数扩展控制

@@ -56,7 +56,7 @@
     wire[2:0] sext_op;
     wire[2:0] alub_sel;
     wire dram_we;
-    wire[2:0] alu_op;
+    wire[3:0] alu_op;
     wire[1:0] rf_re;
 
     // SEXT 输出信号
@@ -70,7 +70,7 @@
     // ID_EX 输出信号
     wire[2:0] EX_npc_op;
     wire EX_ram_we;
-    wire[2:0] EX_alu_op;
+    wire[3:0] EX_alu_op;
     wire[2:0]EX_alub_sel;
     wire EX_rf_we;
     wire[2:0] EX_rf_wsel;

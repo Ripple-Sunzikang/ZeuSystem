@@ -34,6 +34,8 @@ int user_main();
 //  22: bios_btn_read
 //  23: bios_btn_get
 //  24: bios_btn_wait
+//  25: bios_divide
+//  26: bios_modulo
 //
 // 初始化由汇编启动代码完成 (见 codegen.rs)
 
@@ -384,6 +386,77 @@ int bios_multiply(int x, int y) {
     }
     
     return res;
+}
+
+// 除法函数（移位减法）
+int bios_divide(int x, int y) {
+    int sign;
+    int quotient;
+    int remainder;
+    int i;
+
+    if (y == 0) {
+        return 0;
+    }
+
+    sign = 1;
+    if (x < 0) {
+        x = -x;
+        sign = -sign;
+    }
+    if (y < 0) {
+        y = -y;
+        sign = -sign;
+    }
+
+    quotient = 0;
+    remainder = 0;
+
+    for (i = 31; i >= 0; i = i - 1) {
+        remainder = (remainder << 1) | ((x >> i) & 1);
+        if (remainder >= y) {
+            remainder = remainder - y;
+            quotient = quotient | (1 << i);
+        }
+    }
+
+    if (sign < 0) {
+        return -quotient;
+    }
+    return quotient;
+}
+
+// 取模函数（与 C 语义一致，符号与被除数一致）
+int bios_modulo(int x, int y) {
+    int remainder;
+    int i;
+    int sign;
+
+    if (y == 0) {
+        return 0;
+    }
+
+    sign = 1;
+    if (x < 0) {
+        x = -x;
+        sign = -1;
+    }
+    if (y < 0) {
+        y = -y;
+    }
+
+    remainder = 0;
+    for (i = 31; i >= 0; i = i - 1) {
+        remainder = (remainder << 1) | ((x >> i) & 1);
+        if (remainder >= y) {
+            remainder = remainder - y;
+        }
+    }
+
+    if (sign < 0) {
+        return -remainder;
+    }
+    return remainder;
 }
 
 // ============ UART Bootloader 函数 ============

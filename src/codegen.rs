@@ -54,6 +54,8 @@ const SYSCALL_TABLE: &[(&str, usize)] = &[
     ("bios_btn_read", 22),
     ("bios_btn_get", 23),
     ("bios_btn_wait", 24),
+    ("bios_divide", 25),
+    ("bios_modulo", 26),
 ];
 
 pub struct Codegen {
@@ -476,9 +478,15 @@ impl Codegen {
                 match op {
                     BinaryOp::Add => self.emit("add a0, a1, a0"),
                     BinaryOp::Subtract => self.emit("sub a0, a1, a0"),
-                    BinaryOp::Multiply => self.emit("mul a0, a1, a0"),
-                    BinaryOp::Divide => self.emit("div a0, a1, a0"),
-                    BinaryOp::Modulo => self.emit("rem a0, a1, a0"),
+                    BinaryOp::Multiply => {
+                        self.emit_bios_binary_call("bios_multiply");
+                    }
+                    BinaryOp::Divide => {
+                        self.emit_bios_binary_call("bios_divide");
+                    }
+                    BinaryOp::Modulo => {
+                        self.emit_bios_binary_call("bios_modulo");
+                    }
                     BinaryOp::Equal => {
                         // a1 == a0 ? 1 : 0
                         // 使用 beq 模拟: if a1 == a0, result=1, else result=0
@@ -745,6 +753,39 @@ impl Codegen {
     fn get_syscall_index(&self, name: &str) -> Option<usize> {
         SYSCALL_TABLE.iter().find(|(n, _)| *n == name).map(|(_, idx)| *idx)
     }
+
+    fn emit_syscall_target(&mut self, name: &str) {
+        let syscall_idx = self.get_syscall_index(name).unwrap();
+        let syscall_addr = self.options.syscall_table_base + (syscall_idx as u32 * 4);
+
+        self.emit(&format!("# Syscall: {} (index {})", name, syscall_idx));
+
+        if syscall_addr < 2048 {
+            self.emit(&format!("lw t0, {}(zero)", syscall_addr));
+        } else {
+            let lo_raw = syscall_addr & 0xFFF;
+            let (hi, lo): (u32, i32) = if lo_raw >= 0x800 {
+                ((syscall_addr >> 12) + 1, (lo_raw as i32) - 0x1000)
+            } else {
+                (syscall_addr >> 12, lo_raw as i32)
+            };
+            self.emit(&format!("lui t1, {}", hi));
+            self.emit(&format!("lw t0, {}(t1)", lo));
+        }
+    }
+
+    fn emit_bios_binary_call(&mut self, name: &str) {
+        self.emit("mv a2, a0");
+        self.emit("mv a0, a1");
+        self.emit("mv a1, a2");
+
+        if self.options.user_mode && self.is_bios_function(name) {
+            self.emit_syscall_target(name);
+            self.emit("jalr ra, t0, 0");
+        } else {
+            self.emit(&format!("jal ra, {}", name));
+        }
+    }
     
     /// 生成通过系统调用表的间接调用
     fn generate_syscall(&mut self, name: &str, args: &[Expression]) -> Result<(), String> {
@@ -758,29 +799,7 @@ impl Codegen {
         self.stack_ptr += args.len() * 4;
         
         // 从系统调用表加载函数地址
-        let syscall_idx = self.get_syscall_index(name).unwrap();
-        let syscall_addr = self.options.syscall_table_base + (syscall_idx as u32 * 4);
-        
-        self.emit(&format!("# Syscall: {} (index {})", name, syscall_idx));
-        
-        // 加载系统调用表中的函数指针
-        // syscall_addr = 0x7F00 + idx * 4
-        if syscall_addr < 2048 {
-            self.emit(&format!("lw t0, {}(zero)", syscall_addr));
-        } else {
-            // 需要使用 lui + lw
-            // RISC-V 地址计算: lui 加载高20位, lw 的12位立即数是有符号的
-            // 如果低12位 >= 0x800，需要 hi+1，lo 作为负数处理
-            let lo_raw = syscall_addr & 0xFFF;
-            let (hi, lo): (u32, i32) = if lo_raw >= 0x800 {
-                // 低12位高位为1，作为负数处理
-                ((syscall_addr >> 12) + 1, (lo_raw as i32) - 0x1000)
-            } else {
-                (syscall_addr >> 12, lo_raw as i32)
-            };
-            self.emit(&format!("lui t1, {}", hi));
-            self.emit(&format!("lw t0, {}(t1)", lo));
-        }
+        self.emit_syscall_target(name);
         
         // 从栈加载参数到参数寄存器
         for i in 0..args.len() {

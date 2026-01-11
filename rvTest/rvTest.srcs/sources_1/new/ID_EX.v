@@ -5,7 +5,7 @@ module ID_EX(
 
   input wire[2:0] ID_npc_op,
   input wire ID_ram_we,
-  input wire[2:0] ID_alu_op,
+  input wire[3:0] ID_alu_op,
   input wire[2:0]ID_alub_sel,
   input wire ID_rf_we,
   input wire[2:0] ID_rf_wsel,
@@ -17,7 +17,7 @@ module ID_EX(
 
   output reg[2:0] EX_npc_op,
   output reg EX_ram_we,
-  output reg[2:0] EX_alu_op,
+  output reg[3:0] EX_alu_op,
   output reg[2:0]EX_alub_sel,
   output reg EX_rf_we,
   output reg[2:0] EX_rf_wsel,

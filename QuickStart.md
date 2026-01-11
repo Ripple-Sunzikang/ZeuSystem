@@ -153,6 +153,8 @@ BIOS v2.1 提供以下函数，应用程序直接调用即可：
 | `bios_key_read()` | 无 | int | 读取按键 (-1=无按键) |
 | `bios_led_write(value)` | int | void | 控制 24 位 LED |
 | `bios_multiply(a, b)` | int, int | int | 软件乘法 |
+| `bios_divide(a, b)` | int, int | int | 软件除法 |
+| `bios_modulo(a, b)` | int, int | int | 软件取模 |
 | `bios_mul10(x)` | int | int | 乘 10 运算 |
 | `bios_delay(count)` | int | void | 延时循环 |
 | `bios_wdt_feed()` | 无 | void | 看门狗喂狗 (防止复位) |
