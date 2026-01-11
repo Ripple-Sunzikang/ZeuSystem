@@ -6,6 +6,7 @@ mod validator;
 mod semantic;
 mod assembler;
 mod linker;
+mod ir;
 
 use std::fs;
 use lexer::Lexer;
@@ -14,6 +15,7 @@ use codegen::{Codegen, CodegenOptions};
 use semantic::SemanticAnalyzer;
 use assembler::Assembler;
 use linker::Linker;
+use ir::IrGenerator;
 
 /// 编译选项
 #[derive(Clone, Default)]
@@ -217,6 +219,23 @@ fn compile_user_program(input_file: &str, output_file: &str, options: &CompileOp
         std::process::exit(1);
     }
 
+    // 中间代码生成（IR）
+    let mut ir_generator = IrGenerator::new();
+    let ir_program = match ir_generator.generate(&ast) {
+        Ok(program) => program,
+        Err(e) => {
+            eprintln!("IR generation error: {}", e);
+            std::process::exit(1);
+        }
+    };
+    let ir_output = ir_program.to_lines().join("\n");
+    let ir_debug_file = ir_output_path(output_file);
+    if let Err(e) = fs::write(&ir_debug_file, &ir_output) {
+        eprintln!("Warning: Could not save IR to {}: {}", ir_debug_file, e);
+    } else {
+        println!("Generated IR code: {}", ir_debug_file);
+    }
+
     // 代码生成（用户模式）
     let codegen_options = CodegenOptions {
         user_mode: true,
@@ -348,6 +367,23 @@ fn compile_and_link_c_files(c_files: &[&String], output_file: &str) {
         std::process::exit(1);
     }
 
+    // 中间代码生成（IR）
+    let mut ir_generator = IrGenerator::new();
+    let ir_program = match ir_generator.generate(&ast) {
+        Ok(program) => program,
+        Err(e) => {
+            eprintln!("IR generation error: {}", e);
+            std::process::exit(1);
+        }
+    };
+    let ir_output = ir_program.to_lines().join("\n");
+    let ir_debug_file = ir_output_path(output_file);
+    if let Err(e) = fs::write(&ir_debug_file, &ir_output) {
+        eprintln!("Warning: Could not save IR to {}: {}", ir_debug_file, e);
+    } else {
+        println!("Generated IR code: {}", ir_debug_file);
+    }
+
     // 代码生成
     let mut codegen = Codegen::new();
     let asm_code = match codegen.generate(&ast) {
@@ -447,6 +483,18 @@ fn generate_coe(data: &[u8]) -> String {
     coe
 }
 
+fn ir_output_path(output_file: &str) -> String {
+    if output_file.ends_with(".coe") {
+        output_file.replace(".coe", ".ir")
+    } else if output_file.ends_with(".elf") {
+        output_file.replace(".elf", ".ir")
+    } else if output_file.ends_with(".s") {
+        output_file.replace(".s", ".ir")
+    } else {
+        format!("{}.ir", output_file)
+    }
+}
+
 fn compile_c(input_file: &str, output_file: &str) {
     // 读取输入文件
     let source = match fs::read_to_string(input_file) {
@@ -475,6 +523,23 @@ fn compile_c(input_file: &str, output_file: &str) {
     if let Err(e) = semantic.analyze(&ast) {
         eprintln!("Semantic error: {}", e);
         std::process::exit(1);
+    }
+
+    // 中间代码生成（IR）
+    let mut ir_generator = IrGenerator::new();
+    let ir_program = match ir_generator.generate(&ast) {
+        Ok(program) => program,
+        Err(e) => {
+            eprintln!("IR generation error: {}", e);
+            std::process::exit(1);
+        }
+    };
+    let ir_output = ir_program.to_lines().join("\n");
+    let ir_debug_file = ir_output_path(output_file);
+    if let Err(e) = fs::write(&ir_debug_file, &ir_output) {
+        eprintln!("Warning: Could not save IR to {}: {}", ir_debug_file, e);
+    } else {
+        println!("Generated IR code: {}", ir_debug_file);
     }
 
     // 代码生成
