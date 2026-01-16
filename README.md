@@ -24,6 +24,13 @@
 
 ---
 
+## CLI 与 IDE 技术细节文档
+
+如果你想看 CLI（Rust）与 IDE（Electron）的逐函数实现说明，请阅读：
+`SEU-RISCV-CPU-IDE/CLI_IDE_TECH_SUMMARY.md`
+
+---
+
 ## 目录
 
 1. [项目概述](#项目概述)
@@ -167,9 +174,10 @@ SEU-RISCV-CPU/
 ├── rvTest/                    # Vivado 硬件工程
 │   └── ...                   # miniRV CPU RTL 源码
 │
-└── zeus_ide/                  # IDE 开发环境
+└── SEU-RISCV-CPU-IDE/         # IDE 开发环境
     ├── main.js               # Electron 主进程
     ├── index.html            # 界面
+    ├── CLI_IDE_TECH_SUMMARY.md  # CLI/IDE 逐函数技术说明
     └── ...                   # 其他 IDE 文件
 ```
 

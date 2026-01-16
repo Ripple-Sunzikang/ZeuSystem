@@ -2,6 +2,9 @@
 
 本指南将带你完成从 C 源代码到 FPGA 运行的完整流程。
 
+如果需要查看 CLI（Rust）与 IDE（Electron）的逐函数技术说明，请阅读：
+`SEU-RISCV-CPU-IDE/CLI_IDE_TECH_SUMMARY.md`
+
 ## 项目示例
 
 本项目提供多个示例程序，均基于 BIOS 调用实现：
