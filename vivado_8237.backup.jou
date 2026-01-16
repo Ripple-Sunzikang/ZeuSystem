@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Fri Jan 16 21:12:20 2026
+# Process ID: 8237
+# Current directory: /home/vessel/SEU-RISCV-CPU
+# Command line: vivado -mode batch -source /home/vessel/SEU-RISCV-CPU/tools/vivado/synth.tcl -tclargs /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.xpr 4
+# Log file: /home/vessel/SEU-RISCV-CPU/vivado.log
+# Journal file: /home/vessel/SEU-RISCV-CPU/vivado.jou
+#-----------------------------------------------------------
+source /home/vessel/SEU-RISCV-CPU/tools/vivado/synth.tcl

@@ -1,39 +1,32 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
-const { spawn } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 
-// 创建窗口
+const PROJECT_ROOT = path.resolve(__dirname, '..');
+const IDE_ROOT = __dirname;
+
+let taskQueue = Promise.resolve();
+let activeProcess = null;
+let activeTaskId = null;
+let activeTaskSender = null;
+
 function createWindow() {
-    console.log('Creating window...');
     const win = new BrowserWindow({
-        width: 1200,
-        height: 800,
+        width: 1400,
+        height: 900,
+        backgroundColor: '#0f1115',
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
+            nodeIntegration: false,
             enableRemoteModule: false
         }
     });
 
-    console.log('Loading index.html...');
     win.loadFile('index.html');
-    
-    // 打开开发者工具以便调试
-    win.webContents.openDevTools();
-    
-    // 窗口事件监听
-    win.on('closed', () => {
-        console.log('Window closed');
-    });
-    
-    win.on('ready-to-show', () => {
-        console.log('Window ready to show');
-        win.show();
-    });
 }
 
-// 应用就绪
 app.whenReady().then(() => {
     createWindow();
 
@@ -44,218 +37,298 @@ app.whenReady().then(() => {
     });
 });
 
-// 关闭所有窗口时退出
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();
     }
 });
 
-// 应用退出时清理临时文件
-app.on('quit', () => {
-    cleanTempDir();
-});
-
-// 读取文件内容
 ipcMain.handle('read-file', async (event, filePath) => {
     try {
-        // 确保路径安全，只允许读取项目目录下的文件
-        const projectRoot = path.join(__dirname, '..');
-        const absoluteFilePath = path.resolve(filePath);
-        
-        if (!absoluteFilePath.startsWith(projectRoot)) {
-            throw new Error('Access denied: Cannot read files outside the project directory');
-        }
-        
-        const content = fs.readFileSync(absoluteFilePath, 'utf8');
+        const absolutePath = ensureSafePath(filePath);
+        const content = fs.readFileSync(absolutePath, 'utf8');
         return { success: true, content };
     } catch (error) {
         return { success: false, error: error.message };
     }
 });
 
-// 保存文件
-ipcMain.handle('save-file', async (event, filePath, content) => {
+ipcMain.handle('write-file', async (event, filePath, content) => {
     try {
-        // 确保路径安全，只允许保存到项目目录下的文件
-        const projectRoot = path.join(__dirname, '..');
-        const absoluteFilePath = path.resolve(filePath);
-        
-        if (!absoluteFilePath.startsWith(projectRoot)) {
-            throw new Error('Access denied: Cannot save files outside the project directory');
-        }
-        
-        // 确保目录存在
-        const dirname = path.dirname(absoluteFilePath);
-        if (!fs.existsSync(dirname)) {
-            fs.mkdirSync(dirname, { recursive: true });
-        }
-        
-        fs.writeFileSync(absoluteFilePath, content, 'utf8');
+        const absolutePath = ensureSafePath(filePath);
+        fs.mkdirSync(path.dirname(absolutePath), { recursive: true });
+        fs.writeFileSync(absolutePath, content, 'utf8');
         return { success: true };
     } catch (error) {
         return { success: false, error: error.message };
     }
 });
 
-// 显示保存对话框
-ipcMain.handle('show-save-dialog', async (event, options) => {
-    try {
-        const result = await dialog.showSaveDialog(options);
-        return result;
-    } catch (error) {
-        return { canceled: true, error: error.message };
-    }
-});
-
-// 显示打开对话框
 ipcMain.handle('show-open-dialog', async (event, options) => {
     try {
-        const result = await dialog.showOpenDialog(options);
-        return result;
+        return await dialog.showOpenDialog(options);
     } catch (error) {
         return { canceled: true, error: error.message };
     }
 });
 
-// 编译C文件
-ipcMain.handle('compile-c', async (event, sourceCode, options) => {
-    let tempFile = null;
+ipcMain.handle('show-save-dialog', async (event, options) => {
     try {
-        // 创建临时文件
-        const tempDir = getTempDir();
-        tempFile = path.join(tempDir, `temp_${Date.now()}.c`);
-        fs.writeFileSync(tempFile, sourceCode);
-
-        // 确定输出文件路径
-        const outputDir = options.outputDir || path.join(__dirname, '../output');
-        if (!fs.existsSync(outputDir)) {
-            fs.mkdirSync(outputDir, { recursive: true });
-        }
-
-        const outputName = options.outputName || `output_${Date.now()}`;
-        const outputPath = path.join(outputDir, outputName);
-
-        // 构建编译命令
-        const compilerPath = process.platform === 'win32' 
-            ? path.join(__dirname, '../target/release/riscv_compiler.exe')
-            : path.join(__dirname, '../target/release/riscv_compiler');
-        
-        // 获取bios_v2.c路径
-        const biosPath = path.join(__dirname, '../examples/bios_v2.c');
-        
-        // 构建编译参数：bios_v2.c + 用户代码
-        const args = [biosPath, tempFile, '-o', outputPath];
-
-        // --user选项会改变输出格式为仅用户程序，不使用它以保持与项目编译方式一致
-
-        // 执行编译
-        const result = await spawnPromise(compilerPath, args);
-
-        // 检查生成的文件
-        const generatedFiles = {
-            elf: fs.existsSync(`${outputPath}.elf`) ? `${outputPath}.elf` : null,
-            coe: fs.existsSync(`${outputPath}.coe`) ? `${outputPath}.coe` : null,
-            s: fs.existsSync(`${outputPath}.s`) ? `${outputPath}.s` : null
-        };
-
-        return {
-            success: true,
-            output: result.stdout + result.stderr,
-            generatedFiles: generatedFiles
-        };
+        return await dialog.showSaveDialog(options);
     } catch (error) {
-        return {
-            success: false,
-            error: error.message || '编译失败',
-            output: error.stdout + error.stderr
-        };
-    } finally {
-        // 无论编译成功还是失败，都清理临时文件
-        if (tempFile && fs.existsSync(tempFile)) {
-            try {
-                fs.unlinkSync(tempFile);
-            } catch (err) {
-                console.error('Failed to delete temporary file:', err.message);
-            }
-        }
+        return { canceled: true, error: error.message };
     }
 });
 
+ipcMain.handle('get-defaults', async () => {
+    return {
+        projectRoot: PROJECT_ROOT,
+        biosPath: path.join(PROJECT_ROOT, 'examples/bios_v2.c'),
+        outputDir: path.join(PROJECT_ROOT, 'output'),
+        programCoe: path.join(PROJECT_ROOT, 'rvTest/program.coe'),
+        seuPath: resolveSeuCli(),
+        vivadoBin: resolveVivadoHint()
+    };
+});
 
+ipcMain.handle('run-task', (event, task) => {
+    taskQueue = taskQueue.then(() => runCliTask(event, task));
+    return taskQueue;
+});
 
-// 获取临时目录
-function getTempDir() {
-    if (process.platform === 'win32') {
-        // Windows使用项目根目录的temp文件夹
-        const tempDir = path.join(__dirname, '../temp');
-        if (!fs.existsSync(tempDir)) {
-            try {
-                fs.mkdirSync(tempDir, { recursive: true });
-                console.log(`Created temp directory: ${tempDir}`);
-            } catch (error) {
-                console.error(`Failed to create temp directory: ${error.message}`);
-                // 如果创建失败，回退到系统临时目录
-                return require('os').tmpdir();
+ipcMain.handle('cancel-task', () => {
+    if (activeProcess) {
+        try {
+            terminateProcessTree(activeProcess);
+            if (activeTaskSender && activeTaskId) {
+                activeTaskSender.send('task-output', {
+                    id: activeTaskId,
+                    stream: 'stderr',
+                    chunk: `[IDE] 已发送取消信号，PID=${activeProcess.pid}\n`
+                });
             }
+        } catch (error) {
+            return { success: false, error: error.message };
         }
-        return tempDir;
-    } else {
-        // Linux使用系统/tmp目录
-        return '/tmp';
+        return { success: true };
     }
+    return { success: false, error: '当前没有运行中的任务' };
+});
+
+function ensureSafePath(filePath) {
+    const absolutePath = path.resolve(filePath);
+    const normalizedRoot = PROJECT_ROOT.endsWith(path.sep)
+        ? PROJECT_ROOT
+        : PROJECT_ROOT + path.sep;
+
+    if (absolutePath === PROJECT_ROOT || absolutePath.startsWith(normalizedRoot)) {
+        return absolutePath;
+    }
+
+    throw new Error('访问被拒绝：仅允许项目目录内的路径');
 }
 
-// 清理临时目录
-function cleanTempDir() {
-    try {
-        const tempDir = getTempDir();
-        if (fs.existsSync(tempDir) && tempDir.includes('temp')) {
-            const files = fs.readdirSync(tempDir);
-            for (const file of files) {
-                if (file.startsWith('temp_') && file.endsWith('.c')) {
-                    const filePath = path.join(tempDir, file);
-                    fs.unlinkSync(filePath);
-                    console.log(`Deleted temporary file: ${filePath}`);
-                }
-            }
-        }
-    } catch (error) {
-        console.error('Failed to clean temp directory:', error.message);
+function resolveSeuCli() {
+    const exe = process.platform === 'win32' ? 'seu.exe' : 'seu';
+    const candidate = path.join(PROJECT_ROOT, 'target', 'release', exe);
+    if (fs.existsSync(candidate)) {
+        return candidate;
     }
+    return exe;
 }
 
-// Promise包装spawn
-function spawnPromise(command, args) {
-    return new Promise((resolve, reject) => {
-        let stdout = '';
-        let stderr = '';
+function resolveVivadoHint() {
+    if (process.env.VIVADO_BIN) {
+        return process.env.VIVADO_BIN;
+    }
+    if (process.env.VIVADO_HOME) {
+        return path.join(process.env.VIVADO_HOME, 'bin', 'vivado');
+    }
+    return '';
+}
 
-        const process = spawn(command, args);
+function runCliTask(event, task) {
+    return new Promise((resolve) => {
+        const { id, command, args, cwd } = task;
+        const cliPath = resolveSeuCli();
+        const workingDir = cwd ? ensureSafePath(cwd) : PROJECT_ROOT;
+        const spawnSpec = resolveSpawnSpec(cliPath, [command, ...args]);
+        const cleaned = maybeCleanupVivadoSynth(command);
 
-        process.stdout.on('data', (data) => {
-            stdout += data.toString();
+        const child = spawn(spawnSpec.command, spawnSpec.args, {
+            cwd: workingDir,
+            windowsHide: true
+        });
+        activeProcess = child;
+        activeTaskId = id;
+        activeTaskSender = event.sender;
+
+        event.sender.send('task-output', {
+            id,
+            stream: 'stderr',
+            chunk: `[IDE] 启动任务 ${command}，PID=${child.pid}\n` +
+                (cleaned.length
+                    ? `[IDE] 已清理 ${cleaned.length} 个旧的综合进程: ${cleaned.join(', ')}\n`
+                    : '') +
+                `[IDE] 工作目录: ${workingDir}\n` +
+                `[IDE] 命令行: ${spawnSpec.command} ${spawnSpec.args.join(' ')}\n`
         });
 
-        process.stderr.on('data', (data) => {
-            stderr += data.toString();
+        child.stdout.on('data', (data) => {
+            event.sender.send('task-output', {
+                id,
+                stream: 'stdout',
+                chunk: data.toString()
+            });
         });
 
-        process.on('close', (code) => {
-            if (code === 0) {
-                resolve({ stdout, stderr });
-            } else {
-                const error = new Error(`Command failed with code ${code}`);
-                error.stdout = stdout;
-                error.stderr = stderr;
-                reject(error);
-            }
+        child.stderr.on('data', (data) => {
+            event.sender.send('task-output', {
+                id,
+                stream: 'stderr',
+                chunk: data.toString()
+            });
         });
 
-        process.on('error', (error) => {
-            error.stdout = stdout;
-            error.stderr = stderr;
-            reject(error);
+        child.on('close', (code) => {
+            activeProcess = null;
+            activeTaskId = null;
+            activeTaskSender = null;
+            event.sender.send('task-output', {
+                id,
+                stream: 'stderr',
+                chunk: `[IDE] 任务结束，退出码=${code}\n`
+            });
+            resolve({ success: code === 0, code });
+        });
+
+        child.on('error', (error) => {
+            event.sender.send('task-output', {
+                id,
+                stream: 'stderr',
+                chunk: `启动失败: ${error.message}\n`
+            });
+            activeProcess = null;
+            activeTaskId = null;
+            activeTaskSender = null;
+            resolve({ success: false, code: -1 });
         });
     });
+}
+
+function resolveSpawnSpec(cliPath, args) {
+    if (process.platform === 'win32') {
+        return { command: cliPath, args };
+    }
+
+    const candidates = ['/usr/bin/setsid', '/bin/setsid'];
+    const setsid = candidates.find((candidate) => fs.existsSync(candidate));
+    if (setsid) {
+        return { command: setsid, args: [cliPath, ...args] };
+    }
+
+    return { command: cliPath, args };
+}
+
+function maybeCleanupVivadoSynth(command) {
+    if (process.platform !== 'linux') {
+        return [];
+    }
+    if (command !== 'synth' && command !== 'all') {
+        return [];
+    }
+    return cleanupVivadoByPattern('vivado.*synth.tcl');
+}
+
+function cleanupVivadoByPattern(pattern) {
+    const result = spawnSync('pgrep', ['-f', pattern], { encoding: 'utf8' });
+    if (result.status !== 0 || !result.stdout) {
+        return [];
+    }
+    const pids = result.stdout
+        .split(/\s+/)
+        .map((value) => Number(value))
+        .filter((pid) => Number.isFinite(pid) && pid > 0 && pid !== process.pid);
+
+    for (const pid of pids) {
+        try {
+            process.kill(pid, 'SIGTERM');
+        } catch (error) {
+        }
+    }
+    for (const pid of pids) {
+        try {
+            process.kill(pid, 'SIGKILL');
+        } catch (error) {
+        }
+    }
+    return pids;
+}
+
+function terminateProcessTree(child) {
+    if (!child || child.killed) {
+        return;
+    }
+
+    if (process.platform === 'win32') {
+        const killer = spawn('taskkill', ['/PID', String(child.pid), '/T', '/F'], {
+            stdio: 'ignore'
+        });
+        killer.on('error', () => {});
+        return;
+    }
+
+    const pid = child.pid;
+    terminateByProcTree(pid, 'SIGINT');
+
+    setTimeout(() => {
+        terminateByProcTree(pid, 'SIGTERM');
+    }, 500);
+
+    setTimeout(() => {
+        terminateByProcTree(pid, 'SIGKILL');
+    }, 2000);
+}
+
+function terminateByProcTree(pid, signal) {
+    if (!pid) {
+        return;
+    }
+
+    const children = listChildPids(pid);
+    for (const childPid of children) {
+        terminateByProcTree(childPid, signal);
+    }
+
+    try {
+        process.kill(pid, signal);
+    } catch (error) {
+        if (error.code !== 'ESRCH') {
+            return;
+        }
+    }
+
+    try {
+        process.kill(-pid, signal);
+    } catch (error) {
+        if (error.code !== 'ESRCH') {
+            return;
+        }
+    }
+}
+
+function listChildPids(pid) {
+    const childrenFile = `/proc/${pid}/task/${pid}/children`;
+    try {
+        const content = fs.readFileSync(childrenFile, 'utf8').trim();
+        if (!content) {
+            return [];
+        }
+        return content
+            .split(/\s+/)
+            .map((value) => Number(value))
+            .filter((value) => Number.isFinite(value) && value > 0);
+    } catch (error) {
+        return [];
+    }
 }

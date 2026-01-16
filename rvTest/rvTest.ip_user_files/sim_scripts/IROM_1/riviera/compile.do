@@ -11,6 +11,7 @@ vmap dist_mem_gen_v8_0_12 riviera/dist_mem_gen_v8_0_12
 
 vlog -work xil_defaultlib  -sv2k12 \
 "/opt/Xilinx/Vivado/2017.4/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv" \
+"/opt/Xilinx/Vivado/2017.4/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv" \
 
 vcom -work xpm -93 \
 "/opt/Xilinx/Vivado/2017.4/data/ip/xpm/xpm_VCOMP.vhd" \
@@ -20,7 +21,6 @@ vlog -work dist_mem_gen_v8_0_12  -v2k5 \
 
 vlog -work xil_defaultlib  -v2k5 \
 "../../../../rvTest.srcs/sources_1/ip/IROM_1/sim/IROM.v" \
-
 
 vlog -work xil_defaultlib \
 "glbl.v"

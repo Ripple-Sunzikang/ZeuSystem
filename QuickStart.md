@@ -396,6 +396,37 @@ ls -la output/my_program.coe
 head -12 output/my_program.coe
 ```
 
+### 3.6 CLI 一键流程
+
+项目提供 Rust CLI `seu` 用于一键完成编译与烧录流程：
+
+```bash
+# 构建 CLI
+cargo build --release
+
+# 默认示例（bios_v2 + calculator_v2）
+./target/release/seu build
+
+# 完整流程：编译 -> 综合 -> 实现 -> 烧录
+./target/release/seu all
+```
+
+如需指定 Vivado 2017.4 路径，可设置：
+
+```bash
+export VIVADO_HOME=/opt/Xilinx/Vivado/2017.4
+```
+
+### 3.7 IDE 一体化流程
+
+IDE 位于 `SEU-RISCV-CPU-IDE/`，集成 `seu` CLI 全流程按钮：
+
+```bash
+cd SEU-RISCV-CPU-IDE
+npm install
+npm start
+```
+
 
 ---
 
@@ -406,7 +437,7 @@ head -12 output/my_program.coe
 将生成的 COE 文件复制到 Vivado 工程目录：
 
 ```bash
-cp output/calc_v2.coe rvTest/rvTest.ip_user_files/mem_init_files/program.coe
+cp output/calc_v2.coe rvTest/program.coe
 ```
 
 ### 4.2 重新打开 Vivado 工程
@@ -426,6 +457,8 @@ Vivado 会自动检测到 COE 文件已更新，无需手动重新生成 IP。
 
 ### 5.1 综合 (Synthesis)
 
+CLI: `seu synth`
+
 **方法一：GUI 操作**
 1. 点击左侧 `SYNTHESIS` → `Run Synthesis`
 2. 等待综合完成 (约 2-5 分钟)
@@ -437,6 +470,8 @@ wait_on_run synth_1
 ```
 
 ### 5.2 实现 (Implementation)
+
+CLI: `seu impl`
 
 **方法一：GUI 操作**
 1. 综合完成后，弹窗选择 `Run Implementation`
@@ -618,7 +653,7 @@ while(1) {
 ./target/release/riscv_compiler examples/my_program.c -o output/my_program
 
 # 2. 复制 COE 文件
-cp output/my_program.coe rvTest/rvTest.ip_user_files/mem_init_files/program.coe
+cp output/my_program.coe rvTest/program.coe
 
 # 3. 打开 Vivado
 cd rvTest && vivado rvTest.xpr &

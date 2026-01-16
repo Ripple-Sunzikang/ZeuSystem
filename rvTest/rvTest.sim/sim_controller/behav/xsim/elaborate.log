@@ -3,5 +3,12 @@ Copyright 1986-1999, 2001-2016 Xilinx, Inc. All Rights Reserved.
 Running: /opt/Xilinx/Vivado/2017.4/bin/unwrapped/lnx64.o/xelab -wto 996e63e4862d405abd584214c71bf515 --incr --debug typical --relax --mt 8 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot controller_tb_behav xil_defaultlib.controller_tb xil_defaultlib.glbl -log elaborate.log 
 Using 8 slave threads.
 Starting static elaboration
+WARNING: [VRFC 10-278] actual bit length 3 differs from formal bit length 4 for port alu_op [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sim_1/new/controller_tb.v:29]
 Completed static elaboration
-INFO: [XSIM 43-4323] No Change in HDL. Linking previously generated obj files to create kernel
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.controller
+Compiling module xil_defaultlib.controller_tb
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot controller_tb_behav

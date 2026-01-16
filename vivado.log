@@ -1,0 +1,44 @@
+#-----------------------------------------------------------
+# Vivado v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Fri Jan 16 21:43:49 2026
+# Process ID: 19666
+# Current directory: /home/vessel/SEU-RISCV-CPU
+# Command line: vivado -mode batch -source /home/vessel/SEU-RISCV-CPU/tools/vivado/program.tcl -tclargs /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/impl_1/miniRV_SoC.bit
+# Log file: /home/vessel/SEU-RISCV-CPU/vivado.log
+# Journal file: /home/vessel/SEU-RISCV-CPU/vivado.jou
+#-----------------------------------------------------------
+source /home/vessel/SEU-RISCV-CPU/tools/vivado/program.tcl
+# if { $argc < 1 } {
+#     puts "ERROR: 需要参数 <bitstream.bit>"
+#     exit 1
+# }
+# set bit_path [lindex $argv 0]
+# open_hw
+# connect_hw_server
+INFO: [Labtools 27-2285] Connecting to hw_server url TCP:localhost:3121
+INFO: [Labtools 27-2222] Launching hw_server...
+INFO: [Labtools 27-2221] Launch Output:
+
+****** Xilinx hw_server v2017.4
+  **** Build date : Dec 15 2017-21:02:11
+    ** Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
+
+
+# open_hw_target
+INFO: [Labtoolstcl 44-466] Opening hw_target localhost:3121/xilinx_tcf/Xilinx/1234-tulA
+# set devices [get_hw_devices]
+# if { [llength $devices] == 0 } {
+#     puts "ERROR: 未检测到硬件设备"
+#     exit 1
+# }
+# set hw_device [lindex $devices 0]
+# current_hw_device $hw_device
+# set_property PROGRAM.FILE $bit_path $hw_device
+# program_hw_devices $hw_device
+INFO: [Labtools 27-3164] End of startup status: HIGH
+# puts "INFO: 烧录完成"
+INFO: 烧录完成
+# exit 0
+INFO: [Common 17-206] Exiting Vivado at Fri Jan 16 21:43:58 2026...

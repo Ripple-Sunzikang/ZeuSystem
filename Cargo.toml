@@ -9,7 +9,13 @@ description = "A Rust-based C to RV32I RISC-V compiler for Vivado simulation and
 name = "riscv_compiler"
 path = "src/main.rs"
 
+[[bin]]
+name = "seu"
+path = "src/bin/seu_cli.rs"
+
 [dependencies]
+clap = { version = "4.5.1", features = ["derive"] }
+libc = "0.2"
 
 [profile.release]
 opt-level = 3

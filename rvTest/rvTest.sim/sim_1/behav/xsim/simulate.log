@@ -2,3 +2,8 @@ Vivado Simulator 2017.4
 Time resolution is 1 ps
 [INFO] IROM loaded 3535 words
 [INFO] DRAM loaded 1024 words
+odel cycle-accurate behavior you must run timing simulation.
+WARNING: This core is supplied with a behavioral model. To model cycle-accurate behavior you must run timing simulation.
+ Block Memory Generator module loading initial data...
+ Block Memory Generator data initialization complete.
+Block Memory Generator module miniRV_SoC.PRAM_0.PRAM_BRAM_inst.inst.native_mem_module.blk_mem_gen_v8_4_1_inst is using a behavioral model for simulation which will not precisely model memory collision behavior.

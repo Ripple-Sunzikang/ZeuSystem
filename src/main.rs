@@ -47,7 +47,13 @@ fn main() {
     let input_file = &remaining_args[1];
     
     // 检查是否有 -o 参数来指定输出文件
-    let (output_file_opt, c_files_end) = parse_output_option(&remaining_args);
+    let (mut output_file_opt, mut c_files_end) = parse_output_option(&remaining_args);
+    if output_file_opt.is_none() {
+        if let Some(implicit_output) = detect_implicit_output(&remaining_args) {
+            output_file_opt = Some(implicit_output);
+            c_files_end = remaining_args.len() - 1;
+        }
+    }
     
     // 用户模式：编译单个用户程序
     if options.user_mode && input_file.ends_with(".c") {
@@ -77,6 +83,11 @@ fn main() {
                 "a.out.coe".to_string()
             };
             
+            if let Err(message) = validate_output_path(&output_file, &c_files) {
+                eprintln!("Error: {}", message);
+                std::process::exit(1);
+            }
+
             compile_and_link_c_files(&c_files, &output_file);
             return;
         }
@@ -122,6 +133,11 @@ fn main() {
         } else {
             input_file.replace(".c", ".s")
         };
+
+        if output_file.ends_with(".c") || output_file == *input_file {
+            eprintln!("Error: 输出文件不能为 .c，请使用 -o 指定非源文件路径");
+            std::process::exit(1);
+        }
 
         compile_c(input_file, &output_file);
     }
@@ -321,6 +337,36 @@ fn parse_output_option(args: &[String]) -> (Option<String>, usize) {
         }
     }
     (None, 0)
+}
+
+fn detect_implicit_output(args: &[String]) -> Option<String> {
+    if args.len() < 4 {
+        return None;
+    }
+
+    let c_count = args[1..].iter().filter(|arg| arg.ends_with(".c")).count();
+    if c_count < 2 {
+        return None;
+    }
+
+    let last = args.last()?;
+    if last.ends_with(".c") || last.starts_with('-') {
+        return None;
+    }
+
+    Some(last.clone())
+}
+
+fn validate_output_path(output_file: &str, c_files: &[&String]) -> Result<(), String> {
+    if output_file.ends_with(".c") {
+        return Err("输出文件不能为 .c，请使用 -o 指定非源文件路径".to_string());
+    }
+
+    if c_files.iter().any(|file| *file == output_file) {
+        return Err("输出文件不能与输入源文件同名，请更换 -o 输出路径".to_string());
+    }
+
+    Ok(())
 }
 
 /// 编译多个 C 文件并链接生成输出文件

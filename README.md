@@ -794,11 +794,42 @@ cargo build --release
 #   output/calc_v2.s    - 汇编代码 (调试用)
 ```
 
+### CLI 工具
+
+项目新增 Rust CLI `seu`，用于一键编译、综合、实现与烧录。
+
+```bash
+# 构建 CLI
+cargo build --release
+
+# 默认示例（bios_v2 + calculator_v2）
+./target/release/seu build
+
+# 从 .c 到烧录
+./target/release/seu all
+```
+
+Vivado 2017.4 路径可通过环境变量覆盖：
+
+```bash
+export VIVADO_HOME=/opt/Xilinx/Vivado/2017.4
+```
+
+### IDE
+
+项目提供 Electron IDE（`SEU-RISCV-CPU-IDE/`），集成 `seu` CLI 全流程操作。
+
+```bash
+cd SEU-RISCV-CPU-IDE
+npm install
+npm start
+```
+
 ### 部署到 FPGA
 
 1. **复制 COE 文件到 Vivado 项目**:
 ```bash
-cp output/calc_v2.coe /path/to/vivado_project/program.coe
+cp output/calc_v2.coe rvTest/program.coe
 ```
 
 2. **在 Vivado 中更新 IP 核**:

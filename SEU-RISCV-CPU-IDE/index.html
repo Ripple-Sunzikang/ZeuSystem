@@ -3,550 +3,680 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEU-RISCV-CPU-IDE</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.css">
+    <title>SEU-RISCV-CPU IDE</title>
     <style>
+        :root {
+            --bg: #0f1115;
+            --panel: #151823;
+            --panel-strong: #1b2030;
+            --accent: #36c6a3;
+            --accent-2: #ffb454;
+            --text: #e6edf3;
+            --muted: #93a1b3;
+            --danger: #ff6b6b;
+            --border: #2b3247;
+            --glow: rgba(54, 198, 163, 0.35);
+            --mono: "JetBrains Mono", "Fira Code", "SFMono-Regular", monospace;
+            --sans: "Space Grotesk", "IBM Plex Sans", "Segoe UI", sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            padding: 0;
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            flex-direction: column;
+            font-family: var(--sans);
+            color: var(--text);
+            background: radial-gradient(1200px 800px at 10% -20%, #1c2c37 0%, transparent 60%),
+                        radial-gradient(1000px 700px at 110% 10%, #1f2336 0%, transparent 55%),
+                        linear-gradient(160deg, #0f1115 0%, #0b0d12 100%);
             height: 100vh;
-            background-color: #1e1e1e;
-            color: #d4d4d4;
-        }
-
-        .header {
-            background-color: #252526;
-            padding: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #3e3e42;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 18px;
-            color: #569cd6;
-        }
-
-        .header-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        button {
-            background-color: #0e639c;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        button:hover {
-            background-color: #1177bb;
-        }
-
-        .main-content {
-            display: flex;
-            flex: 1;
             overflow: hidden;
         }
 
-        .editor-container {
-            flex: 1;
-            padding: 10px;
+        .app {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            height: 100vh;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(15, 17, 21, 0.92);
+            backdrop-filter: blur(10px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #36c6a3, #24a4f0);
+            box-shadow: 0 0 18px var(--glow);
+        }
+
+        .brand h1 {
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: 1px solid transparent;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            background: var(--panel-strong);
+            color: var(--text);
+            cursor: pointer;
+            transition: transform 0.15s ease, border 0.15s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            border-color: var(--accent);
+        }
+
+        .btn.primary {
+            background: linear-gradient(120deg, #36c6a3, #2f87ff);
+            color: #0b0f14;
+            font-weight: 600;
+        }
+
+        .btn.warn {
+            background: linear-gradient(120deg, #ffb454, #ff7a59);
+            color: #0b0f14;
+            font-weight: 600;
+        }
+
+        .btn.danger {
+            background: rgba(255, 107, 107, 0.15);
+            border-color: rgba(255, 107, 107, 0.4);
+            color: var(--danger);
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 260px 1fr 360px;
+            gap: 14px;
+            padding: 14px;
+            height: 100%;
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
+            gap: 12px;
+            min-height: 0;
+            height: 100%;
+            overflow: hidden;
+            animation: fadeIn 0.4s ease;
         }
 
-        .editor-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .editor-header h2 {
+        .panel h2 {
             margin: 0;
-            font-size: 16px;
-            color: #cccccc;
+            font-size: 14px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .file-card {
+            background: var(--panel-strong);
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .file-card strong {
+            color: var(--text);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .control-group {
+            display: grid;
+            gap: 8px;
+        }
+
+        .control-group label {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .control-group input {
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: #0f1119;
+            color: var(--text);
+            font-size: 12px;
+        }
+
+        .toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .toggle input {
+            accent-color: var(--accent);
+        }
+
+        .editor-panel {
+            padding: 0;
+            overflow: hidden;
         }
 
         #editor {
-            flex: 1;
-            border: 1px solid #3e3e42;
-            border-radius: 4px;
-        }
-
-        .output-container {
-            width: 400px;
-            background-color: #1e1e1e;
-            border-left: 1px solid #3e3e42;
-            display: flex;
-            flex-direction: column;
+            width: 100%;
+            height: 100%;
         }
 
         .output-tabs {
             display: flex;
-            background-color: #252526;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
-        .output-tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            color: #cccccc;
-        }
-
-        .output-tab.active {
-            border-bottom-color: #569cd6;
-            color: #569cd6;
-        }
-
-        .output-content {
-            flex: 1;
-            padding: 10px;
-            overflow-y: auto;
-        }
-
-        .output-panel {
-            display: none;
-            height: 100%;
-        }
-
-        .output-panel.active {
-            display: block;
-        }
-
-        .status-bar {
-            background-color: #252526;
-            padding: 5px 10px;
+        .tab {
+            padding: 6px 10px;
+            border-radius: 8px;
             font-size: 12px;
-            color: #cccccc;
-            border-top: 1px solid #3e3e42;
-            display: flex;
-            justify-content: space-between;
+            cursor: pointer;
+            color: var(--muted);
+            border: 1px solid transparent;
         }
 
-        #status-message {
-            color: #569cd6;
+        .tab.active {
+            color: var(--text);
+            border-color: var(--accent);
+            background: rgba(54, 198, 163, 0.1);
         }
 
-        #status-error {
-            color: #f48771;
-        }
-
-        textarea {
-            width: 100%;
+        .log-area {
+            flex: 1 1 auto;
+            background: #0e111a;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 12px;
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--text);
+            caret-color: var(--text);
+            min-height: 0;
             height: 100%;
-            background-color: #1e1e1e;
-            color: #d4d4d4;
-            border: none;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 14px;
+            overflow-y: scroll;
+            white-space: pre-wrap;
+            scrollbar-gutter: stable both-edges;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) rgba(10, 13, 18, 0.6);
             resize: none;
         }
 
-        textarea:focus {
-            outline: none;
+        .log-area::-webkit-scrollbar {
+            width: 12px;
         }
 
-        .file-info {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #252526;
-            border-radius: 4px;
+        .log-area::-webkit-scrollbar-track {
+            background: rgba(10, 13, 18, 0.6);
         }
 
-        .file-info h3 {
-            margin: 0 0 10px 0;
-            font-size: 14px;
-            color: #cccccc;
+        .log-area::-webkit-scrollbar-thumb {
+            background: rgba(54, 198, 163, 0.9);
+            border-radius: 999px;
+            border: 2px solid transparent;
+            background-clip: content-box;
         }
 
-        .file-info ul {
-            margin: 0;
-            padding: 0;
-            list-style: none;
+        .log-area::-webkit-scrollbar-thumb:hover {
+            background: rgba(54, 198, 163, 0.8);
+            border: 2px solid transparent;
+            background-clip: content-box;
         }
 
-        .file-info li {
-            margin-bottom: 5px;
+        .log-line.error {
+            color: var(--danger);
+        }
+
+        .artifact-list {
+            display: grid;
+            gap: 8px;
             font-size: 12px;
-            color: #d4d4d4;
+            color: var(--muted);
         }
 
-        .options {
-            margin-bottom: 10px;
+        .artifact {
+            background: var(--panel-strong);
+            border-radius: 10px;
+            padding: 8px 10px;
+            color: var(--text);
+        }
+
+        .statusbar {
             display: flex;
-            gap: 10px;
-            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--muted);
+            background: rgba(15, 17, 21, 0.9);
         }
 
-        .options label {
-            font-size: 14px;
-            color: #cccccc;
+        @media (max-width: 1100px) {
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+            .panel {
+                height: auto;
+            }
         }
 
-        .options input[type="checkbox"] {
-            margin-right: 5px;
-        }
-
-        .options input[type="text"] {
-            padding: 5px;
-            background-color: #252526;
-            border: 1px solid #3e3e42;
-            color: #d4d4d4;
-            border-radius: 4px;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>SEU-RISCV-CPU-IDE</h1>
-        <div class="header-buttons">
-            <button id="open-btn">打开</button>
-            <button id="save-btn">保存</button>
-            <button id="compile-btn">编译</button>
+<div class="app">
+    <div class="topbar">
+        <div class="brand">
+            <div class="brand-badge"></div>
+            <div>
+                <h1>SEU-RISCV-CPU IDE</h1>
+                <div style="font-size:12px;color:var(--muted)">C -> COE -> Synthesis -> Implementation -> Program</div>
+            </div>
+        </div>
+        <div class="toolbar">
+            <button class="btn" id="open-btn">打开</button>
+            <button class="btn" id="save-btn">保存</button>
+            <button class="btn primary" id="build-btn">编译（.s + .coe）</button>
+            <button class="btn" id="synth-btn">综合</button>
+            <button class="btn" id="impl-btn">实现</button>
+            <button class="btn warn" id="program-btn">烧录</button>
+            <button class="btn danger" id="cancel-btn">取消任务</button>
+            <button class="btn primary" id="all-btn">一键全流程</button>
         </div>
     </div>
 
-    <div class="main-content">
-        <div class="editor-container">
-            <div class="editor-header">
-                <h2>C代码编辑器</h2>
-                <div class="options">
-                    <label>
-                        <input type="checkbox" id="generate-coe" checked>
-                        生成COE文件
-                    </label>
-                    <label>
-                        输出名称: <input type="text" id="output-name" placeholder="output">
-                    </label>
-                </div>
+    <div class="workspace">
+        <aside class="panel">
+            <h2>文件与配置</h2>
+            <div class="file-card" id="file-card">
+                <strong>未保存文件</strong>
+                <div>请打开或保存一个 .c 文件</div>
             </div>
-            <textarea id="code-editor">// 在此输入您的C代码</textarea>
-        </div>
+            <div class="control-group">
+                <label>输出名称</label>
+                <input id="output-name" placeholder="calc_v2" />
+            </div>
+            <div class="control-group">
+                <label>BIOS 路径</label>
+                <input id="bios-path" />
+            </div>
+            <div class="control-group">
+                <label>Vivado 路径</label>
+                <input id="vivado-path" placeholder="/opt/Xilinx/Vivado/2017.4/bin/vivado" />
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="include-bios" checked>
+                COE/全流程包含 BIOS
+            </label>
+            <label class="toggle">
+                <input type="checkbox" id="copy-coe" checked>
+                COE 自动复制到 rvTest/program.coe
+            </label>
+            <div class="control-group">
+                <label>当前任务</label>
+                <div class="file-card" id="task-status">空闲</div>
+            </div>
+        </aside>
 
-        <div class="output-container">
+        <section class="panel editor-panel">
+            <div id="editor"></div>
+        </section>
+
+        <aside class="panel">
+            <h2>任务面板</h2>
             <div class="output-tabs">
-                <div class="output-tab active" data-tab="output">输出</div>
-                <div class="output-tab" data-tab="assembly">汇编代码</div>
-                <div class="output-tab" data-tab="coe">COE文件</div>
-                <div class="output-tab" data-tab="files">生成文件</div>
+                <div class="tab active" data-tab="log">日志</div>
+                <div class="tab" data-tab="artifacts">产物</div>
             </div>
-            <div class="output-content">
-                <div class="output-panel active" id="output-panel">
-                    <textarea id="output-text" readonly></textarea>
-                </div>
-                <div class="output-panel" id="assembly-panel">
-                    <textarea id="assembly-text" readonly></textarea>
-                </div>
-                <div class="output-panel" id="coe-panel">
-                    <textarea id="coe-text" readonly></textarea>
-                </div>
-                <div class="output-panel" id="files-panel">
-                    <div class="file-info">
-                        <h3>生成的文件</h3>
-                        <ul id="generated-files"></ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <textarea class="log-area" id="log-area" readonly></textarea>
+            <div class="artifact-list" id="artifact-list" style="display:none"></div>
+        </aside>
     </div>
 
-    <div class="status-bar">
-        <div id="status-message">就绪</div>
-        <div id="status-error"></div>
+    <div class="statusbar">
+        <div id="status-text">就绪</div>
+        <div id="status-hint">快捷键: Ctrl/Cmd + S 保存</div>
     </div>
+</div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/clike/clike.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/c-hint.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/matchbrackets.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closebrackets.min.js"></script>
-    <script>
-        // 初始化CodeMirror编辑器
-        const editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
-            mode: 'text/x-csrc',
-            theme: 'dracula',
-            lineNumbers: true,
-            autoCloseBrackets: true,
-            matchBrackets: true,
-            indentUnit: 4,
-            indentWithTabs: false,
-            lineWrapping: true,
-            extraKeys: {
-                'Ctrl-Space': 'autocomplete',
-                'Tab': (cm) => {
-                    if (cm.somethingSelected()) {
-                        cm.indentSelection('add');
-                    } else {
-                        // 当没有选中内容时，自动补全
-                        cm.showHint({
-                            hint: CodeMirror.hint.c,
-                            completeSingle: false
-                        });
-                    }
-                }
-            },
-            // 自动补全配置
-            hintOptions: {
-                completeSingle: false,
-                closeOnUnfocus: true
-            }
+<script src="node_modules/monaco-editor/min/vs/loader.js"></script>
+<script>
+    const state = {
+        editor: null,
+        currentFilePath: null,
+        defaults: null,
+        running: false,
+        taskCounter: 0,
+        currentTab: 'log'
+    };
+
+    const logArea = document.getElementById('log-area');
+    const artifactList = document.getElementById('artifact-list');
+    const statusText = document.getElementById('status-text');
+    const taskStatus = document.getElementById('task-status');
+    const fileCard = document.getElementById('file-card');
+
+    function setStatus(text) {
+        statusText.textContent = text;
+    }
+
+    function setTask(text) {
+        taskStatus.textContent = text;
+    }
+
+    function appendLog(text, isError) {
+        const prefix = isError ? '[ERR] ' : '';
+        logArea.value += `${prefix}${text}`;
+        logArea.scrollTop = logArea.scrollHeight;
+    }
+
+    function clearLog() {
+        logArea.value = '';
+    }
+
+    function switchTab(tab) {
+        state.currentTab = tab;
+        document.querySelectorAll('.tab').forEach(el => {
+            el.classList.toggle('active', el.dataset.tab === tab);
+        });
+        logArea.style.display = tab === 'log' ? 'block' : 'none';
+        artifactList.style.display = tab === 'artifacts' ? 'grid' : 'none';
+    }
+
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+    });
+
+    function updateFileCard() {
+        if (state.currentFilePath) {
+            fileCard.innerHTML = `<strong>${state.currentFilePath}</strong><div>已加载</div>`;
+        } else {
+            fileCard.innerHTML = '<strong>未保存文件</strong><div>请打开或保存一个 .c 文件</div>';
+        }
+    }
+
+    function pathJoin(base, name) {
+        const sep = base.includes('\\') ? '\\' : '/';
+        return base.replace(/[\\/]+$/, '') + sep + name;
+    }
+
+    function fileStem(path) {
+        const parts = path.split(/[/\\]/);
+        const file = parts[parts.length - 1];
+        return file.replace(/\.[^/.]+$/, '');
+    }
+
+    function sanitizeOutputName(name) {
+        if (!name) {
+            return '';
+        }
+        return name.replace(/\.(c|s|coe|elf|ir)$/i, '');
+    }
+
+    async function ensureSaved() {
+        if (state.currentFilePath) {
+            return true;
+        }
+        await saveFile();
+        return Boolean(state.currentFilePath);
+    }
+
+    async function openFile() {
+        const result = await window.electronAPI.showOpenDialog({
+            title: '打开 C 文件',
+            defaultPath: state.defaults ? state.defaults.projectRoot : '.',
+            filters: [
+                { name: 'C Files', extensions: ['c'] },
+                { name: 'All Files', extensions: ['*'] }
+            ],
+            properties: ['openFile']
         });
 
-        // 扩展C语言补全词汇表，添加BIOS函数和常用函数
-        CodeMirror.registerHelper('hint', 'c', (cm) => {
-            // 基础C语言关键字
-            const cKeywords = [
-                'auto', 'break', 'case', 'char', 'const', 'continue', 'default', 'do', 'double',
-                'else', 'enum', 'extern', 'float', 'for', 'goto', 'if', 'int', 'long',
-                'register', 'return', 'short', 'signed', 'sizeof', 'static', 'struct', 'switch',
-                'typedef', 'union', 'unsigned', 'void', 'volatile', 'while',
-                'asm', 'inline', 'restrict', '_Bool', '_Complex', '_Imaginary',
-                'alignas', 'alignof', 'decltype', 'noreturn', 'static_assert', 'thread_local'
-            ];
-            
-            // BIOS函数补全
-            const biosFunctions = [
-                'bios_wdt_feed', 'bios_led_write', 'bios_display_bcd', 'bios_sw_read',
-                'bios_delay', 'bios_uart_putc', 'bios_uart_getc', 'bios_uart_puts',
-                'bios_uart_gets', 'bios_multiply', 'bios_divide', 'bios_modulo',
-                'bios_compare', 'bios_abs', 'bios_max', 'bios_min'
-            ];
-            
-            // 常用C标准库函数
-            const stdFunctions = [
-                'printf', 'scanf', 'sprintf', 'sscanf',
-                'memcpy', 'memset', 'strcpy', 'strncpy', 'strcmp', 'strncmp',
-                'strcat', 'strncat', 'strlen', 'malloc', 'free', 'calloc', 'realloc'
-            ];
-            
-            // 合并所有补全项
-            const allKeywords = [...new Set([...cKeywords, ...biosFunctions, ...stdFunctions])];
-            
-            // 获取当前编辑位置的上下文
-            const cur = cm.getCursor();
-            const token = cm.getTokenAt(cur);
-            const start = token.start;
-            const end = cur.ch;
-            const word = token.string;
-            
-            // 筛选匹配的补全项
-            const list = allKeywords.filter(function(item) {
-                return item.toLowerCase().startsWith(word.toLowerCase());
+        if (!result.canceled && result.filePaths && result.filePaths[0]) {
+            const filePath = result.filePaths[0];
+            const readResult = await window.electronAPI.readFile(filePath);
+            if (readResult.success) {
+                state.editor.setValue(readResult.content);
+                state.currentFilePath = filePath;
+                document.getElementById('output-name').value = fileStem(filePath);
+                updateFileCard();
+                setStatus(`已打开 ${filePath}`);
+            } else {
+                appendLog(`读取失败: ${readResult.error}`, true);
+            }
+        }
+    }
+
+    async function saveFile() {
+        const content = state.editor.getValue();
+        let targetPath = state.currentFilePath;
+
+        if (!targetPath) {
+            const rawName = document.getElementById('output-name').value || 'main';
+            const defaultName = sanitizeOutputName(rawName) || 'main';
+            const result = await window.electronAPI.showSaveDialog({
+                title: '保存 C 文件',
+                defaultPath: state.defaults ? pathJoin(state.defaults.outputDir, `${defaultName}.c`) : `${defaultName}.c`,
+                filters: [
+                    { name: 'C Files', extensions: ['c'] },
+                    { name: 'All Files', extensions: ['*'] }
+                ]
             });
-            
-            return {
-                list: list,
-                from: CodeMirror.Pos(cur.line, start),
-                to: CodeMirror.Pos(cur.line, end)
-            };
+
+            if (result.canceled || !result.filePath) {
+                return;
+            }
+            targetPath = result.filePath;
+            state.currentFilePath = targetPath;
+        }
+
+        const writeResult = await window.electronAPI.writeFile(targetPath, content);
+        if (writeResult.success) {
+            updateFileCard();
+            setStatus(`已保存 ${targetPath}`);
+        } else {
+            appendLog(`保存失败: ${writeResult.error}`, true);
+        }
+    }
+
+    async function runCli(command, args, label) {
+        if (state.running) {
+            appendLog('已有任务运行中，请稍后再试。', true);
+            return;
+        }
+        state.running = true;
+        setTask(label);
+        setStatus(`执行 ${label}...`);
+        clearLog();
+        switchTab('log');
+
+        const id = `task_${Date.now()}_${state.taskCounter++}`;
+        const task = { id, command, args };
+        const outputHandler = (payload) => {
+            if (payload.id !== id) {
+                return;
+            }
+            appendLog(payload.chunk, payload.stream === 'stderr');
+        };
+        const removeListener = window.electronAPI.onTaskOutput(outputHandler);
+
+        const result = await window.electronAPI.runTask(task);
+        removeListener();
+        state.running = false;
+
+        if (result.success) {
+            setStatus(`${label} 完成`);
+            setTask('空闲');
+        } else {
+            setStatus(`${label} 失败`);
+            setTask('空闲');
+        }
+    }
+
+    function buildVivadoArgs() {
+        const vivadoPath = document.getElementById('vivado-path').value.trim();
+        return vivadoPath ? ['--vivado', vivadoPath] : [];
+    }
+
+    function updateArtifacts(artifacts) {
+        artifactList.innerHTML = '';
+        Object.entries(artifacts).forEach(([label, value]) => {
+            if (!value) {
+                return;
+            }
+            const item = document.createElement('div');
+            item.className = 'artifact';
+            item.textContent = `${label}: ${value}`;
+            artifactList.appendChild(item);
         });
+    }
 
-        // 标签切换功能
-        document.querySelectorAll('.output-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                // 移除所有活跃状态
-                document.querySelectorAll('.output-tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.output-panel').forEach(p => p.classList.remove('active'));
-                
-                // 添加当前标签的活跃状态
-                const tabId = tab.dataset.tab;
-                tab.classList.add('active');
-                document.getElementById(`${tabId}-panel`).classList.add('active');
-            });
+    document.getElementById('open-btn').addEventListener('click', openFile);
+    document.getElementById('save-btn').addEventListener('click', saveFile);
+
+    document.getElementById('build-btn').addEventListener('click', async () => {
+        if (!await ensureSaved()) return;
+        const rawName = document.getElementById('output-name').value || fileStem(state.currentFilePath);
+        const outputName = sanitizeOutputName(rawName);
+        const outputPrefix = pathJoin(state.defaults.outputDir, outputName);
+        const includeBios = document.getElementById('include-bios').checked;
+        const biosPath = document.getElementById('bios-path').value || state.defaults.biosPath;
+        const inputs = includeBios ? [biosPath, state.currentFilePath] : [state.currentFilePath];
+        const args = [...inputs, '-o', outputPrefix];
+        if (!document.getElementById('copy-coe').checked) {
+            args.push('--no-copy');
+        }
+        updateArtifacts({
+            '汇编输出': `${outputPrefix}.s`,
+            'COE 输出': `${outputPrefix}.coe`,
+            '中间输出': `${outputPrefix}.ir`
         });
+        await runCli('build', args, '编译生成 .s/.coe');
+        switchTab('artifacts');
+    });
 
-        // 编译功能
-        document.getElementById('compile-btn').addEventListener('click', async () => {
-            const sourceCode = editor.getValue();
-            const generateCoe = document.getElementById('generate-coe').checked;
-            const outputName = document.getElementById('output-name').value || 'output';
+    document.getElementById('synth-btn').addEventListener('click', async () => {
+        await runCli('synth', buildVivadoArgs(), '综合');
+    });
 
-            showOutput('正在编译...', false);
-            setStatus('编译中...');
-            clearError();
+    document.getElementById('impl-btn').addEventListener('click', async () => {
+        await runCli('impl', buildVivadoArgs(), '实现/生成 bitstream');
+    });
 
-            try {
-                const result = await window.electronAPI.compileC(sourceCode, {
-                    generateCoe: generateCoe,
-                    outputName: outputName
-                });
+    document.getElementById('program-btn').addEventListener('click', async () => {
+        await runCli('program', buildVivadoArgs(), '烧录设备');
+    });
 
-                if (result.success) {
-                    showOutput(result.output, false);
-                    setStatus('编译成功');
-                    
-                    // 显示生成的文件
-                    displayGeneratedFiles(result.generatedFiles);
-                    
-                    // 加载汇编和COE文件内容
-                    if (result.generatedFiles.s) {
-                        loadFileContent(result.generatedFiles.s, 'assembly-text');
-                    }
-                    if (result.generatedFiles.coe) {
-                        loadFileContent(result.generatedFiles.coe, 'coe-text');
-                    }
-                } else {
-                    showOutput(result.output || result.error, true);
-                    setError('编译失败');
-                }
-            } catch (error) {
-                showOutput('编译过程中发生错误: ' + error.message, true);
-                setError('编译错误');
-            }
+    document.getElementById('cancel-btn').addEventListener('click', async () => {
+        const result = await window.electronAPI.cancelTask();
+        if (result.success) {
+            appendLog('任务已请求取消。\n', true);
+            setStatus('任务已取消');
+            setTask('空闲');
+            state.running = false;
+        } else {
+            appendLog(`取消失败: ${result.error}\n`, true);
+        }
+    });
+
+    document.getElementById('all-btn').addEventListener('click', async () => {
+        if (!await ensureSaved()) return;
+        const rawName = document.getElementById('output-name').value || fileStem(state.currentFilePath);
+        const outputName = sanitizeOutputName(rawName);
+        const outputPrefix = pathJoin(state.defaults.outputDir, outputName);
+        const includeBios = document.getElementById('include-bios').checked;
+        const biosPath = document.getElementById('bios-path').value || state.defaults.biosPath;
+        const inputs = includeBios ? [biosPath, state.currentFilePath] : [state.currentFilePath];
+        const args = [...inputs, '-o', outputPrefix];
+        if (!document.getElementById('copy-coe').checked) {
+            args.push('--no-copy');
+        }
+        args.push(...buildVivadoArgs());
+        updateArtifacts({
+            'COE 输出': `${outputPrefix}.coe`,
+            'Bitstream': 'rvTest/rvTest.runs/impl_1/miniRV_SoC.bit',
+            '复制目标': state.defaults.programCoe
         });
+        await runCli('all', args, '一键全流程');
+        switchTab('artifacts');
+    });
 
-        // 显示输出
-        function showOutput(text, isError) {
-            const outputText = document.getElementById('output-text');
-            outputText.value = text;
-            outputText.scrollTop = outputText.scrollHeight;
+    document.addEventListener('keydown', (event) => {
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
+            event.preventDefault();
+            saveFile();
         }
+    });
 
-        // 设置状态
-        function setStatus(message) {
-            document.getElementById('status-message').textContent = message;
+    window.electronAPI.getDefaults().then((defaults) => {
+        state.defaults = defaults;
+        document.getElementById('bios-path').value = defaults.biosPath;
+        document.getElementById('vivado-path').value = defaults.vivadoBin || '';
+    });
+
+    const monacoBaseUrl = new URL('./node_modules/monaco-editor/min/vs', window.location.href).toString();
+    window.MonacoEnvironment = {
+        getWorkerUrl: function () {
+            const workerUrl = `${monacoBaseUrl}/base/worker/workerMain.js`;
+            return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
+                self.MonacoEnvironment = { baseUrl: '${monacoBaseUrl}' };
+                importScripts('${workerUrl}');
+            `)}`;
         }
+    };
 
-        // 设置错误
-        function setError(message) {
-            document.getElementById('status-error').textContent = message;
-        }
-
-        // 清除错误
-        function clearError() {
-            document.getElementById('status-error').textContent = '';
-        }
-
-        // 存储生成的文件路径
-        let generatedFiles = {};
-
-        // 显示生成的文件
-        function displayGeneratedFiles(files) {
-            const filesList = document.getElementById('generated-files');
-            filesList.innerHTML = '';
-            generatedFiles = files;
-
-            if (files.s) {
-                const li = document.createElement('li');
-                li.textContent = `汇编文件: ${files.s}`;
-                filesList.appendChild(li);
-            }
-
-            if (files.elf) {
-                const li = document.createElement('li');
-                li.textContent = `ELF文件: ${files.elf}`;
-                filesList.appendChild(li);
-            }
-
-            if (files.coe) {
-                const li = document.createElement('li');
-                li.textContent = `COE文件: ${files.coe}`;
-                filesList.appendChild(li);
-            }
-        }
-
-        // 加载文件内容
-        async function loadFileContent(filePath, elementId) {
-            try {
-                const result = await window.electronAPI.readFile(filePath);
-                if (result.success) {
-                    document.getElementById(elementId).value = result.content;
-                } else {
-                    document.getElementById(elementId).value = '无法加载文件内容: ' + result.error;
-                }
-            } catch (error) {
-                console.error('Error loading file:', error);
-                document.getElementById(elementId).value = '无法加载文件内容: ' + error.message;
-            }
-        }
-
-        // 简单的path.join实现
-        function pathJoin(...args) {
-            return args.join('/').replace(/\/+/g, '/');
-        }
-
-        // 保存功能
-        document.getElementById('save-btn').addEventListener('click', async () => {
-            const sourceCode = editor.getValue();
-            const outputName = document.getElementById('output-name').value || 'output';
-
-            try {
-                const result = await window.electronAPI.showSaveDialog({
-                    title: '保存C文件',
-                    defaultPath: `../output/${outputName}.c`,
-                    filters: [
-                        { name: 'C Files', extensions: ['c'] },
-                        { name: 'All Files', extensions: ['*'] }
-                    ]
-                });
-
-                if (!result.canceled && result.filePath) {
-                    const saveResult = await window.electronAPI.saveFile(result.filePath, sourceCode);
-                    if (saveResult.success) {
-                        setStatus(`文件已保存: ${result.filePath}`);
-                        alert('文件保存成功！');
-                    } else {
-                        setError('保存失败: ' + saveResult.error);
-                        alert('保存失败: ' + saveResult.error);
-                    }
-                }
-            } catch (error) {
-                setError('保存过程中发生错误: ' + error.message);
-                alert('保存失败: ' + error.message);
-            }
+    require.config({ paths: { vs: monacoBaseUrl } });
+    require(['vs/editor/editor.main'], () => {
+        state.editor = monaco.editor.create(document.getElementById('editor'), {
+            value: '// 在此输入您的 C 代码\n',
+            language: 'c',
+            theme: 'vs-dark',
+            fontFamily: 'JetBrains Mono',
+            fontSize: 14,
+            minimap: { enabled: false },
+            scrollBeyondLastLine: false,
+            automaticLayout: true
         });
+    });
 
-
-
-        // 打开文件功能
-        document.getElementById('open-btn').addEventListener('click', async () => {
-            try {
-                // 显示文件选择对话框
-                const result = await window.electronAPI.showOpenDialog({
-                    title: '打开C文件',
-                    defaultPath: '../',
-                    filters: [
-                        { name: 'C Files', extensions: ['c'] },
-                        { name: 'All Files', extensions: ['*'] }
-                    ],
-                    properties: ['openFile']
-                });
-
-                if (!result.canceled && result.filePaths && result.filePaths.length > 0) {
-                    const filePath = result.filePaths[0];
-                    // 读取文件内容
-                    const readResult = await window.electronAPI.readFile(filePath);
-                    if (readResult.success) {
-                        // 设置编辑器内容
-                        editor.setValue(readResult.content);
-                        // 更新输出名称
-                        const fileName = filePath.split('/').pop().split('\\').pop(); // 处理不同平台的路径分隔符
-                        const outputName = fileName.replace('.c', '');
-                        document.getElementById('output-name').value = outputName;
-                        setStatus(`已打开文件: ${filePath}`);
-                    } else {
-                        setError('读取文件失败: ' + readResult.error);
-                        alert('读取文件失败: ' + readResult.error);
-                    }
-                }
-            } catch (error) {
-                setError('打开文件过程中发生错误: ' + error.message);
-                alert('打开文件失败: ' + error.message);
-            }
-        });
-    </script>
+    updateFileCard();
+</script>
 </body>
 </html>

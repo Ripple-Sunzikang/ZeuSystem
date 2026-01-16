@@ -1,7 +1,7 @@
 {
   "name": "seu-riscv-cpu-ide",
   "version": "1.0.0",
-  "description": "",
+  "description": "SEU-RISCV-CPU IDE for end-to-end C -> COE -> bitstream -> program workflows",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,6 +13,7 @@
   "type": "commonjs",
   "devDependencies": {},
   "dependencies": {
-    "electron": "^39.2.7"
+    "electron": "^39.2.7",
+    "monaco-editor": "^0.50.0"
   }
 }

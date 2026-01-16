@@ -13,7 +13,7 @@ if [ $? -eq 0 ]; then
     echo "指令数量: $(grep -c '^[0-9A-Fa-f]' output/calc_v2.coe)"
     
     # 复制到 Vivado 工程
-    cp output/calc_v2.coe rvTest/rvTest.ip_user_files/mem_init_files/program.coe
+    cp output/calc_v2.coe rvTest/program.coe
     echo "=== 已复制到 Vivado 工程 ==="
     
     echo ""

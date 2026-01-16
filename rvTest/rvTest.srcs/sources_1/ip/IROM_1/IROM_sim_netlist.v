@@ -1,10 +1,10 @@
 // Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2017.4 (lin64) Build 2086221 Fri Dec 15 20:54:30 MST 2017
-// Date        : Sun Jan 11 12:18:37 2026
+// Date        : Sun Jan 11 12:18:35 2026
 // Host        : Cookie running 64-bit Linux Mint 22.2
-// Command     : write_verilog -force -mode funcsim
-//               /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/IROM_1/IROM_sim_netlist.v
+// Command     : write_verilog -force -mode funcsim -rename_top IROM -prefix
+//               IROM_ IROM_sim_netlist.v
 // Design      : IROM
 // Purpose     : This verilog netlist is a functional simulation representation of the design and should not be modified
 //               or synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -88,7 +88,7 @@ endmodule
 (* C_MEM_INIT_FILE = "IROM.mif" *) (* C_MEM_TYPE = "0" *) (* C_PARSER_TYPE = "1" *) 
 (* C_PIPELINE_STAGES = "0" *) (* C_QCE_JOINED = "0" *) (* C_QUALIFY_WE = "0" *) 
 (* C_READ_MIF = "1" *) (* C_REG_A_D_INPUTS = "0" *) (* C_REG_DPRA_INPUT = "0" *) 
-(* C_SYNC_ENABLE = "1" *) (* C_WIDTH = "32" *) (* ORIG_REF_NAME = "dist_mem_gen_v8_0_12" *) 
+(* C_SYNC_ENABLE = "1" *) (* C_WIDTH = "32" *) 
 module IROM_dist_mem_gen_v8_0_12
    (a,
     d,
@@ -232,7 +232,6 @@ module IROM_dist_mem_gen_v8_0_12
         .spo(spo));
 endmodule
 
-(* ORIG_REF_NAME = "dist_mem_gen_v8_0_12_synth" *) 
 module IROM_dist_mem_gen_v8_0_12_synth
    (spo,
     a);
@@ -247,7 +246,6 @@ module IROM_dist_mem_gen_v8_0_12_synth
         .spo(spo));
 endmodule
 
-(* ORIG_REF_NAME = "rom" *) 
 module IROM_rom
    (spo,
     a);

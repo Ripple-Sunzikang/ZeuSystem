@@ -1,10 +1,10 @@
 -- Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2017.4 (lin64) Build 2086221 Fri Dec 15 20:54:30 MST 2017
--- Date        : Sun Jan 11 12:18:37 2026
+-- Date        : Sun Jan 11 12:18:36 2026
 -- Host        : Cookie running 64-bit Linux Mint 22.2
--- Command     : write_vhdl -force -mode funcsim
---               /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/IROM_1/IROM_sim_netlist.vhdl
+-- Command     : write_vhdl -force -mode funcsim -rename_top IROM -prefix
+--               IROM_ IROM_sim_netlist.vhdl
 -- Design      : IROM
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -19,8 +19,6 @@ entity IROM_rom is
     spo : out STD_LOGIC_VECTOR ( 31 downto 0 );
     a : in STD_LOGIC_VECTOR ( 13 downto 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of IROM_rom : entity is "rom";
 end IROM_rom;
 
 architecture STRUCTURE of IROM_rom is
@@ -63986,8 +63984,6 @@ entity IROM_dist_mem_gen_v8_0_12_synth is
     spo : out STD_LOGIC_VECTOR ( 31 downto 0 );
     a : in STD_LOGIC_VECTOR ( 13 downto 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of IROM_dist_mem_gen_v8_0_12_synth : entity is "dist_mem_gen_v8_0_12_synth";
 end IROM_dist_mem_gen_v8_0_12_synth;
 
 architecture STRUCTURE of IROM_dist_mem_gen_v8_0_12_synth is
@@ -64086,8 +64082,6 @@ entity IROM_dist_mem_gen_v8_0_12 is
   attribute C_SYNC_ENABLE of IROM_dist_mem_gen_v8_0_12 : entity is 1;
   attribute C_WIDTH : integer;
   attribute C_WIDTH of IROM_dist_mem_gen_v8_0_12 : entity is 32;
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of IROM_dist_mem_gen_v8_0_12 : entity is "dist_mem_gen_v8_0_12";
 end IROM_dist_mem_gen_v8_0_12;
 
 architecture STRUCTURE of IROM_dist_mem_gen_v8_0_12 is
