@@ -50,7 +50,6 @@ module Keypad4x4(
     reg [3:0]  last_frame_code;
     reg [3:0]  stable_frames;
 
-    // 课程规范兼容输出：
     // - KEY VALUE 寄存器 @ 0xFFFF_FC10：返回映射后的十六进制值（1,2,3,A,...）
     // - STATUS 寄存器 @ 0xFFFF_FC12：有按键按下为1，否则为0
     // 按键值在稳定按下后锁存，直到被清除或覆盖。
@@ -265,8 +264,6 @@ module Keypad4x4(
     end
 
     // MMIO 读数据（组合逻辑）
-    // 重要：保持组合逻辑（参考设计如此），否则流水线 CPU
-    // 在与其他 MMIO 访问交错读取时可能采到过期/被清除的值。
     always @(*) begin
         rdata = 32'b0;
 
