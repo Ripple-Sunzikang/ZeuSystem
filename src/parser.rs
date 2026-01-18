@@ -85,6 +85,22 @@ impl Parser {
     fn parse_type(&mut self) -> Result<Type, String> {
         self.skip_newlines();
 
+        // Skip type qualifiers and storage-class specifiers we don't model.
+        while matches!(
+            self.current_token().token_type,
+            TokenType::Const
+                | TokenType::Volatile
+                | TokenType::Static
+                | TokenType::Extern
+                | TokenType::Signed
+                | TokenType::Unsigned
+                | TokenType::Short
+                | TokenType::Long
+        ) {
+            self.advance();
+            self.skip_newlines();
+        }
+
         let base_type = match &self.current_token().token_type {
             TokenType::Int => {
                 self.advance();
@@ -843,8 +859,10 @@ impl Parser {
                 Ok(expr)
             }
             _ => Err(format!(
-                "Unexpected token: {:?}",
-                self.current_token().token_type
+                "Unexpected token: {:?} at line {}, column {}",
+                self.current_token().token_type,
+                self.current_token().line,
+                self.current_token().column
             )),
         }
     }

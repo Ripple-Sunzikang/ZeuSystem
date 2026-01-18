@@ -3,6 +3,7 @@
 
 use crate::ast::*;
 use std::collections::HashMap;
+use std::collections::HashSet;
 
 /// 代码生成选项
 #[derive(Clone)]
@@ -67,6 +68,7 @@ pub struct Codegen {
     returned: bool,
     string_literals: Vec<String>,  // 存储所有字符串字面量
     options: CodegenOptions,       // 代码生成选项
+    function_names: HashSet<String>,
 }
 
 impl Codegen {
@@ -80,6 +82,7 @@ impl Codegen {
             returned: false,
             string_literals: Vec::new(),
             options: CodegenOptions::default(),
+            function_names: HashSet::new(),
         }
     }
     
@@ -93,6 +96,7 @@ impl Codegen {
             returned: false,
             string_literals: Vec::new(),
             options,
+            function_names: HashSet::new(),
         }
     }
 
@@ -131,6 +135,9 @@ impl Codegen {
                 if let Some(offset) = self.local_vars.get(name) {
                     self.emit(&format!("addi a0, sp, {}", offset));
                     Ok(())
+                } else if self.function_names.contains(name) {
+                    self.emit(&format!("la a0, {}", name));
+                    Ok(())
                 } else {
                     Err(format!("Undefined variable: {}", name))
                 }
@@ -157,6 +164,7 @@ impl Codegen {
     }
 
     pub fn generate(&mut self, program: &Program) -> Result<Vec<String>, String> {
+        self.function_names = program.functions.iter().map(|f| f.name.clone()).collect();
         self.code.push(".section .text".to_string());
         self.code.push(".globl _start".to_string());
         self.code.push("".to_string());
@@ -459,6 +467,8 @@ impl Codegen {
             Expression::Identifier(name) => {
                 if let Some(offset) = self.local_vars.get(name) {
                     self.emit(&format!("lw a0, {}(sp)", offset));
+                } else if self.function_names.contains(name) {
+                    self.emit(&format!("la a0, {}", name));
                 } else {
                     return Err(format!("Undefined variable: {}", name));
                 }

@@ -1,0 +1,580 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="miniRV_sim_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="miniRV_sim" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="9700001fs"></ZoomEndTime>
+      <Cursor1Time time="78350000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="419"></NameColumnWidth>
+      <ValueColumnWidth column_width="214"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="129" />
+   <wvobject type="logic" fp_name="/miniRV_sim/cpu_clk">
+      <obj_property name="ElementShortName">cpu_clk</obj_property>
+      <obj_property name="ObjectShortName">cpu_clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/cpu_rst">
+      <obj_property name="ElementShortName">cpu_rst</obj_property>
+      <obj_property name="ObjectShortName">cpu_rst</obj_property>
+   </wvobject>
+   <wvobject type="group" fp_name="group244">
+      <obj_property name="label">LoadUse</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="array" fp_name="/miniRV_sim/uut/pc">
+         <obj_property name="ElementShortName">pc[31:0]</obj_property>
+         <obj_property name="ObjectShortName">pc[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/miniRV_sim/uut/npc">
+         <obj_property name="ElementShortName">npc[31:0]</obj_property>
+         <obj_property name="ObjectShortName">npc[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/miniRV_sim/uut/pc4">
+         <obj_property name="ElementShortName">pc4[31:0]</obj_property>
+         <obj_property name="ObjectShortName">pc4[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/miniRV_sim/uut/U_datahazard_detection/data_hazard">
+         <obj_property name="ElementShortName">data_hazard</obj_property>
+         <obj_property name="ObjectShortName">data_hazard</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/miniRV_sim/uut/ID_inst">
+         <obj_property name="ElementShortName">ID_inst[31:0]</obj_property>
+         <obj_property name="ObjectShortName">ID_inst[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/miniRV_sim/uut/ID_pc4">
+         <obj_property name="ElementShortName">ID_pc4[31:0]</obj_property>
+         <obj_property name="ObjectShortName">ID_pc4[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/miniRV_sim/uut/EX_wR">
+         <obj_property name="ElementShortName">EX_wR[4:0]</obj_property>
+         <obj_property name="ObjectShortName">EX_wR[4:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/miniRV_sim/uut/EX_rf_we">
+         <obj_property name="ElementShortName">EX_rf_we</obj_property>
+         <obj_property name="ObjectShortName">EX_rf_we</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/miniRV_sim/uut/EX_rf_wsel">
+         <obj_property name="ElementShortName">EX_rf_wsel[2:0]</obj_property>
+         <obj_property name="ObjectShortName">EX_rf_wsel[2:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/miniRV_sim/uut/EX_ram_we">
+         <obj_property name="ElementShortName">EX_ram_we</obj_property>
+         <obj_property name="ObjectShortName">EX_ram_we</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/irq_pending">
+      <obj_property name="ElementShortName">irq_pending</obj_property>
+      <obj_property name="ObjectShortName">irq_pending</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/cp0_exl">
+      <obj_property name="ElementShortName">cp0_exl</obj_property>
+      <obj_property name="ObjectShortName">cp0_exl</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/cp0_epc">
+      <obj_property name="ElementShortName">cp0_epc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cp0_epc[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/cp0_vector">
+      <obj_property name="ElementShortName">cp0_vector[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cp0_vector[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/cp0_exception_valid">
+      <obj_property name="ElementShortName">cp0_exception_valid</obj_property>
+      <obj_property name="ObjectShortName">cp0_exception_valid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/cp0_exception_pc">
+      <obj_property name="ElementShortName">cp0_exception_pc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cp0_exception_pc[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/cp0_exception_code">
+      <obj_property name="ElementShortName">cp0_exception_code[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cp0_exception_code[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/cp0_eret">
+      <obj_property name="ElementShortName">cp0_eret</obj_property>
+      <obj_property name="ObjectShortName">cp0_eret</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/inst_addr">
+      <obj_property name="ElementShortName">inst_addr[13:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_addr[13:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/inst_from_irom">
+      <obj_property name="ElementShortName">inst_from_irom[31:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_from_irom[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/inst_addr_dram">
+      <obj_property name="ElementShortName">inst_addr_dram[11:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_addr_dram[11:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/inst_from_dram">
+      <obj_property name="ElementShortName">inst_from_dram[31:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_from_dram[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/inst_from_dram_sel">
+      <obj_property name="ElementShortName">inst_from_dram_sel</obj_property>
+      <obj_property name="ObjectShortName">inst_from_dram_sel</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/Bus_addr">
+      <obj_property name="ElementShortName">Bus_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Bus_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/Bus_rdata">
+      <obj_property name="ElementShortName">Bus_rdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Bus_rdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/Bus_we">
+      <obj_property name="ElementShortName">Bus_we</obj_property>
+      <obj_property name="ObjectShortName">Bus_we</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/Bus_wdata">
+      <obj_property name="ElementShortName">Bus_wdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Bus_wdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/i">
+      <obj_property name="ElementShortName">i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/dram_word_addr">
+      <obj_property name="ElementShortName">dram_word_addr[13:0]</obj_property>
+      <obj_property name="ObjectShortName">dram_word_addr[13:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/IROM_DEPTH">
+      <obj_property name="ElementShortName">IROM_DEPTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">IROM_DEPTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/PRAM_DEPTH">
+      <obj_property name="ElementShortName">PRAM_DEPTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">PRAM_DEPTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/DRAM_DEPTH">
+      <obj_property name="ElementShortName">DRAM_DEPTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DRAM_DEPTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/ID_rR1">
+      <obj_property name="ElementShortName">ID_rR1[4:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_rR1[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/ID_rR2">
+      <obj_property name="ElementShortName">ID_rR2[4:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_rR2[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/ID_rf_re">
+      <obj_property name="ElementShortName">ID_rf_re[1:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_rf_re[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/ID_rD1">
+      <obj_property name="ElementShortName">ID_rD1[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_rD1[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/ID_rD2">
+      <obj_property name="ElementShortName">ID_rD2[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_rD2[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/EX_wR">
+      <obj_property name="ElementShortName">EX_wR[4:0]</obj_property>
+      <obj_property name="ObjectShortName">EX_wR[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/U_datahazard_detection/EX_rf_we">
+      <obj_property name="ElementShortName">EX_rf_we</obj_property>
+      <obj_property name="ObjectShortName">EX_rf_we</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/EX_rf_wsel">
+      <obj_property name="ElementShortName">EX_rf_wsel[2:0]</obj_property>
+      <obj_property name="ObjectShortName">EX_rf_wsel[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/EX_pc4">
+      <obj_property name="ElementShortName">EX_pc4[31:0]</obj_property>
+      <obj_property name="ObjectShortName">EX_pc4[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/EX_ext">
+      <obj_property name="ElementShortName">EX_ext[31:0]</obj_property>
+      <obj_property name="ObjectShortName">EX_ext[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/EX_alu_c">
+      <obj_property name="ElementShortName">EX_alu_c[31:0]</obj_property>
+      <obj_property name="ObjectShortName">EX_alu_c[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/MEM_wR">
+      <obj_property name="ElementShortName">MEM_wR[4:0]</obj_property>
+      <obj_property name="ObjectShortName">MEM_wR[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/U_datahazard_detection/MEM_rf_we">
+      <obj_property name="ElementShortName">MEM_rf_we</obj_property>
+      <obj_property name="ObjectShortName">MEM_rf_we</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/MEM_rf_wsel">
+      <obj_property name="ElementShortName">MEM_rf_wsel[2:0]</obj_property>
+      <obj_property name="ObjectShortName">MEM_rf_wsel[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/MEM_pc4">
+      <obj_property name="ElementShortName">MEM_pc4[31:0]</obj_property>
+      <obj_property name="ObjectShortName">MEM_pc4[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/MEM_ext">
+      <obj_property name="ElementShortName">MEM_ext[31:0]</obj_property>
+      <obj_property name="ObjectShortName">MEM_ext[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/MEM_alu_c">
+      <obj_property name="ElementShortName">MEM_alu_c[31:0]</obj_property>
+      <obj_property name="ObjectShortName">MEM_alu_c[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/MEM_rd">
+      <obj_property name="ElementShortName">MEM_rd[31:0]</obj_property>
+      <obj_property name="ObjectShortName">MEM_rd[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/WB_wR">
+      <obj_property name="ElementShortName">WB_wR[4:0]</obj_property>
+      <obj_property name="ObjectShortName">WB_wR[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/U_datahazard_detection/WB_rf_we">
+      <obj_property name="ElementShortName">WB_rf_we</obj_property>
+      <obj_property name="ObjectShortName">WB_rf_we</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/WB_rf_wsel">
+      <obj_property name="ElementShortName">WB_rf_wsel[2:0]</obj_property>
+      <obj_property name="ObjectShortName">WB_rf_wsel[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/WB_pc4">
+      <obj_property name="ElementShortName">WB_pc4[31:0]</obj_property>
+      <obj_property name="ObjectShortName">WB_pc4[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/WB_ext">
+      <obj_property name="ElementShortName">WB_ext[31:0]</obj_property>
+      <obj_property name="ObjectShortName">WB_ext[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/WB_alu_c">
+      <obj_property name="ElementShortName">WB_alu_c[31:0]</obj_property>
+      <obj_property name="ObjectShortName">WB_alu_c[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/WB_rd">
+      <obj_property name="ElementShortName">WB_rd[31:0]</obj_property>
+      <obj_property name="ObjectShortName">WB_rd[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/new_rD1">
+      <obj_property name="ElementShortName">new_rD1[31:0]</obj_property>
+      <obj_property name="ObjectShortName">new_rD1[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/U_datahazard_detection/new_rD2">
+      <obj_property name="ElementShortName">new_rD2[31:0]</obj_property>
+      <obj_property name="ObjectShortName">new_rD2[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/U_datahazard_detection/rR1_a">
+      <obj_property name="ElementShortName">rR1_a</obj_property>
+      <obj_property name="ObjectShortName">rR1_a</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/U_datahazard_detection/rR2_a">
+      <obj_property name="ElementShortName">rR2_a</obj_property>
+      <obj_property name="ObjectShortName">rR2_a</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/U_datahazard_detection/rR1_b">
+      <obj_property name="ElementShortName">rR1_b</obj_property>
+      <obj_property name="ObjectShortName">rR1_b</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/U_datahazard_detection/rR2_b">
+      <obj_property name="ElementShortName">rR2_b</obj_property>
+      <obj_property name="ObjectShortName">rR2_b</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/U_datahazard_detection/rR1_c">
+      <obj_property name="ElementShortName">rR1_c</obj_property>
+      <obj_property name="ObjectShortName">rR1_c</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/U_datahazard_detection/rR2_c">
+      <obj_property name="ElementShortName">rR2_c</obj_property>
+      <obj_property name="ObjectShortName">rR2_c</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/cpu_rst">
+      <obj_property name="ElementShortName">cpu_rst</obj_property>
+      <obj_property name="ObjectShortName">cpu_rst</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/cpu_clk">
+      <obj_property name="ElementShortName">cpu_clk</obj_property>
+      <obj_property name="ObjectShortName">cpu_clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/irq_pending">
+      <obj_property name="ElementShortName">irq_pending</obj_property>
+      <obj_property name="ObjectShortName">irq_pending</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/cp0_exl">
+      <obj_property name="ElementShortName">cp0_exl</obj_property>
+      <obj_property name="ObjectShortName">cp0_exl</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/cp0_epc">
+      <obj_property name="ElementShortName">cp0_epc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cp0_epc[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/cp0_vector">
+      <obj_property name="ElementShortName">cp0_vector[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cp0_vector[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/cp0_exception_valid">
+      <obj_property name="ElementShortName">cp0_exception_valid</obj_property>
+      <obj_property name="ObjectShortName">cp0_exception_valid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/cp0_exception_pc">
+      <obj_property name="ElementShortName">cp0_exception_pc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cp0_exception_pc[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/cp0_exception_code">
+      <obj_property name="ElementShortName">cp0_exception_code[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cp0_exception_code[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/cp0_eret">
+      <obj_property name="ElementShortName">cp0_eret</obj_property>
+      <obj_property name="ObjectShortName">cp0_eret</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/inst_addr">
+      <obj_property name="ElementShortName">inst_addr[13:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_addr[13:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/inst_from_irom">
+      <obj_property name="ElementShortName">inst_from_irom[31:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_from_irom[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/inst_addr_dram">
+      <obj_property name="ElementShortName">inst_addr_dram[11:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_addr_dram[11:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/inst_from_dram">
+      <obj_property name="ElementShortName">inst_from_dram[31:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_from_dram[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/inst_from_dram_sel">
+      <obj_property name="ElementShortName">inst_from_dram_sel</obj_property>
+      <obj_property name="ObjectShortName">inst_from_dram_sel</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/Bus_addr">
+      <obj_property name="ElementShortName">Bus_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Bus_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/Bus_rdata">
+      <obj_property name="ElementShortName">Bus_rdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Bus_rdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/Bus_we">
+      <obj_property name="ElementShortName">Bus_we</obj_property>
+      <obj_property name="ObjectShortName">Bus_we</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/Bus_wdata">
+      <obj_property name="ElementShortName">Bus_wdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Bus_wdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/npc_op">
+      <obj_property name="ElementShortName">npc_op[2:0]</obj_property>
+      <obj_property name="ObjectShortName">npc_op[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/rf_we">
+      <obj_property name="ElementShortName">rf_we</obj_property>
+      <obj_property name="ObjectShortName">rf_we</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/rf_wsel">
+      <obj_property name="ElementShortName">rf_wsel[2:0]</obj_property>
+      <obj_property name="ObjectShortName">rf_wsel[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/sext_op">
+      <obj_property name="ElementShortName">sext_op[2:0]</obj_property>
+      <obj_property name="ObjectShortName">sext_op[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/alub_sel">
+      <obj_property name="ElementShortName">alub_sel[2:0]</obj_property>
+      <obj_property name="ObjectShortName">alub_sel[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/dram_we">
+      <obj_property name="ElementShortName">dram_we</obj_property>
+      <obj_property name="ObjectShortName">dram_we</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/alu_op">
+      <obj_property name="ElementShortName">alu_op[3:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_op[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/rf_re">
+      <obj_property name="ElementShortName">rf_re[1:0]</obj_property>
+      <obj_property name="ObjectShortName">rf_re[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/ID_illegal">
+      <obj_property name="ElementShortName">ID_illegal</obj_property>
+      <obj_property name="ObjectShortName">ID_illegal</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/ID_mret">
+      <obj_property name="ElementShortName">ID_mret</obj_property>
+      <obj_property name="ObjectShortName">ID_mret</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/ext">
+      <obj_property name="ElementShortName">ext[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ext[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/rD1">
+      <obj_property name="ElementShortName">rD1[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rD1[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/rD2">
+      <obj_property name="ElementShortName">rD2[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rD2[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/wD">
+      <obj_property name="ElementShortName">wD[31:0]</obj_property>
+      <obj_property name="ObjectShortName">wD[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/EX_npc_op">
+      <obj_property name="ElementShortName">EX_npc_op[2:0]</obj_property>
+      <obj_property name="ObjectShortName">EX_npc_op[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/EX_alu_op">
+      <obj_property name="ElementShortName">EX_alu_op[3:0]</obj_property>
+      <obj_property name="ObjectShortName">EX_alu_op[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/EX_alub_sel">
+      <obj_property name="ElementShortName">EX_alub_sel[2:0]</obj_property>
+      <obj_property name="ObjectShortName">EX_alub_sel[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/EX_pc4">
+      <obj_property name="ElementShortName">EX_pc4[31:0]</obj_property>
+      <obj_property name="ObjectShortName">EX_pc4[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/EX_rD1">
+      <obj_property name="ElementShortName">EX_rD1[31:0]</obj_property>
+      <obj_property name="ObjectShortName">EX_rD1[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/EX_rD2">
+      <obj_property name="ElementShortName">EX_rD2[31:0]</obj_property>
+      <obj_property name="ObjectShortName">EX_rD2[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/EX_ext">
+      <obj_property name="ElementShortName">EX_ext[31:0]</obj_property>
+      <obj_property name="ObjectShortName">EX_ext[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/EX_illegal">
+      <obj_property name="ElementShortName">EX_illegal</obj_property>
+      <obj_property name="ObjectShortName">EX_illegal</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/EX_mret">
+      <obj_property name="ElementShortName">EX_mret</obj_property>
+      <obj_property name="ObjectShortName">EX_mret</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/alu_c">
+      <obj_property name="ElementShortName">alu_c[31:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_c[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/alu_f">
+      <obj_property name="ElementShortName">alu_f[1:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_f[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/MEM_ram_we">
+      <obj_property name="ElementShortName">MEM_ram_we</obj_property>
+      <obj_property name="ObjectShortName">MEM_ram_we</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/MEM_rf_we">
+      <obj_property name="ElementShortName">MEM_rf_we</obj_property>
+      <obj_property name="ObjectShortName">MEM_rf_we</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/MEM_rf_wsel">
+      <obj_property name="ElementShortName">MEM_rf_wsel[2:0]</obj_property>
+      <obj_property name="ObjectShortName">MEM_rf_wsel[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/MEM_wR">
+      <obj_property name="ElementShortName">MEM_wR[4:0]</obj_property>
+      <obj_property name="ObjectShortName">MEM_wR[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/MEM_pc4">
+      <obj_property name="ElementShortName">MEM_pc4[31:0]</obj_property>
+      <obj_property name="ObjectShortName">MEM_pc4[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/MEM_alu_c">
+      <obj_property name="ElementShortName">MEM_alu_c[31:0]</obj_property>
+      <obj_property name="ObjectShortName">MEM_alu_c[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/MEM_rD2">
+      <obj_property name="ElementShortName">MEM_rD2[31:0]</obj_property>
+      <obj_property name="ObjectShortName">MEM_rD2[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/MEM_ext">
+      <obj_property name="ElementShortName">MEM_ext[31:0]</obj_property>
+      <obj_property name="ObjectShortName">MEM_ext[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/rd">
+      <obj_property name="ElementShortName">rd[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rd[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/WB_rf_we">
+      <obj_property name="ElementShortName">WB_rf_we</obj_property>
+      <obj_property name="ObjectShortName">WB_rf_we</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/WB_rf_wsel">
+      <obj_property name="ElementShortName">WB_rf_wsel[2:0]</obj_property>
+      <obj_property name="ObjectShortName">WB_rf_wsel[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/WB_wR">
+      <obj_property name="ElementShortName">WB_wR[4:0]</obj_property>
+      <obj_property name="ObjectShortName">WB_wR[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/WB_pc4">
+      <obj_property name="ElementShortName">WB_pc4[31:0]</obj_property>
+      <obj_property name="ObjectShortName">WB_pc4[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/WB_alu_c">
+      <obj_property name="ElementShortName">WB_alu_c[31:0]</obj_property>
+      <obj_property name="ObjectShortName">WB_alu_c[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/WB_rd">
+      <obj_property name="ElementShortName">WB_rd[31:0]</obj_property>
+      <obj_property name="ObjectShortName">WB_rd[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/WB_ext">
+      <obj_property name="ElementShortName">WB_ext[31:0]</obj_property>
+      <obj_property name="ObjectShortName">WB_ext[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/new_rD1">
+      <obj_property name="ElementShortName">new_rD1[31:0]</obj_property>
+      <obj_property name="ObjectShortName">new_rD1[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/new_rD2">
+      <obj_property name="ElementShortName">new_rD2[31:0]</obj_property>
+      <obj_property name="ObjectShortName">new_rD2[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/data_hazard">
+      <obj_property name="ElementShortName">data_hazard</obj_property>
+      <obj_property name="ObjectShortName">data_hazard</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/control_hazard_raw">
+      <obj_property name="ElementShortName">control_hazard_raw</obj_property>
+      <obj_property name="ObjectShortName">control_hazard_raw</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/control_hazard">
+      <obj_property name="ElementShortName">control_hazard</obj_property>
+      <obj_property name="ObjectShortName">control_hazard</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/trap_illegal">
+      <obj_property name="ElementShortName">trap_illegal</obj_property>
+      <obj_property name="ObjectShortName">trap_illegal</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/trap_irq">
+      <obj_property name="ElementShortName">trap_irq</obj_property>
+      <obj_property name="ObjectShortName">trap_irq</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/miniRV_sim/uut/trap_taken">
+      <obj_property name="ElementShortName">trap_taken</obj_property>
+      <obj_property name="ObjectShortName">trap_taken</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/trap_pc">
+      <obj_property name="ElementShortName">trap_pc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">trap_pc[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/trap_code">
+      <obj_property name="ElementShortName">trap_code[31:0]</obj_property>
+      <obj_property name="ObjectShortName">trap_code[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/miniRV_sim/uut/inst">
+      <obj_property name="ElementShortName">inst[31:0]</obj_property>
+      <obj_property name="ObjectShortName">inst[31:0]</obj_property>
+   </wvobject>
+</wave_config>

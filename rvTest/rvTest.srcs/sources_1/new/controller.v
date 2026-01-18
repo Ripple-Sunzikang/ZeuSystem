@@ -21,7 +21,9 @@ module controller(
     output wire       ram_we,
     output wire [1:0] rf_re,
     output wire       illegal_inst,
-    output wire       is_mret
+    output wire       is_mret,
+    output wire       is_ecall,
+    output wire       is_ebreak
 );
 
     // 控制器内部逻辑
@@ -83,6 +85,8 @@ module controller(
     wire inst_jal  = (opcode == 7'b1101111) ? 1'b1 : 1'b0;
     // 系统指令（最小支持 mret）
     wire inst_mret = (opcode == 7'b1110011) & (funct3 == 3'b000) & (funct7 == 7'b0011000) & (rs2 == 5'b00010);
+    wire inst_ecall = (opcode == 7'b1110011) & (funct3 == 3'b000) & (funct7 == 7'b0000000) & (rs2 == 5'b00000);
+    wire inst_ebreak = (opcode == 7'b1110011) & (funct3 == 3'b000) & (funct7 == 7'b0000000) & (rs2 == 5'b00001);
 
 
     
@@ -95,7 +99,7 @@ module controller(
                     (inst_bge)  ? `NPC_BGE  : `NPC_PC4;
     
     // 寄存器堆控制
-    assign rf_we    = ((inst_sw | b_typ | inst_mret) ? 1'b0 : 1'b1) & ~illegal_inst;
+    assign rf_we    = ((inst_sw | b_typ | inst_mret | inst_ecall | inst_ebreak) ? 1'b0 : 1'b1) & ~illegal_inst;
     assign rf_wsel  = (inst_lw)              ? `WB_DM   :
                       (inst_jalr | inst_jal) ? `WB_PC_4 :
                       (inst_lui)             ? `WB_SEXT : `WB_ALU;
@@ -131,6 +135,8 @@ module controller(
                       (inst_lui || inst_jal)           ? 2'b00 : 2'b11;
 
     assign is_mret = inst_mret;
+    assign is_ecall = inst_ecall;
+    assign is_ebreak = inst_ebreak;
 
     wire supported_inst = inst_add | inst_sub | inst_and | inst_or | inst_xor |
                           inst_sll | inst_srl | inst_sra | inst_mul | inst_mulh |
@@ -138,7 +144,7 @@ module controller(
                           inst_remu | inst_addi | inst_andi | inst_ori | inst_xori |
                           inst_slli | inst_srli | inst_srai | inst_lw | inst_jalr |
                           inst_sw | inst_beq | inst_bne | inst_blt | inst_bge |
-                          inst_lui | inst_jal | inst_mret;
+                          inst_lui | inst_jal | inst_mret | inst_ecall | inst_ebreak;
 
     assign illegal_inst = ~supported_inst;
 

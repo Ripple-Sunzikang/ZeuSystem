@@ -57,6 +57,7 @@ module miniRV_SoC (
     wire [31:0] Bus_addr;
     wire        Bus_we;
     wire [31:0] Bus_wdata;
+    wire        Bus_fault;
     
     // Bridge 与 DRAM 接口
     // wire         rst_bridge2dram;
@@ -144,6 +145,7 @@ module miniRV_SoC (
     wire [31:0]   uart_addr;
     wire [31:0]   uart_wdata;
     wire [31:0]   uart_rdata;
+    wire          uart_irq;
 
     // CP0
     wire          cp0_rst;
@@ -153,6 +155,7 @@ module miniRV_SoC (
     wire [31:0]   cp0_wdata;
     wire [31:0]   cp0_rdata;
     wire          cp0_irq_pending;
+    wire [31:0]   cp0_irq_code;
     wire          cp0_exl;
     wire [31:0]   cp0_epc;
     wire [31:0]   cp0_vector;
@@ -189,6 +192,7 @@ module miniRV_SoC (
         .cp0_exl            (cp0_exl),
         .cp0_epc            (cp0_epc),
         .cp0_vector         (cp0_vector),
+        .cp0_irq_code       (cp0_irq_code),
         .cp0_exception_valid(cp0_exception_valid),
         .cp0_exception_pc   (cp0_exception_pc),
         .cp0_exception_code (cp0_exception_code),
@@ -206,6 +210,7 @@ module miniRV_SoC (
         // Bridge 接口
         .Bus_addr           (Bus_addr),
         .Bus_rdata          (Bus_rdata),
+        .Bus_fault          (Bus_fault),
         .Bus_we             (Bus_we),
         .Bus_wdata          (Bus_wdata)
 
@@ -232,6 +237,7 @@ module miniRV_SoC (
         .we_from_cpu        (Bus_we),
         .wdata_from_cpu     (Bus_wdata),
         .rdata_to_cpu       (Bus_rdata),
+        .bus_fault          (Bus_fault),
         
         // DRAM 接口
         // .rst_to_dram    (rst_bridge2dram),
@@ -430,6 +436,7 @@ module miniRV_SoC (
         .addr(uart_addr),
         .wdata(uart_wdata),
         .rdata(uart_rdata),
+        .irq(uart_irq),
         .uart_rx(uart_rx),
         .uart_tx(uart_tx)
     );
@@ -441,12 +448,13 @@ module miniRV_SoC (
         .wen(cp0_wen),
         .wdata(cp0_wdata),
         .rdata(cp0_rdata),
-        .irq_in(timer_irq),
+        .irq_lines({timer_irq, uart_irq}),
         .exception_valid(cp0_exception_valid),
         .exception_pc(cp0_exception_pc),
         .exception_code(cp0_exception_code),
         .eret(cp0_eret),
         .irq_pending(cp0_irq_pending),
+        .irq_code(cp0_irq_code),
         .exl(cp0_exl),
         .epc(cp0_epc),
         .vector(cp0_vector)

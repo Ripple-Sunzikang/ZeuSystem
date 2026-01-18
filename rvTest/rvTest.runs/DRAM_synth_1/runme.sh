@@ -20,7 +20,7 @@ else
 fi
 export LD_LIBRARY_PATH
 
-HD_PWD='/home/vessel/rvTest/rvTest.runs/DRAM_synth_1'
+HD_PWD='/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/DRAM_synth_1'
 cd "$HD_PWD"
 
 HD_LOG=runme.log

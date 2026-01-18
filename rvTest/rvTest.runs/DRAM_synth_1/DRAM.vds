@@ -2,12 +2,12 @@
 # Vivado v2017.4 (64-bit)
 # SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
 # IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
-# Start of session at: Mon Dec 22 02:33:37 2025
-# Process ID: 13550
-# Current directory: /home/vessel/rvTest/rvTest.runs/DRAM_synth_1
+# Start of session at: Mon Jan 19 00:37:29 2026
+# Process ID: 18778
+# Current directory: /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/DRAM_synth_1
 # Command line: vivado -log DRAM.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source DRAM.tcl
-# Log file: /home/vessel/rvTest/rvTest.runs/DRAM_synth_1/DRAM.vds
-# Journal file: /home/vessel/rvTest/rvTest.runs/DRAM_synth_1/vivado.jou
+# Log file: /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/DRAM_synth_1/DRAM.vds
+# Journal file: /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/DRAM_synth_1/vivado.jou
 #-----------------------------------------------------------
 source DRAM.tcl -notrace
 Command: synth_design -top DRAM -part xc7a100tfgg484-1 -mode out_of_context
@@ -15,11 +15,11 @@ Starting synth_design
 Attempting to get a license for feature 'Synthesis' and/or device 'xc7a100t'
 INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100t'
 INFO: Launching helper process for spawning children vivado processes
-INFO: Helper process launched with PID 13603 
+INFO: Helper process launched with PID 18831 
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 1271.621 ; gain = 83.000 ; free physical = 3058 ; free virtual = 14247
+Starting RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 1273.621 ; gain = 85.000 ; free physical = 3269 ; free virtual = 14405
 ---------------------------------------------------------------------------------
-INFO: [Synth 8-638] synthesizing module 'DRAM' [/home/vessel/rvTest/rvTest.srcs/sources_1/ip/DRAM/synth/DRAM.vhd:69]
+INFO: [Synth 8-638] synthesizing module 'DRAM' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/DRAM/synth/DRAM.vhd:69]
 	Parameter C_FAMILY bound to: artix7 - type: string 
 	Parameter C_ADDR_WIDTH bound to: 14 - type: integer 
 	Parameter C_DEFAULT_DATA bound to: 0 - type: string 
@@ -52,8 +52,8 @@ INFO: [Synth 8-638] synthesizing module 'DRAM' [/home/vessel/rvTest/rvTest.srcs/
 	Parameter C_SYNC_ENABLE bound to: 1 - type: integer 
 	Parameter C_WIDTH bound to: 32 - type: integer 
 	Parameter C_PARSER_TYPE bound to: 1 - type: integer 
-INFO: [Synth 8-3491] module 'dist_mem_gen_v8_0_12' declared at '/home/vessel/rvTest/rvTest.srcs/sources_1/ip/DRAM/hdl/dist_mem_gen_v8_0_vhsyn_rfs.vhd:3237' bound to instance 'U0' of component 'dist_mem_gen_v8_0_12' [/home/vessel/rvTest/rvTest.srcs/sources_1/ip/DRAM/synth/DRAM.vhd:135]
-INFO: [Synth 8-256] done synthesizing module 'DRAM' (4#1) [/home/vessel/rvTest/rvTest.srcs/sources_1/ip/DRAM/synth/DRAM.vhd:69]
+INFO: [Synth 8-3491] module 'dist_mem_gen_v8_0_12' declared at '/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/DRAM/hdl/dist_mem_gen_v8_0_vhsyn_rfs.vhd:3237' bound to instance 'U0' of component 'dist_mem_gen_v8_0_12' [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/DRAM/synth/DRAM.vhd:135]
+INFO: [Synth 8-256] done synthesizing module 'DRAM' (4#1) [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/DRAM/synth/DRAM.vhd:69]
 WARNING: [Synth 8-3331] design spram has unconnected port qspo[31]
 WARNING: [Synth 8-3331] design spram has unconnected port qspo[30]
 WARNING: [Synth 8-3331] design spram has unconnected port qspo[29]
@@ -156,7 +156,7 @@ WARNING: [Synth 8-3331] design dist_mem_gen_v8_0_12_synth has unconnected port q
 WARNING: [Synth 8-3331] design dist_mem_gen_v8_0_12_synth has unconnected port qdpo[0]
 INFO: [Common 17-14] Message 'Synth 8-3331' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:05:18 ; elapsed = 00:05:19 . Memory (MB): peak = 1724.285 ; gain = 535.664 ; free physical = 4132 ; free virtual = 15178
+Finished RTL Elaboration : Time (s): cpu = 00:04:48 ; elapsed = 00:04:49 . Memory (MB): peak = 1429.012 ; gain = 240.391 ; free physical = 4060 ; free virtual = 14716
 ---------------------------------------------------------------------------------
 
 Report Check Netlist: 
@@ -166,42 +166,42 @@ Report Check Netlist:
 |1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
 +------+------------------+-------+---------+-------+------------------+
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:05:18 ; elapsed = 00:05:19 . Memory (MB): peak = 1724.285 ; gain = 535.664 ; free physical = 4135 ; free virtual = 15181
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:04:48 ; elapsed = 00:04:49 . Memory (MB): peak = 1429.012 ; gain = 240.391 ; free physical = 4064 ; free virtual = 14721
 ---------------------------------------------------------------------------------
 INFO: [Device 21-403] Loading part xc7a100tfgg484-1
 INFO: [Project 1-570] Preparing netlist for logic optimization
 
 Processing XDC Constraints
 Initializing timing engine
-Parsing XDC File [/home/vessel/rvTest/rvTest.srcs/sources_1/ip/DRAM/DRAM_ooc.xdc] for cell 'U0'
-Finished Parsing XDC File [/home/vessel/rvTest/rvTest.srcs/sources_1/ip/DRAM/DRAM_ooc.xdc] for cell 'U0'
-Parsing XDC File [/home/vessel/rvTest/rvTest.runs/DRAM_synth_1/dont_touch.xdc]
-Finished Parsing XDC File [/home/vessel/rvTest/rvTest.runs/DRAM_synth_1/dont_touch.xdc]
+Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/DRAM/DRAM_ooc.xdc] for cell 'U0'
+Finished Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/DRAM/DRAM_ooc.xdc] for cell 'U0'
+Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/DRAM_synth_1/dont_touch.xdc]
+Finished Parsing XDC File [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/DRAM_synth_1/dont_touch.xdc]
 Completed Processing XDC Constraints
 
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.01 . Memory (MB): peak = 1805.316 ; gain = 0.000 ; free physical = 3961 ; free virtual = 15002
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1666.043 ; gain = 0.000 ; free physical = 3861 ; free virtual = 14514
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:05:28 ; elapsed = 00:05:35 . Memory (MB): peak = 1805.316 ; gain = 616.695 ; free physical = 4015 ; free virtual = 15057
+Finished Constraint Validation : Time (s): cpu = 00:04:58 ; elapsed = 00:05:05 . Memory (MB): peak = 1666.043 ; gain = 477.422 ; free physical = 3918 ; free virtual = 14558
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7a100tfgg484-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:05:28 ; elapsed = 00:05:35 . Memory (MB): peak = 1805.316 ; gain = 616.695 ; free physical = 4015 ; free virtual = 15057
+Finished Loading Part and Timing Information : Time (s): cpu = 00:04:58 ; elapsed = 00:05:05 . Memory (MB): peak = 1666.043 ; gain = 477.422 ; free physical = 3918 ; free virtual = 14558
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
 ---------------------------------------------------------------------------------
-Applied set_property DONT_TOUCH = true for U0. (constraint file  /home/vessel/rvTest/rvTest.runs/DRAM_synth_1/dont_touch.xdc, line 9).
+Applied set_property DONT_TOUCH = true for U0. (constraint file  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/DRAM_synth_1/dont_touch.xdc, line 9).
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:05:28 ; elapsed = 00:05:35 . Memory (MB): peak = 1805.316 ; gain = 616.695 ; free physical = 4015 ; free virtual = 15057
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:04:58 ; elapsed = 00:05:05 . Memory (MB): peak = 1666.043 ; gain = 477.422 ; free physical = 3919 ; free virtual = 14559
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:05:28 ; elapsed = 00:05:35 . Memory (MB): peak = 1805.316 ; gain = 616.695 ; free physical = 4015 ; free virtual = 15057
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:04:58 ; elapsed = 00:05:05 . Memory (MB): peak = 1666.043 ; gain = 477.422 ; free physical = 3919 ; free virtual = 14559
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -242,7 +242,7 @@ Finished Part Resource Summary
 Start Cross Boundary and Area Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:05:30 ; elapsed = 00:05:36 . Memory (MB): peak = 1805.316 ; gain = 616.695 ; free physical = 3961 ; free virtual = 15006
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:04:59 ; elapsed = 00:05:06 . Memory (MB): peak = 1666.043 ; gain = 477.422 ; free physical = 3869 ; free virtual = 14509
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start ROM, RAM, DSP and Shift Register Reporting
@@ -269,13 +269,13 @@ Report RTL Partitions:
 Start Applying XDC Timing Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:05:33 ; elapsed = 00:05:41 . Memory (MB): peak = 1805.316 ; gain = 616.695 ; free physical = 3889 ; free virtual = 14931
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:05:03 ; elapsed = 00:05:11 . Memory (MB): peak = 1666.043 ; gain = 477.422 ; free physical = 3737 ; free virtual = 14407
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:05:34 ; elapsed = 00:05:42 . Memory (MB): peak = 1805.316 ; gain = 616.695 ; free physical = 3874 ; free virtual = 14915
+Finished Timing Optimization : Time (s): cpu = 00:05:03 ; elapsed = 00:05:12 . Memory (MB): peak = 1666.043 ; gain = 477.422 ; free physical = 3728 ; free virtual = 14399
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start ROM, RAM, DSP and Shift Register Reporting
@@ -301,7 +301,7 @@ Report RTL Partitions:
 Start Technology Mapping
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:05:34 ; elapsed = 00:05:42 . Memory (MB): peak = 1805.316 ; gain = 616.695 ; free physical = 3849 ; free virtual = 14895
+Finished Technology Mapping : Time (s): cpu = 00:05:04 ; elapsed = 00:05:12 . Memory (MB): peak = 1692.277 ; gain = 503.656 ; free physical = 3699 ; free virtual = 14369
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -325,7 +325,7 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:05:35 ; elapsed = 00:05:43 . Memory (MB): peak = 1805.316 ; gain = 616.695 ; free physical = 3849 ; free virtual = 14895
+Finished IO Insertion : Time (s): cpu = 00:05:04 ; elapsed = 00:05:13 . Memory (MB): peak = 1692.277 ; gain = 503.656 ; free physical = 3698 ; free virtual = 14369
 ---------------------------------------------------------------------------------
 
 Report Check Netlist: 
@@ -338,7 +338,7 @@ Report Check Netlist:
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:05:35 ; elapsed = 00:05:43 . Memory (MB): peak = 1805.316 ; gain = 616.695 ; free physical = 3849 ; free virtual = 14895
+Finished Renaming Generated Instances : Time (s): cpu = 00:05:04 ; elapsed = 00:05:13 . Memory (MB): peak = 1692.277 ; gain = 503.656 ; free physical = 3698 ; free virtual = 14369
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -350,25 +350,25 @@ Report RTL Partitions:
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:05:35 ; elapsed = 00:05:43 . Memory (MB): peak = 1805.316 ; gain = 616.695 ; free physical = 3849 ; free virtual = 14895
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:05:04 ; elapsed = 00:05:13 . Memory (MB): peak = 1692.277 ; gain = 503.656 ; free physical = 3698 ; free virtual = 14369
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:05:35 ; elapsed = 00:05:43 . Memory (MB): peak = 1805.316 ; gain = 616.695 ; free physical = 3849 ; free virtual = 14895
+Finished Renaming Generated Ports : Time (s): cpu = 00:05:04 ; elapsed = 00:05:13 . Memory (MB): peak = 1692.277 ; gain = 503.656 ; free physical = 3698 ; free virtual = 14369
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:05:35 ; elapsed = 00:05:43 . Memory (MB): peak = 1805.316 ; gain = 616.695 ; free physical = 3849 ; free virtual = 14895
+Finished Handling Custom Attributes : Time (s): cpu = 00:05:04 ; elapsed = 00:05:13 . Memory (MB): peak = 1692.277 ; gain = 503.656 ; free physical = 3698 ; free virtual = 14369
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:05:35 ; elapsed = 00:05:43 . Memory (MB): peak = 1805.316 ; gain = 616.695 ; free physical = 3849 ; free virtual = 14895
+Finished Renaming Generated Nets : Time (s): cpu = 00:05:04 ; elapsed = 00:05:13 . Memory (MB): peak = 1692.277 ; gain = 503.656 ; free physical = 3698 ; free virtual = 14369
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -404,11 +404,11 @@ Report Instance Areas:
 |4     |      \gen_sp_ram.spram_inst      |spram                      |  3087|
 +------+----------------------------------+---------------------------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:05:35 ; elapsed = 00:05:43 . Memory (MB): peak = 1805.316 ; gain = 616.695 ; free physical = 3849 ; free virtual = 14895
+Finished Writing Synthesis Report : Time (s): cpu = 00:05:04 ; elapsed = 00:05:13 . Memory (MB): peak = 1692.277 ; gain = 503.656 ; free physical = 3698 ; free virtual = 14369
 ---------------------------------------------------------------------------------
 Synthesis finished with 0 errors, 0 critical warnings and 118 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:05:30 ; elapsed = 00:05:33 . Memory (MB): peak = 1805.316 ; gain = 535.664 ; free physical = 3849 ; free virtual = 14895
-Synthesis Optimization Complete : Time (s): cpu = 00:05:35 ; elapsed = 00:05:43 . Memory (MB): peak = 1805.316 ; gain = 616.695 ; free physical = 3849 ; free virtual = 14895
+Synthesis Optimization Runtime : Time (s): cpu = 00:05:00 ; elapsed = 00:05:03 . Memory (MB): peak = 1692.277 ; gain = 266.625 ; free physical = 3743 ; free virtual = 14412
+Synthesis Optimization Complete : Time (s): cpu = 00:05:04 ; elapsed = 00:05:13 . Memory (MB): peak = 1692.285 ; gain = 503.656 ; free physical = 3743 ; free virtual = 14412
 INFO: [Project 1-571] Translating synthesized netlist
 INFO: [Netlist 29-17] Analyzing 2432 Unisim elements for replacement
 INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
@@ -422,11 +422,11 @@ INFO: [Project 1-111] Unisim Transformation Summary:
 INFO: [Common 17-83] Releasing license: Synthesis
 15 Infos, 101 Warnings, 0 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:05:37 ; elapsed = 00:05:45 . Memory (MB): peak = 1805.316 ; gain = 643.520 ; free physical = 3864 ; free virtual = 14906
-INFO: [Common 17-1381] The checkpoint '/home/vessel/rvTest/rvTest.runs/DRAM_synth_1/DRAM.dcp' has been generated.
-INFO: [Coretcl 2-1482] Added synthesis output to IP cache for IP /home/vessel/rvTest/rvTest.srcs/sources_1/ip/DRAM/DRAM.xci
+synth_design: Time (s): cpu = 00:05:06 ; elapsed = 00:05:15 . Memory (MB): peak = 1724.293 ; gain = 562.496 ; free physical = 3724 ; free virtual = 14374
+INFO: [Common 17-1381] The checkpoint '/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/DRAM_synth_1/DRAM.dcp' has been generated.
+INFO: [Coretcl 2-1482] Added synthesis output to IP cache for IP /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/DRAM/DRAM.xci
 INFO: [Coretcl 2-1174] Renamed 3 cell refs.
-INFO: [Common 17-1381] The checkpoint '/home/vessel/rvTest/rvTest.runs/DRAM_synth_1/DRAM.dcp' has been generated.
+INFO: [Common 17-1381] The checkpoint '/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/DRAM_synth_1/DRAM.dcp' has been generated.
 INFO: [runtcl-4] Executing : report_utilization -file DRAM_utilization_synth.rpt -pb DRAM_utilization_synth.pb
-report_utilization: Time (s): cpu = 00:00:00.09 ; elapsed = 00:00:00.12 . Memory (MB): peak = 1829.328 ; gain = 0.000 ; free physical = 3860 ; free virtual = 14906
-INFO: [Common 17-206] Exiting Vivado at Mon Dec 22 02:39:33 2025...
+report_utilization: Time (s): cpu = 00:00:00.08 ; elapsed = 00:00:00.10 . Memory (MB): peak = 1748.305 ; gain = 0.000 ; free physical = 3761 ; free virtual = 14387
+INFO: [Common 17-206] Exiting Vivado at Mon Jan 19 00:42:56 2026...

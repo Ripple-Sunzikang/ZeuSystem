@@ -1,9 +1,10 @@
 // Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2017.4 (lin64) Build 2086221 Fri Dec 15 20:54:30 MST 2017
-// Date        : Mon Dec 22 02:39:32 2025
+// Date        : Mon Jan 19 00:42:56 2026
 // Host        : Cookie running 64-bit Linux Mint 22.2
-// Command     : write_verilog -force -mode funcsim /home/vessel/rvTest/rvTest.srcs/sources_1/ip/DRAM/DRAM_sim_netlist.v
+// Command     : write_verilog -force -mode funcsim
+//               /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/ip/DRAM/DRAM_sim_netlist.v
 // Design      : DRAM
 // Purpose     : This verilog netlist is a functional simulation representation of the design and should not be modified
 //               or synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -3638,7 +3639,7 @@ module DRAM_spram
         .R(1'b0));
   (* METHODOLOGY_DRC_VIOS = "{SYNTH-5 {cell *THIS*}}" *) 
   RAM256X1S #(
-    .INIT(256'h0000000000000000000000000000000000000000000000000000000000000000)) 
+    .INIT(256'h0000000000000000000000000000000000000000000000000000000000000003)) 
     ram_reg_0_255_0_0
        (.A(a[7:0]),
         .D(d[0]),
@@ -3754,7 +3755,7 @@ module DRAM_spram
         .WE(ram_reg_0_255_0_0_i_1_n_0));
   (* METHODOLOGY_DRC_VIOS = "{SYNTH-5 {cell *THIS*}}" *) 
   RAM256X1S #(
-    .INIT(256'h0000000000000000000000000000000000000000000000000000000000000000)) 
+    .INIT(256'h0000000000000000000000000000000000000000000000000000000000000002)) 
     ram_reg_0_255_1_1
        (.A(a[7:0]),
         .D(d[1]),
@@ -3853,7 +3854,7 @@ module DRAM_spram
         .WE(ram_reg_0_255_0_0_i_1_n_0));
   (* METHODOLOGY_DRC_VIOS = "{SYNTH-5 {cell *THIS*}}" *) 
   RAM256X1S #(
-    .INIT(256'h0000000000000000000000000000000000000000000000000000000000000000)) 
+    .INIT(256'h0000000000000000000000000000000000000000000000000000000000000003)) 
     ram_reg_0_255_2_2
        (.A(a[7:0]),
         .D(d[2]),

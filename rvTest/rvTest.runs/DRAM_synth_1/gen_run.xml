@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="DRAM_synth_1" LaunchPart="xc7a100tfgg484-1" LaunchTime="1766342016">
+<GenRun Id="DRAM_synth_1" LaunchPart="xc7a100tfgg484-1" LaunchTime="1768754248">
   <File Type="PA-TCL" Name="DRAM.tcl"/>
   <File Type="RDS-DCP" Name="DRAM.dcp"/>
   <File Type="REPORTS-TCL" Name="DRAM_reports.tcl"/>

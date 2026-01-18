@@ -2,8 +2,8 @@
 # Vivado v2017.4 (64-bit)
 # SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
 # IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
-# Start of session at: Fri Jan 16 21:29:17 2026
-# Process ID: 9491
+# Start of session at: Mon Jan 19 00:37:01 2026
+# Process ID: 18539
 # Current directory: /home/vessel/SEU-RISCV-CPU/SEU-RISCV-CPU-IDE
 # Command line: vivado
 # Log file: /home/vessel/SEU-RISCV-CPU/SEU-RISCV-CPU-IDE/vivado.log
@@ -12,7 +12,33 @@
 start_gui
 open_project /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.xpr
 update_compile_order -fileset sources_1
-reset_run IROM_synth_1
 reset_run synth_1
-launch_runs synth_1 -jobs 8
-wait_on_run synth_1
+reset_run DRAM_synth_1
+reset_run IROM_synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+open_hw
+connect_hw_server
+open_hw_target
+set_property PROGRAM.FILE {/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/impl_1/miniRV_SoC.bit} [get_hw_devices xc7a100t_0]
+current_hw_device [get_hw_devices xc7a100t_0]
+refresh_hw_device -update_hw_probes false [lindex [get_hw_devices xc7a100t_0] 0]
+set_property PROBES.FILE {} [get_hw_devices xc7a100t_0]
+set_property FULL_PROBES.FILE {} [get_hw_devices xc7a100t_0]
+set_property PROGRAM.FILE {/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/impl_1/miniRV_SoC.bit} [get_hw_devices xc7a100t_0]
+program_hw_devices [get_hw_devices xc7a100t_0]
+refresh_hw_device [lindex [get_hw_devices xc7a100t_0] 0]
+set_property PROBES.FILE {} [get_hw_devices xc7a100t_0]
+set_property FULL_PROBES.FILE {} [get_hw_devices xc7a100t_0]
+set_property PROGRAM.FILE {/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/impl_1/miniRV_SoC.bit} [get_hw_devices xc7a100t_0]
+program_hw_devices [get_hw_devices xc7a100t_0]
+refresh_hw_device [lindex [get_hw_devices xc7a100t_0] 0]
+set_property PROBES.FILE {} [get_hw_devices xc7a100t_0]
+set_property FULL_PROBES.FILE {} [get_hw_devices xc7a100t_0]
+set_property PROGRAM.FILE {/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.runs/impl_1/miniRV_SoC.bit} [get_hw_devices xc7a100t_0]
+program_hw_devices [get_hw_devices xc7a100t_0]
+refresh_hw_device [lindex [get_hw_devices xc7a100t_0] 0]
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+reset_run synth_1

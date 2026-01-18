@@ -2,7 +2,7 @@
 // `define RUN_TRACE
 
 // Optional: enable RV32M (mul/div) logic. Leave undefined to keep timing reasonable.
-// `define ENABLE_M
+`define ENABLE_M
 
 // TODO: �ڴ˴�������ĺ�
 // 
@@ -98,6 +98,13 @@
 `define PERI_ADDR_CP0_CAUSE  (`PERI_BASE_CP0 + 32'h8)
 `define PERI_ADDR_CP0_VECTOR (`PERI_BASE_CP0 + 32'hC)
 
-`define EXC_CAUSE_ILLEGAL 32'h00000002
-`define EXC_CAUSE_TIMER   32'h00000007
+`define EXC_CAUSE_INST_MISALIGNED  32'h00000000
+`define EXC_CAUSE_ILLEGAL          32'h00000002
+`define EXC_CAUSE_BREAKPOINT       32'h00000003
+`define EXC_CAUSE_LOAD_MISALIGNED  32'h00000004
+`define EXC_CAUSE_STORE_MISALIGNED 32'h00000006
+`define EXC_CAUSE_ECALL_M          32'h0000000B
+`define EXC_CAUSE_BUS_FAULT        32'h0000000F
+`define EXC_CAUSE_IRQ_TIMER        32'h80000007
+`define EXC_CAUSE_IRQ_UART         32'h8000000B
 `define EXC_VECTOR_DEFAULT 32'h00000100

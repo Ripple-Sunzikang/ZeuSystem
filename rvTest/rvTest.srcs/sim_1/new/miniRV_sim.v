@@ -175,6 +175,8 @@ module miniRV_sim;
     // 数据存储器读（简化为组合读）
     wire [13:0] dram_word_addr = Bus_addr[15:2];
     assign Bus_rdata = (Bus_addr[31:16] == 16'h0000) ? dram[dram_word_addr] : 32'h0;
+    wire Bus_fault = 1'b0;
+    wire [31:0] cp0_irq_code = `EXC_CAUSE_IRQ_TIMER;
 
     // 数据存储器写
     always @(posedge cpu_clk) begin
@@ -197,6 +199,7 @@ module miniRV_sim;
         .cp0_exception_pc(cp0_exception_pc),
         .cp0_exception_code(cp0_exception_code),
         .cp0_eret(cp0_eret),
+        .cp0_irq_code(cp0_irq_code),
         .inst_addr(inst_addr),
         .inst_from_irom(inst_from_irom),
         .inst_addr_dram(inst_addr_dram),
@@ -204,6 +207,7 @@ module miniRV_sim;
         .inst_from_dram_sel(inst_from_dram_sel),
         .Bus_addr(Bus_addr),
         .Bus_rdata(Bus_rdata),
+        .Bus_fault(Bus_fault),
         .Bus_we(Bus_we),
         .Bus_wdata(Bus_wdata)
 `ifdef RUN_TRACE
