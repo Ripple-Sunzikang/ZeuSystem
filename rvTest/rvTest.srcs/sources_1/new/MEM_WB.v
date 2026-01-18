@@ -2,6 +2,7 @@
 module MEM_WB(
   input wire clk,
   input wire rst,
+  input wire stall,
   
   input wire MEM_rf_we,
   input wire[2:0] MEM_rf_wsel,
@@ -22,36 +23,43 @@ module MEM_WB(
 
 always @(posedge clk or posedge rst) begin
   if(rst) WB_rf_we <= 0;
+  else if(stall) WB_rf_we <= WB_rf_we;
   else WB_rf_we <= MEM_rf_we;
 end
 
 always @(posedge clk or posedge rst) begin
   if(rst) WB_rf_wsel <= 0;
+  else if(stall) WB_rf_wsel <= WB_rf_wsel;
   else WB_rf_wsel <= MEM_rf_wsel;
 end
 
 always @(posedge clk or posedge rst) begin
   if(rst) WB_wR <= 0;
+  else if(stall) WB_wR <= WB_wR;
   else WB_wR <= MEM_wR;
 end
 
 always @(posedge clk or posedge rst) begin
   if(rst) WB_pc4 <= 0;
+  else if(stall) WB_pc4 <= WB_pc4;
   else WB_pc4 <= MEM_pc4;
 end
 
 always @(posedge clk or posedge rst) begin
   if(rst) WB_alu_c <= 0;
+  else if(stall) WB_alu_c <= WB_alu_c;
   else WB_alu_c <= MEM_alu_c;
 end
 
 always @(posedge clk or posedge rst) begin
   if(rst) WB_rd <= 0;
+  else if(stall) WB_rd <= WB_rd;
   else WB_rd <= MEM_rd;
 end
 
 always @(posedge clk or posedge rst) begin
   if(rst) WB_ext <= 0;
+  else if(stall) WB_ext <= WB_ext;
   else WB_ext <= MEM_ext;
 end
 

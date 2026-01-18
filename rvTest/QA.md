@@ -289,3 +289,296 @@ WNS/WHS 代表时序裕量，若为负则无法达到目标主频；LUT/FF/BRAM 
 - `rvTest/rvTest.srcs/sources_1/new/Timer.v`
 - `rvTest/rvTest.srcs/sources_1/new/WDT.v`
 - `rvTest/rvTest.srcs/sources_1/new/defines.vh`
+
+---
+
+## 补充知识与最新改动汇总（2-bit BHT/BTB、异常中断、M 多周期流水线等）
+
+**Q42：你们后来加入了 2-bit BHT + BTB，具体实现点在哪里？**  
+**A42：**  
+- 预测逻辑在 `myCPU.v` 的 **ID 阶段**：  
+  - `bht`：2-bit 饱和计数器数组；MSB=1 预测 taken。  
+  - `btb`：valid/tag/target 三表。  
+  - `id_pred_taken` / `id_pred_target` 由 BHT + BTB 组合得到。  
+- 执行阶段（EX）计算真实方向与目标：  
+  - `mispredict_dir`/`mispredict_target` 判错。  
+  - 预测错误触发 `control_hazard` 全局冲刷，PC 纠正为真实目标。  
+- 预测更新：EX 阶段在真实分支/跳转成立时更新 BHT 与 BTB。  
+- 关键位置：`rvTest/rvTest.srcs/sources_1/new/myCPU.v`、`rvTest/rvTest.srcs/sources_1/new/IF_ID.v`、`rvTest/rvTest.srcs/sources_1/new/ID_EX.v`。
+
+**Q43：为什么你们增加了 `pred_flush`？它和 `control_hazard` 有什么区别？**  
+**A43：**  
+- `pred_flush` 只在 **ID 预测 taken** 时冲刷 IF/ID，避免“已取到的顺序路径指令”进入译码。  
+- `control_hazard` 是 **EX 阶段真实纠错** 或异常/中断/`mret` 时的全局冲刷。  
+- 这两者区别：前者是“预测流的前级净化”，后者是“实际纠错 + 异常路径切换”。
+
+**Q44：异常/中断机制具体增加了哪些硬件点？**  
+**A44：**  
+- CP0 新增 `irq_lines`、`irq_pending`、`irq_code`，STATUS 支持 `IE/EXL/IM`。  
+- vector 计算：`vector_base + (cause[7:0] << 2)`，使每个异常/中断拥有独立入口。  
+- MEM/EX 两级异常：  
+  - EX：illegal/ecall/ebreak/取指不对齐  
+  - MEM：load/store 不对齐、bus fault  
+- 进入异常时关闭 IE、置 EXL，并在 `mret` 时恢复。  
+- 关键位置：`rvTest/rvTest.srcs/sources_1/new/CP0.v`、`rvTest/rvTest.srcs/sources_1/new/myCPU.v`、`rvTest/rvTest.srcs/sources_1/new/Bridge.v`、`rvTest/rvTest.srcs/sources_1/new/UART.v`。
+
+**Q45：中断向量表在 BIOS 里怎么落地？**  
+**A45：**  
+- BIOS 在 PRAM 末尾保留 256 项向量表，逐项写入 `jal x0, bios_exception_entry`。  
+- 单独写一条 `mret` 指令到 `PRAM_MRET_ADDR`，异常返回时通过“间接调用”执行 mret。  
+- CP0_VECTOR 指向 PRAM 向量基址，保证硬件按 cause 偏移跳转。  
+- 关键位置：`examples/bios_v2.c`（`bios_install_vectors()` / `bios_exception_entry()`）。
+
+**Q46：你们为“对齐异常”做了什么适配？**  
+**A46：**  
+- 打开了 **load/store 地址未对齐异常**。  
+- MMIO 键盘状态寄存器原地址 `0xFFFF_FC12` 是非对齐访问，新增 **对齐别名** `0xFFFF_FC14`，并在 BIOS 改为对齐访问，避免异常。  
+- 关键位置：`rvTest/rvTest.srcs/sources_1/new/Keypad4x4.v`、`examples/bios_v2.c`。
+
+**Q47：为什么中断打开后用户程序可能“键盘无反应”？你们怎么处理？**  
+**A47：**  
+- 若定时器/UART 中断持续拉高，会产生中断风暴，用户程序几乎无法前进。  
+- 在 BIOS 调用 `user_main()` 前临时屏蔽中断（清 IE/IM），避免风暴干扰；用户程序返回后再恢复。  
+- 关键位置：`examples/bios_v2.c`。
+
+**Q48：2-bit BHT/BTB 引入后，控制冒险如何“最小化损失”？**  
+**A48：**  
+- 预测 taken 时只损失 1 条（前级冲刷）。  
+- 预测错误时损失 2 条（EX 纠错 + 全局冲刷）。  
+- 对 JALR：BTB 命中才提前跳，否则 EX 纠错。
+
+**Q49：你们为 RV32M 做了什么时序优化？**  
+**A49：**  
+- 原先 `mul/div/rem` 在 ALU 中为**组合逻辑**，导致极长关键路径。  
+- 改为 **多周期 MUnit**，统一处理 mul/div/rem，EX 阶段产生 `m_stall`，流水线整体停顿，直到 `done`。  
+- 关键位置：  
+  - `rvTest/rvTest.srcs/sources_1/new/MUnit.v`（多周期乘除模块）  
+  - `rvTest/rvTest.srcs/sources_1/new/ALU.v`（移除组合 M 运算）  
+  - `rvTest/rvTest.srcs/sources_1/new/PC.v`、`IF_ID.v`、`ID_EX.v`、`EX_MEM.v`、`MEM_WB.v`（增加 stall）  
+  - `rvTest/rvTest.srcs/sources_1/new/myCPU.v`（接入 MUnit + 结果旁路）
+
+**Q50：MUnit 的基本机制是什么？**  
+**A50：**  
+- MUL：移位累加 32 拍，产出 64 位乘积并按指令取低/高位。  
+- DIV/REM：移位减法 32 拍，支持符号/无符号，结果按 RV32M 规范处理除零与溢出。  
+- 结果输出后 `m_stall` 解除，流水线继续。
+
+**Q51：为什么要把 `MUnit.v` include 进 `myCPU.v`？**  
+**A51：**  
+- Vivado 文件集未自动收录新增文件时，会报 `module 'MUnit' not found`。  
+- 临时解决方案是在 `myCPU.v` 顶部 `include "MUnit.v"`，保证综合能找到模块。  
+- 规范做法是把新文件加入 Vivado Sources 文件集。
+
+**Q52：BIOS 侧还做了哪些改动？**  
+**A52：**  
+- 增加 CP0 读写、向量表安装、异常入口处理、地址合法性检测。  
+- UART/Timer 中断在 BIOS 里进行清除。  
+- 键盘初始化时强制打开扫描使能（写 `0xFFFF_FC18` 的 bit2）。  
+- 关键位置：`examples/bios_v2.c`。
+
+**Q53：编译器与汇编器的适配改动有哪些？**  
+**A53：**  
+- **C 端简易预处理**：支持 `#define NAME VALUE`，并剥离行内注释，允许宏嵌套展开。  
+- **词法器**：支持 `0x` 十六进制字面量，并按 32 位有符号扩展。  
+- **代码生成**：支持取函数地址 `&func`（生成 `la`），避免被误判为未定义变量。  
+- 关键位置：`src/main.rs`、`src/lexer.rs`、`src/codegen.rs`。
+
+**Q54：当前最关键的“验收注意点”是什么？**  
+**A54：**  
+- 时序收敛必须基于“多周期 MUnit”，否则 WNS/TNS 极大负值不可控。  
+- 异常/中断打开后，要避免中断风暴（必要时在 BIOS 进入用户程序前屏蔽中断）。  
+- MMIO 必须 4 字节对齐访问，否则会触发对齐异常。
+
+---
+
+## 补充知识与代码级变更清单（按模块细分，方便验收追问）
+
+> 说明：以下内容覆盖我在本轮对 **2-bit BHT/BTB、异常/中断、BIOS、编译器、M 扩展多周期流水线** 的全部改动点，并给出文件位置，便于老师按报告追问、你按代码作答。
+
+### 1) 分支预测：2-bit BHT + BTB
+
+**Q55：BHT/BTB 分别放在什么位置？索引/Tag 是怎么取的？**  
+**A55：**  
+- **位置**：预测逻辑与表都在 `myCPU.v`。  
+- **索引**：`bht_idx = PC[BHT_BITS+1:2]`（按 4B 对齐取中间位）。  
+- **Tag**：`PC[31:BHT_BITS+2]`，用于 BTB 命中判断。  
+- **命中**：`btb_valid[idx] & (btb_tag[idx] == tag)`。
+
+**Q56：预测在流水线哪个阶段生效？对 IF/ID 做了什么处理？**  
+**A56：**  
+- 预测在 **ID 阶段**生效：`id_pred_taken`/`id_pred_target`。  
+- 若预测 taken，则 `pred_flush` 清 IF/ID，防止顺序路径指令进入 ID。
+
+**Q57：EX 阶段如何纠错？目标错与方向错分别怎么判？**  
+**A57：**  
+- 方向错：`EX_pred_taken != ex_taken`。  
+- 目标错：`EX_pred_taken & ex_taken & (EX_pred_target != ex_actual_target)`。  
+- 纠错：`control_hazard` 触发全局冲刷，PC 取 `pc_correct`。
+
+**Q58：BTB 的写入时机是什么？**  
+**A58：**  
+- EX 阶段真实控制流成立（分支 taken 或 JAL/JALR）时写入 `btb_valid/tag/target`。  
+- 分支方向由 EX 真实比较确定。
+
+**Q59：为什么需要 `pred_flush` 和 `control_hazard` 两条路径？**  
+**A59：**  
+- `pred_flush` 是**预测**时对 IF/ID 的轻量冲刷。  
+- `control_hazard` 是**真实纠错/异常/mret** 的全局冲刷。  
+- 预测正确只损失 1 条，预测错误损失 2 条。
+
+**代码位置**：  
+- `rvTest/rvTest.srcs/sources_1/new/myCPU.v`（BHT/BTB、预测/纠错）  
+- `rvTest/rvTest.srcs/sources_1/new/IF_ID.v`（新增 `pred_flush`）  
+- `rvTest/rvTest.srcs/sources_1/new/ID_EX.v`（携带预测信息）
+
+---
+
+### 2) 异常/中断：CP0 + 精确异常
+
+**Q60：异常/中断包含哪些类型？分别在哪级产生？**  
+**A60：**  
+- **EX 阶段**：illegal/ecall/ebreak/取指未对齐。  
+- **MEM 阶段**：load/store 未对齐、bus fault。  
+- **中断**：Timer/UART 由 CP0 接收 `irq_lines` 产生。
+
+**Q61：CP0 的 STATUS/CAUSE/EPC 语义是什么？**  
+**A61：**  
+- STATUS：`IE`（中断总使能）、`EXL`（异常级）、`IM[1:0]`（中断屏蔽）。  
+- CAUSE：异常或中断编号；中断统一以 `0x8000_0000 | code` 编码。  
+- EPC：异常指令地址（EX 或 MEM 的 PC）。
+
+**Q62：向量地址如何计算？**  
+**A62：**  
+- `vector = vector_base + (cause[7:0] << 2)`，每类异常/中断固定 4 字节入口。
+
+**Q63：为什么要做“精确异常”？**  
+**A63：**  
+- 确保异常指令及其后续指令不提交结果。  
+- 在 MEM 阶段异常时会屏蔽 `Bus_we` 与 `MEM_rf_we`，保证不写错数据。
+
+**Q64：中断风暴可能导致什么问题？如何规避？**  
+**A64：**  
+- 若 UART/Timer IRQ 持续拉高，会重复进异常入口，用户程序几乎停顿。  
+- BIOS 中在调用 `user_main` 前临时屏蔽中断（`CP0_STATUS=0`），用户返回后恢复。
+
+**代码位置**：  
+- `rvTest/rvTest.srcs/sources_1/new/CP0.v`  
+- `rvTest/rvTest.srcs/sources_1/new/myCPU.v`  
+- `rvTest/rvTest.srcs/sources_1/new/Bridge.v`（bus fault）  
+- `rvTest/rvTest.srcs/sources_1/new/UART.v`（UART irq）
+
+---
+
+### 3) BIOS：向量表 + 诊断 + 键盘适配
+
+**Q65：异常向量表如何生成？为什么放 PRAM？**  
+**A65：**  
+- BIOS 在 PRAM 末尾写 256 项向量表（每项 `jal x0, bios_exception_entry`）。  
+- `mret` 指令写在 `PRAM_MRET_ADDR`，通过间接调用返回。  
+- 放 PRAM 是因为 C 编译器难以保证 IROM 指定地址布局。
+
+**Q66：BIOS 的异常入口如何处理 Timer/UART？**  
+**A66：**  
+- Timer：写 `TIMER_IRQ_ADDR` 清中断。  
+- UART：读/清 RX_READY 或写 CTRL 清标志。  
+- 处理后执行 `mret` 返回。
+
+**Q67：为什么改了键盘状态寄存器地址？**  
+**A67：**  
+- 原状态地址 `0xFFFF_FC12` 非 4 字节对齐，开启对齐异常后会被 trap。  
+- 通过 **新增对齐别名 `0xFFFF_FC14`** 并在 BIOS 读取对齐地址解决。
+
+**Q68：为什么需要强制开启键盘扫描？**  
+**A68：**  
+- Keypad4x4 有 `scan_enable` 控制位（0xFC18 bit2）。  
+- BIOS 初始化显式写 `*key_ctrl = 4`，确保扫描启动。
+
+**代码位置**：  
+- `examples/bios_v2.c`（向量表、异常处理、键盘适配、屏蔽中断）  
+- `rvTest/rvTest.srcs/sources_1/new/Keypad4x4.v`（对齐别名寄存器）
+
+---
+
+### 4) RV32M：多周期流水线化（MUnit）
+
+**Q69：为什么要做多周期 MUnit？**  
+**A69：**  
+- 单拍组合 `mul/div/rem` 是时序最长路径，导致 WNS/TNS 极大负值。  
+- 改为多周期，流水线停顿等待结果，关键路径显著缩短。
+
+**Q70：MUnit 怎么工作？**  
+**A70：**  
+- **乘法**：32 拍移位累加，得到 64 位乘积后取低/高位。  
+- **除法/取模**：32 拍移位减法，支持有符号/无符号；除零/溢出按 RV32M 规范处理。
+
+**Q71：流水线怎么停顿？**  
+**A71：**  
+- `m_stall` 拉高时，PC/IF/ID/EX/MEM/WB 全部保持。  
+- EX 阶段直到 `m_done` 才写入 `ex_alu_c`，再继续流转。
+
+**Q72：ALU 里为什么移除了 M 运算？**  
+**A72：**  
+- 避免组合乘除成为关键路径。  
+- ALU 只保留常规 RV32I 运算，M 交给 MUnit。
+
+**Q73：为什么要 include `MUnit.v`？**  
+**A73：**  
+- Vivado 未自动把新文件加入 sources，导致 `module MUnit not found`。  
+- 在 `myCPU.v` 顶部 `include "MUnit.v"` 作为快速修复（规范做法是加入 Vivado 文件集）。
+
+**代码位置**：  
+- `rvTest/rvTest.srcs/sources_1/new/MUnit.v`  
+- `rvTest/rvTest.srcs/sources_1/new/ALU.v`  
+- `rvTest/rvTest.srcs/sources_1/new/myCPU.v`  
+- `rvTest/rvTest.srcs/sources_1/new/PC.v` / `IF_ID.v` / `ID_EX.v` / `EX_MEM.v` / `MEM_WB.v`
+
+---
+
+### 5) 编译器/汇编器的适配
+
+**Q74：为什么要在编译器里支持 `#define`？**  
+**A74：**  
+- BIOS 使用大量 `#define` 常量；原编译器不支持预处理导致解析失败。  
+- 新增轻量预处理支持 `#define NAME VALUE`，并去除行尾注释。
+
+**Q75：为什么要支持 0x 十六进制？**  
+**A75：**  
+- BIOS 大量使用 `0xFFFF_Fxxx` 常量；原 lexer 只支持十进制。  
+- 新增 0x 解析并按 32 位有符号扩展。
+
+**Q76：为什么要支持 `&func`？**  
+**A76：**  
+- BIOS 需要函数地址（向量表入口），原 codegen 将其当作未定义变量。  
+- 现在识别函数名并生成 `la a0, func`。
+
+**代码位置**：  
+- `src/main.rs`（预处理）  
+- `src/lexer.rs`（十六进制）  
+- `src/codegen.rs`（函数地址）
+
+---
+
+### 6) QA/验收关注点（老师常问）
+
+**Q77：若 WNS/TNS 仍为负，优先排查什么？**  
+**A77：**  
+- 是否仍有组合 `mul/div/rem` 路径进入关键路径（确认 ALU 已移除）。  
+- 是否 MUnit 的 `stall` 信号在综合后被优化错误。  
+- 是否 BHT/BTB/异常引入了长组合链（可以查看时序报告最长路径）。
+
+**Q78：功能正确但键盘无响应，优先排查什么？**  
+**A78：**  
+- 是否进入用户程序（UART 输出或 LED）。  
+- `scan_enable` 是否被置 1。  
+- 是否仍在读取非对齐地址（0xFC12）。
+
+**Q79：中断异常加入后，系统“能跑但不稳定”的常见原因？**  
+**A79：**  
+- 中断风暴（UART/Timer IRQ 不清除）。  
+- EX/MEM 异常掩码逻辑遗漏导致写回污染。  
+- 控制冒险冲刷与异常冲刷冲突。
+
+**Q80：如何证明 MUnit 正确性？**  
+**A80：**  
+- 在 BIOS/用户程序中加入简单乘/除/取模测试用例，观察 UART 输出。  
+- 用测试向量覆盖负数、除零、溢出边界。

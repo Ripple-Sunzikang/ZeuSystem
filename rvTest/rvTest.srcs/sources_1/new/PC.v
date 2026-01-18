@@ -6,6 +6,7 @@ module PC(
       input wire clk,
       input wire[31:0] din,
       input wire data_hazard,
+      input wire stall,
       input wire control_hazard,
       output reg[31:0] pc
     );
@@ -19,7 +20,7 @@ module PC(
         `endif
       end
       else if(control_hazard) pc<=din;// 控制冒险：采用NPC给出的跳转地址，优先级高于数据冒险
-      else if(data_hazard) pc<=pc;// 数据冒险暂停
+      else if(stall || data_hazard) pc<=pc;// 暂停取指
       else pc <= din;
     end
 

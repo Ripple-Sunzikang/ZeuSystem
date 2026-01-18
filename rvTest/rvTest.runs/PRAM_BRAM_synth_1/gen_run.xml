@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenRun Id="PRAM_BRAM_synth_1" LaunchPart="xc7a100tfgg484-1" LaunchTime="1767780492">
-  <File Type="RDS-UTIL" Name="PRAM_BRAM_utilization_synth.rpt"/>
   <File Type="RDS-UTIL-PB" Name="PRAM_BRAM_utilization_synth.pb"/>
+  <File Type="RDS-UTIL" Name="PRAM_BRAM_utilization_synth.rpt"/>
   <File Type="RDS-RDS" Name="PRAM_BRAM.vds"/>
   <File Type="RDS-DCP" Name="PRAM_BRAM.dcp"/>
   <File Type="PA-TCL" Name="PRAM_BRAM.tcl"/>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="synth_1" LaunchPart="xc7a100tfgg484-1" LaunchTime="1768765165">
+<GenRun Id="synth_1" LaunchPart="xc7a100tfgg484-1" LaunchTime="1768767114">
   <File Type="VDS-TIMING-PB" Name="miniRV_SoC_timing_summary_synth.pb"/>
   <File Type="VDS-TIMINGSUMMARY" Name="miniRV_SoC_timing_summary_synth.rpt"/>
   <File Type="RDS-DCP" Name="miniRV_SoC.dcp"/>

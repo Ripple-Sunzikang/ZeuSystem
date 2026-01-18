@@ -2,6 +2,7 @@
 module EX_MEM(
   input wire clk,
   input wire rst,
+  input wire stall,
   
   input wire EX_ram_we,
   input wire EX_rf_we,
@@ -24,41 +25,49 @@ module EX_MEM(
 
 always @(posedge clk or posedge rst) begin
   if(rst) MEM_ram_we <= 0;
+  else if(stall) MEM_ram_we <= MEM_ram_we;
   else MEM_ram_we <= EX_ram_we;
 end
 
 always @(posedge clk or posedge rst) begin
   if(rst) MEM_rf_we <= 0;
+  else if(stall) MEM_rf_we <= MEM_rf_we;
   else MEM_rf_we <= EX_rf_we;
 end
 
 always @(posedge clk or posedge rst) begin
   if(rst) MEM_rf_wsel <= 0;
+  else if(stall) MEM_rf_wsel <= MEM_rf_wsel;
   else MEM_rf_wsel <= EX_rf_wsel;
 end
 
 always @(posedge clk or posedge rst) begin
   if(rst) MEM_wR <= 0;
+  else if(stall) MEM_wR <= MEM_wR;
   else MEM_wR <= EX_wR;
 end
 
 always @(posedge clk or posedge rst) begin
   if(rst) MEM_pc4 <= 0;
+  else if(stall) MEM_pc4 <= MEM_pc4;
   else MEM_pc4 <= EX_pc4;
 end
 
 always @(posedge clk or posedge rst) begin
   if(rst) MEM_alu_c <= 0;
+  else if(stall) MEM_alu_c <= MEM_alu_c;
   else MEM_alu_c <= EX_alu_c;
 end
 
 always @(posedge clk or posedge rst) begin
   if(rst) MEM_rD2 <= 0;
+  else if(stall) MEM_rD2 <= MEM_rD2;
   else MEM_rD2 <= EX_rD2;
 end
 
 always @(posedge clk or posedge rst) begin
   if(rst) MEM_ext <= 0;
+  else if(stall) MEM_ext <= MEM_ext;
   else MEM_ext <= EX_ext;
 end
 

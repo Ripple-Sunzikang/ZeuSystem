@@ -1,6 +1,7 @@
     `timescale 1ns / 1ps
 
     `include "defines.vh"
+    `include "MUnit.v"
 
     module myCPU (
         input  wire         cpu_rst,
@@ -186,12 +187,21 @@
     wire trap_ecall;
     wire trap_ebreak;
     wire trap_inst_misaligned;
+    wire ex_is_m;
+    wire m_busy;
+    wire m_done;
+    wire m_start;
+    wire m_stall;
+    wire [31:0] m_result;
+    reg  m_inflight;
+    wire [31:0] ex_alu_c;
 
     PC PC_0(
     .rst(cpu_rst),
     .clk(cpu_clk),
     .din(pc_next),
     .data_hazard(data_hazard),
+    .stall(m_stall),
     .control_hazard(control_hazard),
     .pc(pc)
     );//
@@ -286,6 +296,7 @@
     .IF_inst(inst),
     .IF_pc4(pc4),
     .data_hazard(data_hazard),
+    .stall(m_stall),
     .control_hazard(control_hazard),  // EX阶段纠错/异常冲刷
     .pred_flush(pred_flush),
     .ID_inst(ID_inst),
@@ -374,7 +385,8 @@
     .EX_pred_target(EX_pred_target),
 
     .control_hazard(control_hazard),// 两种冒险共用同一清空逻辑
-    .data_hazard(data_hazard)
+    .data_hazard(data_hazard),
+    .stall(m_stall)
     );//
 
     ALU ALU_0(
@@ -387,16 +399,51 @@
     .br(alu_f)
     );//
 
+    MUnit MUnit_0(
+    .clk(cpu_clk),
+    .rst(cpu_rst),
+    .start(m_start),
+    .op(EX_alu_op),
+    .a(EX_rD1),
+    .b((EX_alub_sel == `ALU_Data_Imm) ? EX_ext : EX_rD2),
+    .result(m_result),
+    .busy(m_busy),
+    .done(m_done)
+    );//
+
+    assign ex_is_m = (EX_alu_op == `ALU_MUL)  | (EX_alu_op == `ALU_MULH) |
+                     (EX_alu_op == `ALU_MULHSU) | (EX_alu_op == `ALU_MULHU) |
+                     (EX_alu_op == `ALU_DIV) | (EX_alu_op == `ALU_DIVU) |
+                     (EX_alu_op == `ALU_REM) | (EX_alu_op == `ALU_REMU);
+
+    assign m_start = ex_is_m & ~m_busy & ~m_inflight;
+    assign m_stall = ex_is_m & ~m_done;
+
+    always @(posedge cpu_clk or posedge cpu_rst) begin
+        if (cpu_rst) begin
+            m_inflight <= 1'b0;
+        end else if (control_hazard) begin
+            m_inflight <= 1'b0;
+        end else if (m_start) begin
+            m_inflight <= 1'b1;
+        end else if (m_done) begin
+            m_inflight <= 1'b0;
+        end
+    end
+
+    assign ex_alu_c = ex_is_m ? m_result : alu_c;
+
     EX_MEM U_EX_MEM(
     .clk(cpu_clk),
     .rst(cpu_rst),
+    .stall(m_stall),
 
     .EX_ram_we(EX_ram_we & ~trap_taken & ~EX_mret),
     .EX_rf_we(EX_rf_we & ~trap_taken & ~EX_mret),
     .EX_rf_wsel(EX_rf_wsel),
     .EX_wR(EX_wR),
     .EX_pc4(EX_pc4),
-    .EX_alu_c(alu_c),
+    .EX_alu_c(ex_alu_c),
     .EX_rD2(EX_rD2),
     .EX_ext(EX_ext),
 
@@ -413,7 +460,7 @@
     // DRAM 部分
     assign Bus_addr = MEM_alu_c; 
     assign rd = Bus_rdata;    // lw 读取
-    assign Bus_we = MEM_ram_we & ~mem_trap_taken; // sw 写存储
+    assign Bus_we = MEM_ram_we & ~mem_trap_taken & ~m_stall; // sw 写存储
     assign Bus_wdata = MEM_rD2;   // sw 数据
 
     wire MEM_rf_we_masked = MEM_rf_we & ~mem_trap_taken;
@@ -421,6 +468,7 @@
     MEM_WB U_MEM_WB(
     .clk(cpu_clk),
     .rst(cpu_rst),
+    .stall(m_stall),
     
     .MEM_rf_we(MEM_rf_we_masked),
     .MEM_rf_wsel(MEM_rf_wsel),
@@ -451,7 +499,7 @@
     .EX_rf_wsel(EX_rf_wsel),
     .EX_pc4(EX_pc4),
     .EX_ext(EX_ext),
-    .EX_alu_c(alu_c),
+    .EX_alu_c(ex_alu_c),
 
     .MEM_wR(MEM_wR),
     .MEM_rf_we(MEM_rf_we),
