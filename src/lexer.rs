@@ -186,6 +186,26 @@ impl<'a> Lexer<'a> {
 
     fn read_number(&mut self) -> i64 {
         let mut num_str = String::new();
+
+        if self.current_char == Some('0') {
+            if let Some(next) = self.peek() {
+                if next == 'x' || next == 'X' {
+                    self.advance(); // consume '0'
+                    self.advance(); // consume 'x'
+                    while let Some(ch) = self.current_char {
+                        if ch.is_ascii_hexdigit() {
+                            num_str.push(ch);
+                            self.advance();
+                        } else {
+                            break;
+                        }
+                    }
+                    let val = u32::from_str_radix(&num_str, 16).unwrap_or(0);
+                    return (val as i32) as i64;
+                }
+            }
+        }
+
         while let Some(ch) = self.current_char {
             if ch.is_ascii_digit() {
                 num_str.push(ch);

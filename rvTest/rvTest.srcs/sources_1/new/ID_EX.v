@@ -6,7 +6,7 @@ module ID_EX(
   input wire[2:0] ID_npc_op,
   input wire ID_ram_we,
   input wire[3:0] ID_alu_op,
-  input wire[2:0]ID_alub_sel,
+  input wire[2:0] ID_alub_sel,
   input wire ID_rf_we,
   input wire[2:0] ID_rf_wsel,
   input wire[4:0] ID_wR,
@@ -16,11 +16,15 @@ module ID_EX(
   input wire[31:0] ID_ext,
   input wire ID_illegal,
   input wire ID_mret,
+  input wire ID_ecall,
+  input wire ID_ebreak,
+  input wire ID_pred_taken,
+  input wire[31:0] ID_pred_target,
 
   output reg[2:0] EX_npc_op,
   output reg EX_ram_we,
   output reg[3:0] EX_alu_op,
-  output reg[2:0]EX_alub_sel,
+  output reg[2:0] EX_alub_sel,
   output reg EX_rf_we,
   output reg[2:0] EX_rf_wsel,
   output reg[4:0] EX_wR,
@@ -30,87 +34,115 @@ module ID_EX(
   output reg[31:0] EX_ext,
   output reg EX_illegal,
   output reg EX_mret,
+  output reg EX_ecall,
+  output reg EX_ebreak,
+  output reg EX_pred_taken,
+  output reg[31:0] EX_pred_target,
 
-  input wire control_hazard,// 两种冒险共用同一清空逻辑
+  input wire control_hazard,// EX阶段纠错/异常的全局冲刷
   input wire data_hazard
 );
 
 always @(posedge clk or posedge rst) begin
-  if(rst) EX_npc_op<=0;
-  else if(control_hazard | data_hazard) EX_npc_op<=0;
+  if(rst) EX_npc_op <= 0;
+  else if(control_hazard | data_hazard) EX_npc_op <= 0;
   else EX_npc_op <= ID_npc_op;
 end
 
 always @(posedge clk or posedge rst) begin
-  if(rst) EX_ram_we<=0;
-  else if(control_hazard | data_hazard) EX_ram_we<=0;
+  if(rst) EX_ram_we <= 0;
+  else if(control_hazard | data_hazard) EX_ram_we <= 0;
   else EX_ram_we <= ID_ram_we;
 end
 
 always @(posedge clk or posedge rst) begin
-  if(rst) EX_alu_op<=0;
-  else if(control_hazard | data_hazard) EX_alu_op<=0;
+  if(rst) EX_alu_op <= 0;
+  else if(control_hazard | data_hazard) EX_alu_op <= 0;
   else EX_alu_op <= ID_alu_op;
 end
 
 always @(posedge clk or posedge rst) begin
-  if(rst) EX_alub_sel<=0;
-  else if(control_hazard | data_hazard) EX_alub_sel<=0;
+  if(rst) EX_alub_sel <= 0;
+  else if(control_hazard | data_hazard) EX_alub_sel <= 0;
   else EX_alub_sel <= ID_alub_sel;
 end
 
 always @(posedge clk or posedge rst) begin
-  if(rst) EX_rf_we<=0;
-  else if(control_hazard | data_hazard) EX_rf_we<=0;
+  if(rst) EX_rf_we <= 0;
+  else if(control_hazard | data_hazard) EX_rf_we <= 0;
   else EX_rf_we <= ID_rf_we;
 end
 
 always @(posedge clk or posedge rst) begin
-  if(rst) EX_rf_wsel<=0;
-  else if(control_hazard | data_hazard) EX_rf_wsel<=0;
+  if(rst) EX_rf_wsel <= 0;
+  else if(control_hazard | data_hazard) EX_rf_wsel <= 0;
   else EX_rf_wsel <= ID_rf_wsel;
 end
 
 always @(posedge clk or posedge rst) begin
-  if(rst) EX_wR<=0;
-  else if(control_hazard | data_hazard) EX_wR<=0;
+  if(rst) EX_wR <= 0;
+  else if(control_hazard | data_hazard) EX_wR <= 0;
   else EX_wR <= ID_wR;
 end
 
 always @(posedge clk or posedge rst) begin
-  if(rst) EX_pc4<=0;
-  else if(control_hazard | data_hazard) EX_pc4<=0;
+  if(rst) EX_pc4 <= 0;
+  else if(control_hazard | data_hazard) EX_pc4 <= 0;
   else EX_pc4 <= ID_pc4;
 end
 
 always @(posedge clk or posedge rst) begin
-  if(rst) EX_rD1<=0;
-  else if(control_hazard | data_hazard) EX_rD1<=0;
+  if(rst) EX_rD1 <= 0;
+  else if(control_hazard | data_hazard) EX_rD1 <= 0;
   else EX_rD1 <= ID_rD1;
 end
 
 always @(posedge clk or posedge rst) begin
-  if(rst) EX_rD2<=0;
-  else if(control_hazard | data_hazard) EX_rD2<=0;
+  if(rst) EX_rD2 <= 0;
+  else if(control_hazard | data_hazard) EX_rD2 <= 0;
   else EX_rD2 <= ID_rD2;
 end
 
 always @(posedge clk or posedge rst) begin
-  if(rst) EX_ext<=0;
-  else if(control_hazard | data_hazard) EX_ext<=0;
+  if(rst) EX_ext <= 0;
+  else if(control_hazard | data_hazard) EX_ext <= 0;
   else EX_ext <= ID_ext;
 end
 
 always @(posedge clk or posedge rst) begin
-  if(rst) EX_illegal<=0;
-  else if(control_hazard | data_hazard) EX_illegal<=0;
+  if(rst) EX_illegal <= 0;
+  else if(control_hazard | data_hazard) EX_illegal <= 0;
   else EX_illegal <= ID_illegal;
 end
 
 always @(posedge clk or posedge rst) begin
-  if(rst) EX_mret<=0;
-  else if(control_hazard | data_hazard) EX_mret<=0;
+  if(rst) EX_mret <= 0;
+  else if(control_hazard | data_hazard) EX_mret <= 0;
   else EX_mret <= ID_mret;
+end
+
+always @(posedge clk or posedge rst) begin
+  if(rst) EX_ecall <= 0;
+  else if(control_hazard | data_hazard) EX_ecall <= 0;
+  else EX_ecall <= ID_ecall;
+end
+
+always @(posedge clk or posedge rst) begin
+  if(rst) EX_ebreak <= 0;
+  else if(control_hazard | data_hazard) EX_ebreak <= 0;
+  else EX_ebreak <= ID_ebreak;
+end
+
+always @(posedge clk or posedge rst) begin
+  if(rst) EX_pred_taken <= 0;
+  else if(control_hazard | data_hazard) EX_pred_taken <= 0;
+  else EX_pred_taken <= ID_pred_taken;
+end
+
+always @(posedge clk or posedge rst) begin
+  if(rst) EX_pred_target <= 0;
+  else if(control_hazard | data_hazard) EX_pred_target <= 0;
+  else EX_pred_target <= ID_pred_target;
 end
 
 endmodule

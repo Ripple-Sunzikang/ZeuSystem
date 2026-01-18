@@ -1,0 +1,19 @@
+#-----------------------------------------------------------
+# Vivado v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Mon Jan 19 02:35:10 2026
+# Process ID: 11070
+# Current directory: /home/vessel/SEU-RISCV-CPU
+# Command line: vivado
+# Log file: /home/vessel/SEU-RISCV-CPU/vivado.log
+# Journal file: /home/vessel/SEU-RISCV-CPU/vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project /home/vessel/RISC-V/RISC-V.xpr
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/opt/Xilinx/Vivado/2017.4/data/ip'.
+update_compile_order -fileset sources_1

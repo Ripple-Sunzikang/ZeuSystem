@@ -10,6 +10,7 @@ module Bridge (
     input  wire         we_from_cpu,
     input  wire [31:0]  wdata_from_cpu,
     output reg  [31:0]  rdata_to_cpu,
+    output wire         bus_fault,
     
     // DRAM 接口
     // output wire         rst_to_dram,
@@ -133,6 +134,7 @@ module Bridge (
                                access_wdt,
                                access_uart,
                                access_cp0 };
+    wire access_none = ~(|access_bit);
 
     // DRAM
     // assign rst_to_dram  = rst_from_cpu;
@@ -232,5 +234,6 @@ module Bridge (
             default:  rdata_to_cpu = 32'hFFFF_FFFF;
         endcase
     end
+    assign bus_fault = access_none;
 
 endmodule

@@ -39,7 +39,6 @@ read_verilog -library xil_defaultlib {
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Bridge.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Button.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/CP0.v
-  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Control_Hazard_Detection.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Data_Hazard_Detection.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Digital_LED.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/EX_MEM.v
@@ -48,7 +47,6 @@ read_verilog -library xil_defaultlib {
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/Keypad4x4.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/LED.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/MEM_WB.v
-  /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/NPC.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PC.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PRAM_Wrapper.v
   /home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sources_1/new/PWM.v

@@ -1,12 +1,121 @@
+fn bios_cp0_write(addr, value)
+{
+  p = addr
+  *p = value
+}
+
+fn bios_cp0_read(addr)
+{
+  p = addr
+  %t0 = *p
+  return %t0
+}
+
+fn bios_encode_jal(pc, target)
+{
+  %t0 = target - pc
+  offset = %t0
+  imm = offset
+  inst = 0
+  %t1 = imm >> 20
+  %t2 = %t1 & 1
+  %t3 = %t2 << 31
+  %t4 = inst | %t3
+  inst = %t4
+  %t5 = imm >> 1
+  %t6 = %t5 & 1023
+  %t7 = %t6 << 21
+  %t8 = inst | %t7
+  inst = %t8
+  %t9 = imm >> 11
+  %t10 = %t9 & 1
+  %t11 = %t10 << 20
+  %t12 = inst | %t11
+  inst = %t12
+  %t13 = imm >> 12
+  %t14 = %t13 & 255
+  %t15 = %t14 << 12
+  %t16 = inst | %t15
+  inst = %t16
+  %t17 = 0 << 7
+  %t18 = inst | %t17
+  inst = %t18
+  %t19 = inst | 111
+  inst = %t19
+  return inst
+}
+
+fn bios_mret()
+{
+  %t0 = 4096 - 256
+  %t1 = %t0 * 4
+  %t2 = 65536 + %t1
+  %t3 = %t2 - 4
+  call *%t3()
+}
+
+fn bios_addr_check(addr, size, is_write)
+{
+  aligned = 1
+  %t0 = size == 4
+  %t1 = addr & 3
+  %t2 = %t0 && %t1
+  ifz %t2 goto if_else_0
+  aligned = 0
+  goto if_end_1
+  if_else_0:
+  if_end_1:
+  %t3 = size == 2
+  %t4 = addr & 1
+  %t5 = %t3 && %t4
+  ifz %t5 goto if_else_2
+  aligned = 0
+  goto if_end_3
+  if_else_2:
+  if_end_3:
+  %t6 = !aligned
+  ifz %t6 goto if_else_4
+  %t7 = -1
+  return %t7
+  goto if_end_5
+  if_else_4:
+  if_end_5:
+  %t8 = addr >= 0
+  %t9 = addr <= 65535
+  %t10 = %t8 && %t9
+  %t11 = addr >= 65536
+  %t12 = addr <= 131071
+  %t13 = %t11 && %t12
+  %t14 = %t10 || %t13
+  %t15 = addr >= -1024
+  %t16 = addr <= -705
+  %t17 = %t15 && %t16
+  %t18 = %t14 || %t17
+  ifz %t18 goto if_else_6
+  return 0
+  goto if_end_7
+  if_else_6:
+  if_end_7:
+  ifz is_write goto ternary_else_8
+  %t20 = -3
+  %t19 = %t20
+  goto ternary_end_9
+  ternary_else_8:
+  %t21 = -2
+  %t19 = %t21
+  ternary_end_9:
+  return %t19
+}
+
 fn bios_delay(count)
 {
-  while_0:
+  while_10:
   %t0 = count > 0
-  ifz %t0 goto while_end_1
+  ifz %t0 goto while_end_11
   %t1 = count - 1
   count = %t1
-  goto while_0
-  while_end_1:
+  goto while_10
+  while_end_11:
 }
 
 fn bios_buzzer_on()
@@ -73,30 +182,30 @@ fn bios_uart_putc(c)
   %t1 = -956
   uart_status = %t1
   timeout = 0
-  for_2:
+  for_12:
   %t2 = timeout < 1000000
-  ifz %t2 goto for_end_4
+  ifz %t2 goto for_end_14
   %t3 = *uart_status
   %t4 = %t3 & 1
   %t5 = %t4 == 0
-  ifz %t5 goto if_else_5
-  goto for_end_4
-  goto if_end_6
-  if_else_5:
-  if_end_6:
-  for_continue_3:
+  ifz %t5 goto if_else_15
+  goto for_end_14
+  goto if_end_16
+  if_else_15:
+  if_end_16:
+  for_continue_13:
   %t6 = timeout + 1
   timeout = %t6
-  goto for_2
-  for_end_4:
+  goto for_12
+  for_end_14:
   *uart_data = c
 }
 
 fn bios_uart_puts(str)
 {
   addr = str
-  while_7:
-  ifz 1 goto while_end_8
+  while_17:
+  ifz 1 goto while_end_18
   %t0 = addr & 3
   offset = %t0
   %t1 = offset << 3
@@ -110,50 +219,50 @@ fn bios_uart_puts(str)
   %t5 = %t4 & 255
   byte = %t5
   %t6 = byte == 0
-  ifz %t6 goto if_else_9
+  ifz %t6 goto if_else_19
   return
-  goto if_end_10
-  if_else_9:
-  if_end_10:
+  goto if_end_20
+  if_else_19:
+  if_end_20:
   call bios_uart_putc(byte)
   %t7 = addr + offset
   %t8 = %t7 + 1
   addr = %t8
-  goto while_7
-  while_end_8:
+  goto while_17
+  while_end_18:
 }
 
 fn bios_uart_putnum(num)
 {
   %t0 = num == 0
-  ifz %t0 goto if_else_11
+  ifz %t0 goto if_else_21
   call bios_uart_putc(48)
   return
-  goto if_end_12
-  if_else_11:
-  if_end_12:
+  goto if_end_22
+  if_else_21:
+  if_end_22:
   neg = 0
   %t1 = num < 0
-  ifz %t1 goto if_else_13
+  ifz %t1 goto if_else_23
   neg = 1
   %t2 = 0 - num
   num = %t2
-  goto if_end_14
-  if_else_13:
-  if_end_14:
+  goto if_end_24
+  if_else_23:
+  if_end_24:
   i = 0
   temp = num
-  while_15:
+  while_25:
   %t3 = temp > 0
-  ifz %t3 goto while_end_16
+  ifz %t3 goto while_end_26
   digit = temp
-  while_17:
+  while_27:
   %t4 = digit >= 10
-  ifz %t4 goto while_end_18
+  ifz %t4 goto while_end_28
   %t5 = digit - 10
   digit = %t5
-  goto while_17
-  while_end_18:
+  goto while_27
+  while_end_28:
   %t6 = 48 + digit
   %t7 = i * 4
   %t8 = buf + %t7
@@ -163,34 +272,34 @@ fn bios_uart_putnum(num)
   %t10 = temp - digit
   temp = %t10
   q = 0
-  while_19:
+  while_29:
   %t11 = temp >= 10
-  ifz %t11 goto while_end_20
+  ifz %t11 goto while_end_30
   %t12 = temp - 10
   temp = %t12
   %t13 = q + 1
   q = %t13
-  goto while_19
-  while_end_20:
+  goto while_29
+  while_end_30:
   temp = q
-  goto while_15
-  while_end_16:
-  ifz neg goto if_else_21
+  goto while_25
+  while_end_26:
+  ifz neg goto if_else_31
   call bios_uart_putc(45)
-  goto if_end_22
-  if_else_21:
-  if_end_22:
-  while_23:
+  goto if_end_32
+  if_else_31:
+  if_end_32:
+  while_33:
   %t14 = i > 0
-  ifz %t14 goto while_end_24
+  ifz %t14 goto while_end_34
   %t15 = i - 1
   i = %t15
   %t16 = i * 4
   %t17 = buf + %t16
   %t18 = *%t17
   call bios_uart_putc(%t18)
-  goto while_23
-  while_end_24:
+  goto while_33
+  while_end_34:
 }
 
 fn bios_uart_puthex(num)
@@ -245,9 +354,9 @@ fn bios_uart_puthex(num)
   *%t31 = 70
   call bios_uart_puts(.str0)
   i = 28
-  while_25:
+  while_35:
   %t32 = i >= 0
-  ifz %t32 goto while_end_26
+  ifz %t32 goto while_end_36
   %t33 = num >> i
   %t34 = %t33 & 15
   digit = %t34
@@ -257,8 +366,8 @@ fn bios_uart_puthex(num)
   call bios_uart_putc(%t37)
   %t38 = i - 4
   i = %t38
-  goto while_25
-  while_end_26:
+  goto while_35
+  while_end_36:
 }
 
 fn bios_uart_getc()
@@ -269,13 +378,13 @@ fn bios_uart_getc()
   uart_status = %t1
   %t2 = -952
   uart_ctrl = %t2
-  while_27:
+  while_37:
   %t3 = *uart_status
   %t4 = %t3 & 2
   %t5 = !%t4
-  ifz %t5 goto while_end_28
-  goto while_27
-  while_end_28:
+  ifz %t5 goto while_end_38
+  goto while_37
+  while_end_38:
   %t6 = *uart_data
   c = %t6
   *uart_ctrl = 1
@@ -288,12 +397,12 @@ fn bios_uart_available()
   uart_status = %t0
   %t2 = *uart_status
   %t3 = %t2 & 2
-  ifz %t3 goto ternary_else_29
+  ifz %t3 goto ternary_else_39
   %t1 = 1
-  goto ternary_end_30
-  ternary_else_29:
+  goto ternary_end_40
+  ternary_else_39:
   %t1 = 0
-  ternary_end_30:
+  ternary_end_40:
   return %t1
 }
 
@@ -303,32 +412,32 @@ fn bios_display_bcd(value)
   seg = %t0
   is_neg = 0
   %t1 = value < 0
-  ifz %t1 goto if_else_31
+  ifz %t1 goto if_else_41
   %t2 = 0 - value
   temp = %t2
   is_neg = 1
-  goto if_end_32
-  if_else_31:
+  goto if_end_42
+  if_else_41:
   temp = value
-  if_end_32:
+  if_end_42:
   %t3 = temp == 0
-  ifz %t3 goto if_else_33
+  ifz %t3 goto if_else_43
   *seg = 0
-  goto if_end_34
-  if_else_33:
+  goto if_end_44
+  if_else_43:
   bcd = 0
   shift = 0
-  while_35:
+  while_45:
   %t4 = temp > 0
-  ifz %t4 goto while_end_36
+  ifz %t4 goto while_end_46
   digit = temp
-  while_37:
+  while_47:
   %t5 = digit >= 10
-  ifz %t5 goto while_end_38
+  ifz %t5 goto while_end_48
   %t6 = digit - 10
   digit = %t6
-  goto while_37
-  while_end_38:
+  goto while_47
+  while_end_48:
   %t7 = digit << shift
   %t8 = bcd | %t7
   bcd = %t8
@@ -337,28 +446,28 @@ fn bios_display_bcd(value)
   quotient = 0
   %t10 = temp - digit
   temp = %t10
-  while_39:
+  while_49:
   %t11 = temp >= 10
-  ifz %t11 goto while_end_40
+  ifz %t11 goto while_end_50
   %t12 = temp - 10
   temp = %t12
   %t13 = quotient + 1
   quotient = %t13
-  goto while_39
-  while_end_40:
+  goto while_49
+  while_end_50:
   temp = quotient
-  goto while_35
-  while_end_36:
+  goto while_45
+  while_end_46:
   %t14 = is_neg != 0
-  ifz %t14 goto if_else_41
+  ifz %t14 goto if_else_51
   %t15 = 10 << shift
   %t16 = bcd | %t15
   bcd = %t16
-  goto if_end_42
-  if_else_41:
-  if_end_42:
+  goto if_end_52
+  if_else_51:
+  if_end_52:
   *seg = bcd
-  if_end_34:
+  if_end_44:
 }
 
 fn bios_led_write(value)
@@ -372,7 +481,7 @@ fn bios_key_read()
 {
   %t0 = -1008
   key = %t0
-  %t1 = -1006
+  %t1 = -1004
   status = %t1
   prev_mem = 32752
   %t2 = *status
@@ -382,31 +491,31 @@ fn bios_key_read()
   %t4 = *prev_mem
   prev_pressed = %t4
   %t5 = pressed != 0
-  ifz %t5 goto if_else_43
+  ifz %t5 goto if_else_53
   %t6 = prev_pressed == 0
-  ifz %t6 goto if_else_45
+  ifz %t6 goto if_else_55
   %t7 = *key
   key_word = %t7
-  while_47:
+  while_57:
   %t8 = -1
   %t9 = key_word == %t8
-  ifz %t9 goto while_end_48
+  ifz %t9 goto while_end_58
   %t10 = *key
   key_word = %t10
-  goto while_47
-  while_end_48:
+  goto while_57
+  while_end_58:
   %t11 = key_word & 15
   key_val = %t11
   *key = 0
   *prev_mem = 1
   return key_val
-  goto if_end_46
-  if_else_45:
-  if_end_46:
-  goto if_end_44
-  if_else_43:
+  goto if_end_56
+  if_else_55:
+  if_end_56:
+  goto if_end_54
+  if_else_53:
   *prev_mem = 0
-  if_end_44:
+  if_end_54:
   %t12 = -1
   return %t12
 }
@@ -415,8 +524,11 @@ fn bios_key_init()
 {
   %t0 = -1008
   key = %t0
+  %t1 = -1000
+  key_ctrl = %t1
   prev_mem = 32752
   *key = 0
+  *key_ctrl = 4
   *prev_mem = 0
 }
 
@@ -435,143 +547,143 @@ fn bios_multiply(x, y)
   res = 0
   a = x
   b = y
-  while_49:
+  while_59:
   %t0 = b != 0
-  ifz %t0 goto while_end_50
+  ifz %t0 goto while_end_60
   %t1 = b & 1
   %t2 = %t1 != 0
-  ifz %t2 goto if_else_51
+  ifz %t2 goto if_else_61
   %t3 = res + a
   res = %t3
-  goto if_end_52
-  if_else_51:
-  if_end_52:
+  goto if_end_62
+  if_else_61:
+  if_end_62:
   %t4 = a << 1
   a = %t4
   %t5 = b >> 1
   b = %t5
-  goto while_49
-  while_end_50:
+  goto while_59
+  while_end_60:
   return res
 }
 
 fn bios_divide(x, y)
 {
   %t0 = y == 0
-  ifz %t0 goto if_else_53
+  ifz %t0 goto if_else_63
   return 0
-  goto if_end_54
-  if_else_53:
-  if_end_54:
+  goto if_end_64
+  if_else_63:
+  if_end_64:
   sign = 1
   %t1 = x < 0
-  ifz %t1 goto if_else_55
+  ifz %t1 goto if_else_65
   %t2 = -x
   x = %t2
   %t3 = -sign
   sign = %t3
-  goto if_end_56
-  if_else_55:
-  if_end_56:
+  goto if_end_66
+  if_else_65:
+  if_end_66:
   %t4 = y < 0
-  ifz %t4 goto if_else_57
+  ifz %t4 goto if_else_67
   %t5 = -y
   y = %t5
   %t6 = -sign
   sign = %t6
-  goto if_end_58
-  if_else_57:
-  if_end_58:
+  goto if_end_68
+  if_else_67:
+  if_end_68:
   quotient = 0
   remainder = 0
   i = 31
-  for_59:
+  for_69:
   %t7 = i >= 0
-  ifz %t7 goto for_end_61
+  ifz %t7 goto for_end_71
   %t8 = remainder << 1
   %t9 = x >> i
   %t10 = %t9 & 1
   %t11 = %t8 | %t10
   remainder = %t11
   %t12 = remainder >= y
-  ifz %t12 goto if_else_62
+  ifz %t12 goto if_else_72
   %t13 = remainder - y
   remainder = %t13
   %t14 = 1 << i
   %t15 = quotient | %t14
   quotient = %t15
-  goto if_end_63
-  if_else_62:
-  if_end_63:
-  for_continue_60:
+  goto if_end_73
+  if_else_72:
+  if_end_73:
+  for_continue_70:
   %t16 = i - 1
   i = %t16
-  goto for_59
-  for_end_61:
+  goto for_69
+  for_end_71:
   %t17 = sign < 0
-  ifz %t17 goto if_else_64
+  ifz %t17 goto if_else_74
   %t18 = -quotient
   return %t18
-  goto if_end_65
-  if_else_64:
-  if_end_65:
+  goto if_end_75
+  if_else_74:
+  if_end_75:
   return quotient
 }
 
 fn bios_modulo(x, y)
 {
   %t0 = y == 0
-  ifz %t0 goto if_else_66
+  ifz %t0 goto if_else_76
   return 0
-  goto if_end_67
-  if_else_66:
-  if_end_67:
+  goto if_end_77
+  if_else_76:
+  if_end_77:
   sign = 1
   %t1 = x < 0
-  ifz %t1 goto if_else_68
+  ifz %t1 goto if_else_78
   %t2 = -x
   x = %t2
   %t3 = -1
   sign = %t3
-  goto if_end_69
-  if_else_68:
-  if_end_69:
+  goto if_end_79
+  if_else_78:
+  if_end_79:
   %t4 = y < 0
-  ifz %t4 goto if_else_70
+  ifz %t4 goto if_else_80
   %t5 = -y
   y = %t5
-  goto if_end_71
-  if_else_70:
-  if_end_71:
+  goto if_end_81
+  if_else_80:
+  if_end_81:
   remainder = 0
   i = 31
-  for_72:
+  for_82:
   %t6 = i >= 0
-  ifz %t6 goto for_end_74
+  ifz %t6 goto for_end_84
   %t7 = remainder << 1
   %t8 = x >> i
   %t9 = %t8 & 1
   %t10 = %t7 | %t9
   remainder = %t10
   %t11 = remainder >= y
-  ifz %t11 goto if_else_75
+  ifz %t11 goto if_else_85
   %t12 = remainder - y
   remainder = %t12
-  goto if_end_76
-  if_else_75:
-  if_end_76:
-  for_continue_73:
+  goto if_end_86
+  if_else_85:
+  if_end_86:
+  for_continue_83:
   %t13 = i - 1
   i = %t13
-  goto for_72
-  for_end_74:
+  goto for_82
+  for_end_84:
   %t14 = sign < 0
-  ifz %t14 goto if_else_77
+  ifz %t14 goto if_else_87
   %t15 = -remainder
   return %t15
-  goto if_end_78
-  if_else_77:
-  if_end_78:
+  goto if_end_88
+  if_else_87:
+  if_end_88:
   return remainder
 }
 
@@ -595,6 +707,106 @@ fn bios_pram_read(addr)
   ptr = addr
   %t0 = *ptr
   return %t0
+}
+
+fn bios_install_vectors()
+{
+  %t0 = 4096 - 256
+  %t1 = %t0 * 4
+  %t2 = 65536 + %t1
+  %t3 = %t2 - 4
+  call bios_pram_write(%t3, 807403635)
+  %t4 = &bios_exception_entry
+  handler = %t4
+  i = 0
+  while_89:
+  %t5 = i < 256
+  ifz %t5 goto while_end_90
+  %t6 = 4096 - 256
+  %t7 = %t6 * 4
+  %t8 = 65536 + %t7
+  %t9 = i << 2
+  %t10 = %t8 + %t9
+  pc = %t10
+  %t11 = call bios_encode_jal(pc, handler)
+  inst = %t11
+  call bios_pram_write(pc, inst)
+  %t12 = i + 1
+  i = %t12
+  goto while_89
+  while_end_90:
+  %t13 = -708
+  %t14 = 4096 - 256
+  %t15 = %t14 * 4
+  %t16 = 65536 + %t15
+  call bios_cp0_write(%t13, %t16)
+}
+
+fn bios_exception_entry()
+{
+  %t0 = -712
+  %t1 = call bios_cp0_read(%t0)
+  cause = %t1
+  %t2 = -716
+  %t3 = call bios_cp0_read(%t2)
+  epc = %t3
+  %t4 = cause & 255
+  code = %t4
+  %t6 = cause < 0
+  ifz %t6 goto ternary_else_91
+  %t5 = 1
+  goto ternary_end_92
+  ternary_else_91:
+  %t5 = 0
+  ternary_end_92:
+  is_irq = %t5
+  call bios_uart_puts(.str3)
+  call bios_uart_puthex(cause)
+  call bios_uart_puts(.str4)
+  call bios_uart_puthex(epc)
+  call bios_uart_puts(.str5)
+  ifz is_irq goto if_else_93
+  %t7 = code == 7
+  ifz %t7 goto if_else_95
+  %t8 = -980
+  tirq = %t8
+  *tirq = 1
+  goto if_end_96
+  if_else_95:
+  %t9 = code == 11
+  ifz %t9 goto if_else_97
+  %t10 = call bios_uart_available()
+  ifz %t10 goto if_else_99
+  %t11 = call bios_uart_getc()
+  goto if_end_100
+  if_else_99:
+  %t12 = -952
+  uart_ctrl = %t12
+  *uart_ctrl = 1
+  if_end_100:
+  goto if_end_98
+  if_else_97:
+  if_end_98:
+  if_end_96:
+  call bios_mret()
+  goto if_end_94
+  if_else_93:
+  if_end_94:
+  %t13 = code == 11
+  ifz %t13 goto if_else_101
+  %t14 = -716
+  %t15 = epc + 4
+  call bios_cp0_write(%t14, %t15)
+  call bios_mret()
+  goto if_end_102
+  if_else_101:
+  if_end_102:
+  call bios_display_bcd(code)
+  while_103:
+  ifz 1 goto while_end_104
+  call bios_wdt_feed()
+  goto while_103
+  while_end_104:
 }
 
 fn bios_uart_recv_word()
@@ -623,85 +835,86 @@ fn bios_uart_recv_word()
 
 fn bios_bootloader()
 {
-  call bios_uart_puts(.str3)
-  call bios_uart_puts(.str4)
-  while_79:
-  ifz 1 goto while_end_80
+  call bios_uart_puts(.str6)
+  call bios_uart_puts(.str7)
+  while_105:
+  ifz 1 goto while_end_106
   call bios_wdt_feed()
   %t0 = call bios_uart_available()
-  ifz %t0 goto if_else_81
+  ifz %t0 goto if_else_107
   %t1 = call bios_uart_getc()
   cmd = %t1
   %t2 = cmd == 76
-  ifz %t2 goto if_else_83
-  call bios_uart_puts(.str5)
+  ifz %t2 goto if_else_109
+  call bios_uart_puts(.str8)
   %t3 = call bios_uart_recv_word()
   length = %t3
-  call bios_uart_puts(.str6)
+  call bios_uart_puts(.str9)
   call bios_uart_putnum(length)
-  call bios_uart_puts(.str7)
-  %t4 = length > 4096
-  ifz %t4 goto if_else_85
-  call bios_uart_puts(.str8)
-  %t5 = -1
-  return %t5
-  goto if_end_86
-  if_else_85:
-  if_end_86:
+  call bios_uart_puts(.str10)
+  %t4 = 4096 - 257
+  %t5 = length > %t4
+  ifz %t5 goto if_else_111
+  call bios_uart_puts(.str11)
+  %t6 = -1
+  return %t6
+  goto if_end_112
+  if_else_111:
+  if_end_112:
   addr = 65536
   i = 0
-  while_87:
-  %t6 = i < length
-  ifz %t6 goto while_end_88
+  while_113:
+  %t7 = i < length
+  ifz %t7 goto while_end_114
   call bios_wdt_feed()
-  %t7 = call bios_uart_recv_word()
-  data = %t7
+  %t8 = call bios_uart_recv_word()
+  data = %t8
   call bios_pram_write(addr, data)
-  %t8 = addr + 4
-  addr = %t8
-  %t9 = i + 1
-  i = %t9
-  %t10 = i & 255
-  %t11 = %t10 == 0
-  ifz %t11 goto if_else_89
-  call bios_uart_puts(.str9)
-  call bios_led_write(i)
-  goto if_end_90
-  if_else_89:
-  if_end_90:
-  goto while_87
-  while_end_88:
-  call bios_uart_puts(.str10)
-  call bios_uart_putnum(length)
-  call bios_uart_puts(.str11)
+  %t9 = addr + 4
+  addr = %t9
+  %t10 = i + 1
+  i = %t10
+  %t11 = i & 255
+  %t12 = %t11 == 0
+  ifz %t12 goto if_else_115
   call bios_uart_puts(.str12)
-  goto if_end_84
-  if_else_83:
-  %t12 = cmd == 71
-  ifz %t12 goto if_else_91
+  call bios_led_write(i)
+  goto if_end_116
+  if_else_115:
+  if_end_116:
+  goto while_113
+  while_end_114:
   call bios_uart_puts(.str13)
+  call bios_uart_putnum(length)
+  call bios_uart_puts(.str14)
+  call bios_uart_puts(.str15)
+  goto if_end_110
+  if_else_109:
+  %t13 = cmd == 71
+  ifz %t13 goto if_else_117
+  call bios_uart_puts(.str16)
   call bios_buzzer_beep(50000)
   call bios_jump_to_pram()
-  call bios_uart_puts(.str14)
-  goto if_end_92
-  if_else_91:
-  %t13 = cmd == 63
-  ifz %t13 goto if_else_93
-  call bios_uart_puts(.str15)
-  call bios_uart_puts(.str16)
   call bios_uart_puts(.str17)
+  goto if_end_118
+  if_else_117:
+  %t14 = cmd == 63
+  ifz %t14 goto if_else_119
   call bios_uart_puts(.str18)
-  goto if_end_94
-  if_else_93:
+  call bios_uart_puts(.str19)
+  call bios_uart_puts(.str20)
+  call bios_uart_puts(.str21)
+  goto if_end_120
+  if_else_119:
   call bios_uart_putc(cmd)
-  if_end_94:
-  if_end_92:
-  if_end_84:
-  goto if_end_82
-  if_else_81:
-  if_end_82:
-  goto while_79
-  while_end_80:
+  if_end_120:
+  if_end_118:
+  if_end_110:
+  goto if_end_108
+  if_else_107:
+  if_end_108:
+  goto while_105
+  while_end_106:
   return 0
 }
 
@@ -772,59 +985,59 @@ fn bios_btn_get(btn_num)
 
 fn bios_btn_wait()
 {
-  while_95:
+  while_121:
   %t0 = call bios_btn_read()
   %t1 = %t0 != 0
-  ifz %t1 goto while_end_96
+  ifz %t1 goto while_end_122
   call bios_wdt_feed()
-  goto while_95
-  while_end_96:
-  while_97:
-  ifz 1 goto while_end_98
+  goto while_121
+  while_end_122:
+  while_123:
+  ifz 1 goto while_end_124
   %t2 = call bios_btn_read()
   btn_val = %t2
   %t3 = btn_val != 0
-  ifz %t3 goto if_else_99
+  ifz %t3 goto if_else_125
   i = 0
-  for_101:
+  for_127:
   %t4 = i < 5
-  ifz %t4 goto for_end_103
+  ifz %t4 goto for_end_129
   %t5 = btn_val >> i
   %t6 = %t5 & 1
-  ifz %t6 goto if_else_104
+  ifz %t6 goto if_else_130
   return i
-  goto if_end_105
-  if_else_104:
-  if_end_105:
-  for_continue_102:
+  goto if_end_131
+  if_else_130:
+  if_end_131:
+  for_continue_128:
   %t7 = i + 1
   i = %t7
-  goto for_101
-  for_end_103:
-  goto if_end_100
-  if_else_99:
-  if_end_100:
+  goto for_127
+  for_end_129:
+  goto if_end_126
+  if_else_125:
+  if_end_126:
   call bios_wdt_feed()
-  goto while_97
-  while_end_98:
+  goto while_123
+  while_end_124:
 }
 
 fn bios_btn_wait_press(btn_num)
 {
-  while_106:
+  while_132:
   %t0 = call bios_btn_get(btn_num)
   %t1 = %t0 != 0
-  ifz %t1 goto while_end_107
+  ifz %t1 goto while_end_133
   call bios_wdt_feed()
-  goto while_106
-  while_end_107:
-  while_108:
+  goto while_132
+  while_end_133:
+  while_134:
   %t2 = call bios_btn_get(btn_num)
   %t3 = %t2 == 0
-  ifz %t3 goto while_end_109
+  ifz %t3 goto while_end_135
   call bios_wdt_feed()
-  goto while_108
-  while_end_109:
+  goto while_134
+  while_end_135:
 }
 
 fn main()
@@ -833,16 +1046,34 @@ fn main()
   led = %t0
   %t1 = -1024
   seg = %t1
-  %t2 = -1006
+  %t2 = -1004
   status = %t2
   call bios_wdt_feed()
-  call bios_uart_puts(.str19)
-  call bios_uart_puts(.str20)
-  call bios_uart_puts(.str21)
+  call bios_install_vectors()
+  %t3 = -720
+  call bios_cp0_write(%t3, 13)
   call bios_uart_puts(.str22)
   call bios_uart_puts(.str23)
   call bios_uart_puts(.str24)
   call bios_uart_puts(.str25)
+  call bios_uart_puts(.str26)
+  call bios_uart_puts(.str27)
+  call bios_uart_puts(.str28)
+  call bios_uart_puts(.str29)
+  %t4 = call bios_addr_check(65536, 4, 0)
+  %t5 = %t4 == 0
+  %t6 = call bios_addr_check(0, 4, 0)
+  %t7 = %t6 == 0
+  %t8 = %t5 && %t7
+  %t9 = call bios_addr_check(-1024, 4, 1)
+  %t10 = %t9 == 0
+  %t11 = %t8 && %t10
+  ifz %t11 goto if_else_136
+  call bios_uart_puts(.str30)
+  goto if_end_137
+  if_else_136:
+  call bios_uart_puts(.str31)
+  if_end_137:
   call bios_buzzer_on()
   call bios_delay(80000)
   call bios_buzzer_off()
@@ -851,77 +1082,83 @@ fn main()
   call bios_delay(80000)
   call bios_buzzer_off()
   call bios_wdt_feed()
-  %t3 = -1
-  *led = %t3
+  %t12 = -1
+  *led = %t12
   call bios_delay(1000000)
   call bios_wdt_feed()
   *led = 0
   call bios_delay(500000)
-  %t4 = -1
-  *led = %t4
+  %t13 = -1
+  *led = %t13
   call bios_delay(1000000)
   call bios_wdt_feed()
   *led = 0
   call bios_delay(500000)
   call bios_wdt_feed()
   i = 0
-  while_110:
-  %t5 = i < 10
-  ifz %t5 goto while_end_111
+  while_138:
+  %t14 = i < 10
+  ifz %t14 goto while_end_139
   *seg = i
   call bios_delay(500000)
   call bios_wdt_feed()
-  %t6 = i + 1
-  i = %t6
-  goto while_110
-  while_end_111:
+  %t15 = i + 1
+  i = %t15
+  goto while_138
+  while_end_139:
   *seg = 0
   call bios_delay(500000)
   call bios_wdt_feed()
-  %t7 = *status
-  pressed = %t7
-  %t8 = pressed & 1
-  pressed = %t8
-  %t9 = pressed != 0
-  ifz %t9 goto if_else_112
-  *seg = 14
-  %t10 = -1
-  *led = %t10
-  call bios_buzzer_on()
-  while_114:
-  ifz 1 goto while_end_115
-  call bios_wdt_feed()
-  goto while_114
-  while_end_115:
-  goto if_end_113
-  if_else_112:
-  if_end_113:
   call bios_key_init()
+  call bios_delay(10000)
+  %t16 = *status
+  pressed = %t16
+  %t17 = pressed & 1
+  pressed = %t17
+  %t18 = pressed != 0
+  ifz %t18 goto if_else_140
+  *seg = 14
+  %t19 = -1
+  *led = %t19
+  call bios_uart_puts(.str32)
+  call bios_buzzer_beep(80000)
+  *seg = 0
+  *led = 1
+  goto if_end_141
+  if_else_140:
+  if_end_141:
   *led = 1
   *seg = 0
   call bios_buzzer_beep(100000)
-  call bios_uart_puts(.str26)
+  call bios_uart_puts(.str33)
   call bios_wdt_feed()
-  %t11 = call bios_sw_read_high()
-  boot_mode = %t11
-  %t12 = boot_mode & 128
-  %t13 = %t12 != 0
-  ifz %t13 goto if_else_116
-  call bios_uart_puts(.str27)
-  call bios_uart_puts(.str28)
+  %t20 = call bios_sw_read_high()
+  boot_mode = %t20
+  %t21 = boot_mode & 128
+  %t22 = %t21 != 0
+  ifz %t22 goto if_else_142
+  call bios_uart_puts(.str34)
+  call bios_uart_puts(.str35)
   *seg = 188
   call bios_bootloader()
-  goto if_end_117
-  if_else_116:
-  call bios_uart_puts(.str29)
-  call bios_uart_puts(.str30)
+  goto if_end_143
+  if_else_142:
+  call bios_uart_puts(.str36)
+  call bios_uart_puts(.str37)
+  %t23 = -720
+  %t24 = call bios_cp0_read(%t23)
+  prev_status = %t24
+  %t25 = -720
+  call bios_cp0_write(%t25, 0)
   call user_main()
-  if_end_117:
-  while_118:
-  ifz 1 goto while_end_119
+  %t26 = -720
+  call bios_cp0_write(%t26, prev_status)
+  if_end_143:
+  while_144:
+  ifz 1 goto while_end_145
   call bios_wdt_feed()
-  goto while_118
-  while_end_119:
+  goto while_144
+  while_end_145:
   return 0
 }
 
@@ -938,162 +1175,162 @@ fn user_main()
   display_val = 0
   call bios_display_bcd(0)
   call bios_led_write(1)
-  call bios_uart_puts(.str31)
-  call bios_uart_puts(.str32)
-  while_120:
-  ifz 1 goto while_end_121
+  call bios_uart_puts(.str38)
+  call bios_uart_puts(.str39)
+  while_146:
+  ifz 1 goto while_end_147
   %t0 = loop_cnt + 1
   loop_cnt = %t0
   %t1 = loop_cnt >= 1000
-  ifz %t1 goto if_else_122
+  ifz %t1 goto if_else_148
   call bios_wdt_feed()
   loop_cnt = 0
-  goto if_end_123
-  if_else_122:
-  if_end_123:
+  goto if_end_149
+  if_else_148:
+  if_end_149:
   %t2 = call bios_key_read()
   key_val = %t2
   %t3 = key_val >= 0
-  ifz %t3 goto if_else_124
+  ifz %t3 goto if_else_150
   call bios_wdt_feed()
   last_key = key_val
-  call bios_uart_puts(.str33)
+  call bios_uart_puts(.str40)
   call bios_uart_putnum(key_val)
   %t4 = key_val < 10
-  ifz %t4 goto if_else_126
-  ifz just_pressed_op goto if_else_128
+  ifz %t4 goto if_else_152
+  ifz just_pressed_op goto if_else_154
   current = 0
   just_pressed_op = 0
-  goto if_end_129
-  if_else_128:
-  if_end_129:
+  goto if_end_155
+  if_else_154:
+  if_end_155:
   %t5 = call bios_mul10(current)
   %t6 = %t5 + key_val
   current = %t6
   display_val = current
-  goto if_end_127
-  if_else_126:
+  goto if_end_153
+  if_else_152:
   %t7 = key_val == 10
-  ifz %t7 goto if_else_130
-  ifz mul_mode goto if_else_132
+  ifz %t7 goto if_else_156
+  ifz mul_mode goto if_else_158
   %t8 = call bios_multiply(term, current)
   term = %t8
-  goto if_end_133
-  if_else_132:
+  goto if_end_159
+  if_else_158:
   term = current
-  if_end_133:
+  if_end_159:
   mul_mode = 0
   %t9 = pending_op == 1
-  ifz %t9 goto if_else_134
+  ifz %t9 goto if_else_160
   %t10 = accumulator + term
   accumulator = %t10
-  goto if_end_135
-  if_else_134:
+  goto if_end_161
+  if_else_160:
   %t11 = pending_op == 2
-  ifz %t11 goto if_else_136
+  ifz %t11 goto if_else_162
   %t12 = accumulator - term
   accumulator = %t12
-  goto if_end_137
-  if_else_136:
+  goto if_end_163
+  if_else_162:
   accumulator = term
-  if_end_137:
-  if_end_135:
+  if_end_163:
+  if_end_161:
   pending_op = 1
   term = 0
   current = 0
   just_pressed_op = 1
   display_val = accumulator
-  call bios_uart_puts(.str34)
+  call bios_uart_puts(.str41)
   call bios_uart_putnum(accumulator)
-  goto if_end_131
-  if_else_130:
+  goto if_end_157
+  if_else_156:
   %t13 = key_val == 11
-  ifz %t13 goto if_else_138
-  ifz mul_mode goto if_else_140
+  ifz %t13 goto if_else_164
+  ifz mul_mode goto if_else_166
   %t14 = call bios_multiply(term, current)
   term = %t14
-  goto if_end_141
-  if_else_140:
+  goto if_end_167
+  if_else_166:
   term = current
-  if_end_141:
+  if_end_167:
   mul_mode = 0
   %t15 = pending_op == 1
-  ifz %t15 goto if_else_142
+  ifz %t15 goto if_else_168
   %t16 = accumulator + term
   accumulator = %t16
-  goto if_end_143
-  if_else_142:
+  goto if_end_169
+  if_else_168:
   %t17 = pending_op == 2
-  ifz %t17 goto if_else_144
+  ifz %t17 goto if_else_170
   %t18 = accumulator - term
   accumulator = %t18
-  goto if_end_145
-  if_else_144:
+  goto if_end_171
+  if_else_170:
   accumulator = term
-  if_end_145:
-  if_end_143:
+  if_end_171:
+  if_end_169:
   pending_op = 2
   term = 0
   current = 0
   just_pressed_op = 1
   display_val = accumulator
-  call bios_uart_puts(.str35)
+  call bios_uart_puts(.str42)
   call bios_uart_putnum(accumulator)
-  goto if_end_139
-  if_else_138:
+  goto if_end_165
+  if_else_164:
   %t19 = key_val == 12
-  ifz %t19 goto if_else_146
-  ifz mul_mode goto if_else_148
+  ifz %t19 goto if_else_172
+  ifz mul_mode goto if_else_174
   %t20 = call bios_multiply(term, current)
   term = %t20
-  goto if_end_149
-  if_else_148:
+  goto if_end_175
+  if_else_174:
   term = current
-  if_end_149:
+  if_end_175:
   mul_mode = 1
   current = 0
   just_pressed_op = 1
   display_val = term
-  call bios_uart_puts(.str36)
+  call bios_uart_puts(.str43)
   call bios_uart_putnum(term)
-  goto if_end_147
-  if_else_146:
+  goto if_end_173
+  if_else_172:
   %t21 = key_val == 13
-  ifz %t21 goto if_else_150
-  ifz mul_mode goto if_else_152
+  ifz %t21 goto if_else_176
+  ifz mul_mode goto if_else_178
   %t22 = call bios_multiply(term, current)
   term = %t22
-  goto if_end_153
-  if_else_152:
+  goto if_end_179
+  if_else_178:
   term = current
-  if_end_153:
+  if_end_179:
   mul_mode = 0
   %t23 = pending_op == 1
-  ifz %t23 goto if_else_154
+  ifz %t23 goto if_else_180
   %t24 = accumulator + term
   accumulator = %t24
-  goto if_end_155
-  if_else_154:
+  goto if_end_181
+  if_else_180:
   %t25 = pending_op == 2
-  ifz %t25 goto if_else_156
+  ifz %t25 goto if_else_182
   %t26 = accumulator - term
   accumulator = %t26
-  goto if_end_157
-  if_else_156:
+  goto if_end_183
+  if_else_182:
   accumulator = term
-  if_end_157:
-  if_end_155:
+  if_end_183:
+  if_end_181:
   display_val = accumulator
   current = accumulator
   term = 0
   pending_op = 0
   just_pressed_op = 1
-  call bios_uart_puts(.str37)
+  call bios_uart_puts(.str44)
   call bios_uart_putnum(accumulator)
-  goto if_end_151
-  if_else_150:
+  goto if_end_177
+  if_else_176:
   %t27 = key_val == 14
-  ifz %t27 goto if_else_158
+  ifz %t27 goto if_else_184
   accumulator = 0
   term = 0
   current = 0
@@ -1101,11 +1338,11 @@ fn user_main()
   mul_mode = 0
   just_pressed_op = 0
   display_val = 0
-  call bios_uart_puts(.str38)
-  goto if_end_159
-  if_else_158:
+  call bios_uart_puts(.str45)
+  goto if_end_185
+  if_else_184:
   %t28 = key_val == 15
-  ifz %t28 goto if_else_160
+  ifz %t28 goto if_else_186
   accumulator = 0
   term = 0
   current = 0
@@ -1113,18 +1350,18 @@ fn user_main()
   mul_mode = 0
   just_pressed_op = 0
   display_val = 0
-  call bios_uart_puts(.str39)
-  goto if_end_161
-  if_else_160:
-  if_end_161:
-  if_end_159:
-  if_end_151:
-  if_end_147:
-  if_end_139:
-  if_end_131:
-  if_end_127:
+  call bios_uart_puts(.str46)
+  goto if_end_187
+  if_else_186:
+  if_end_187:
+  if_end_185:
+  if_end_177:
+  if_end_173:
+  if_end_165:
+  if_end_157:
+  if_end_153:
   call bios_display_bcd(display_val)
-  call bios_uart_puts(.str40)
+  call bios_uart_puts(.str47)
   %t29 = pending_op << 4
   %t30 = mul_mode << 6
   %t31 = %t29 | %t30
@@ -1132,11 +1369,11 @@ fn user_main()
   %t32 = last_key | tmp
   %t33 = %t32 | 1
   call bios_led_write(%t33)
-  goto if_end_125
-  if_else_124:
-  if_end_125:
-  goto while_120
-  while_end_121:
+  goto if_end_151
+  if_else_150:
+  if_end_151:
+  goto while_146
+  while_end_147:
   return 0
 }
 
@@ -1144,41 +1381,48 @@ fn user_main()
 .str0 = "0x"
 .str1 = "Jumping to PRAM at 0x00010000...\r\n"
 .str2 = "User program returned.\r\n"
-.str3 = "UART Bootloader ready.\r\n"
-.str4 = "Send 'L' to load program, 'G' to run.\r\n"
-.str5 = "Loading...\r\n"
-.str6 = "Size: "
-.str7 = " words\r\n"
-.str8 = "ERROR: Program too large! Max 4096 words (16KB)\r\n"
-.str9 = "."
-.str10 = "\r\nLoaded "
-.str11 = " words.\r\n"
-.str12 = "Send 'G' to run.\r\n"
-.str13 = "Jumping to 0x00010000...\r\n"
-.str14 = "Program returned.\r\n"
-.str15 = "Commands:\r\n"
-.str16 = "  L - Load program\r\n"
-.str17 = "  G - Go (run program)\r\n"
-.str18 = "  ? - Help\r\n"
-.str19 = "\r\n"
-.str20 = "================================\r\n"
-.str21 = "  SEU RISC-V CPU BIOS v2.1\r\n"
-.str22 = "  UART Bootloader Enabled\r\n"
-.str23 = "  UART: 115200-8-N-1\r\n"
-.str24 = "================================\r\n"
-.str25 = "Starting self-test...\r\n"
-.str26 = "Self-test PASSED!\r\n"
-.str27 = "Boot mode: UART Bootloader\r\n"
-.str28 = "SW[23]=1, entering bootloader...\r\n\r\n"
-.str29 = "Boot mode: Built-in Program\r\n"
-.str30 = "SW[23]=0, starting user program...\r\n\r\n"
-.str31 = "Calculator v3 Ready\r\n"
-.str32 = "Supports: chain ops & priority\r\n"
-.str33 = "Key:"
-.str34 = " [+] acc="
-.str35 = " [-] acc="
-.str36 = " [*] term="
-.str37 = " [=] result="
-.str38 = " [CLR]"
-.str39 = " [CLR]"
-.str40 = "\r\n"
+.str3 = "\r\n[EXC] cause="
+.str4 = " epc="
+.str5 = "\r\n"
+.str6 = "UART Bootloader ready.\r\n"
+.str7 = "Send 'L' to load program, 'G' to run.\r\n"
+.str8 = "Loading...\r\n"
+.str9 = "Size: "
+.str10 = " words\r\n"
+.str11 = "ERROR: Program too large! Max 3839 words (vectors reserved)\r\n"
+.str12 = "."
+.str13 = "\r\nLoaded "
+.str14 = " words.\r\n"
+.str15 = "Send 'G' to run.\r\n"
+.str16 = "Jumping to 0x00010000...\r\n"
+.str17 = "Program returned.\r\n"
+.str18 = "Commands:\r\n"
+.str19 = "  L - Load program\r\n"
+.str20 = "  G - Go (run program)\r\n"
+.str21 = "  ? - Help\r\n"
+.str22 = "\r\n"
+.str23 = "================================\r\n"
+.str24 = "  SEU RISC-V CPU BIOS v2.1\r\n"
+.str25 = "  UART Bootloader Enabled\r\n"
+.str26 = "  UART: 115200-8-N-1\r\n"
+.str27 = "================================\r\n"
+.str28 = "Starting self-test...\r\n"
+.str29 = "Addr check: "
+.str30 = "OK\r\n"
+.str31 = "FAIL\r\n"
+.str32 = "[WARN] Keypad pressed at boot, continue...\r\n"
+.str33 = "Self-test PASSED!\r\n"
+.str34 = "Boot mode: UART Bootloader\r\n"
+.str35 = "SW[23]=1, entering bootloader...\r\n\r\n"
+.str36 = "Boot mode: Built-in Program\r\n"
+.str37 = "SW[23]=0, starting user program...\r\n\r\n"
+.str38 = "Calculator v3 Ready\r\n"
+.str39 = "Supports: chain ops & priority\r\n"
+.str40 = "Key:"
+.str41 = " [+] acc="
+.str42 = " [-] acc="
+.str43 = " [*] term="
+.str44 = " [=] result="
+.str45 = " [CLR]"
+.str46 = " [CLR]"
+.str47 = "\r\n"

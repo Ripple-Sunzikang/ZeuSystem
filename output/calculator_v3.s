@@ -113,11 +113,22 @@ addi a0, zero, 1024
 sub a0, zero, a0
 sw a0, 8(sp)
 nop
-addi a0, zero, 1006
+addi a0, zero, 1004
 sub a0, zero, a0
 sw a0, 12(sp)
 nop
 jal ra, bios_wdt_feed
+jal ra, bios_install_vectors
+addi a0, zero, 720
+sub a0, zero, a0
+sw a0, 24(sp)
+nop
+addi a0, zero, 13
+sw a0, 28(sp)
+nop
+lw a0, 24(sp)
+lw a1, 28(sp)
+jal ra, bios_cp0_write
 la a0, .str0
 sw a0, 24(sp)
 nop
@@ -153,6 +164,114 @@ sw a0, 24(sp)
 nop
 lw a0, 24(sp)
 jal ra, bios_uart_puts
+la a0, .str7
+sw a0, 24(sp)
+nop
+lw a0, 24(sp)
+jal ra, bios_uart_puts
+li a0, 65536
+sw a0, 24(sp)
+nop
+addi a0, zero, 4
+sw a0, 28(sp)
+nop
+addi a0, zero, 0
+sw a0, 32(sp)
+nop
+lw a0, 24(sp)
+lw a1, 28(sp)
+lw a2, 32(sp)
+jal ra, bios_addr_check
+sw a0, 24(sp)
+nop
+addi a0, zero, 0
+lw a1, 24(sp)
+beq a1, a0, eq2
+addi a0, zero, 0
+j eq_done3
+eq2:
+addi a0, zero, 1
+eq_done3:
+sw a0, 24(sp)
+nop
+addi a0, zero, 0
+sw a0, 28(sp)
+nop
+addi a0, zero, 4
+sw a0, 32(sp)
+nop
+addi a0, zero, 0
+sw a0, 36(sp)
+nop
+lw a0, 28(sp)
+lw a1, 32(sp)
+lw a2, 36(sp)
+jal ra, bios_addr_check
+sw a0, 28(sp)
+nop
+addi a0, zero, 0
+lw a1, 28(sp)
+beq a1, a0, eq4
+addi a0, zero, 0
+j eq_done5
+eq4:
+addi a0, zero, 1
+eq_done5:
+lw a1, 24(sp)
+beq a1, zero, and_false6
+beq a0, zero, and_false6
+addi a0, zero, 1
+j and_done7
+and_false6:
+addi a0, zero, 0
+and_done7:
+sw a0, 24(sp)
+nop
+addi a0, zero, -1024
+sw a0, 28(sp)
+nop
+addi a0, zero, 4
+sw a0, 32(sp)
+nop
+addi a0, zero, 1
+sw a0, 36(sp)
+nop
+lw a0, 28(sp)
+lw a1, 32(sp)
+lw a2, 36(sp)
+jal ra, bios_addr_check
+sw a0, 28(sp)
+nop
+addi a0, zero, 0
+lw a1, 28(sp)
+beq a1, a0, eq8
+addi a0, zero, 0
+j eq_done9
+eq8:
+addi a0, zero, 1
+eq_done9:
+lw a1, 24(sp)
+beq a1, zero, and_false10
+beq a0, zero, and_false10
+addi a0, zero, 1
+j and_done11
+and_false10:
+addi a0, zero, 0
+and_done11:
+beq a0, zero, else_0
+la a0, .str8
+sw a0, 24(sp)
+nop
+lw a0, 24(sp)
+jal ra, bios_uart_puts
+j endif_1
+else_0:
+la a0, .str9
+sw a0, 24(sp)
+nop
+lw a0, 24(sp)
+jal ra, bios_uart_puts
+endif_1:
 jal ra, bios_buzzer_on
 li a0, 80000
 sw a0, 24(sp)
@@ -229,19 +348,19 @@ jal ra, bios_wdt_feed
 addi a0, zero, 0
 sw a0, 16(sp)
 nop
-while_0:
+while_12:
 lw a0, 16(sp)
 sw a0, 24(sp)
 nop
 addi a0, zero, 10
 lw a1, 24(sp)
-blt a1, a0, lt2
+blt a1, a0, lt14
 addi a0, zero, 0
-j lt_done3
-lt2:
+j lt_done15
+lt14:
 addi a0, zero, 1
-lt_done3:
-beq a0, zero, while_end_1
+lt_done15:
+beq a0, zero, while_end_13
 lw a0, 16(sp)
 sw a0, 24(sp)
 nop
@@ -263,8 +382,8 @@ lw a1, 24(sp)
 add a0, a1, a0
 sw a0, 16(sp)
 nop
-j while_0
-while_end_1:
+j while_12
+while_end_13:
 addi a0, zero, 0
 sw a0, 24(sp)
 nop
@@ -278,6 +397,12 @@ nop
 lw a0, 24(sp)
 jal ra, bios_delay
 jal ra, bios_wdt_feed
+jal ra, bios_key_init
+li a0, 10000
+sw a0, 24(sp)
+nop
+lw a0, 24(sp)
+jal ra, bios_delay
 lw a0, 12(sp)
 lw a0, 0(a0)
 sw a0, 20(sp)
@@ -295,13 +420,13 @@ sw a0, 24(sp)
 nop
 addi a0, zero, 0
 lw a1, 24(sp)
-bne a1, a0, ne6
+bne a1, a0, ne18
 addi a0, zero, 0
-j ne_done7
-ne6:
+j ne_done19
+ne18:
 addi a0, zero, 1
-ne_done7:
-beq a0, zero, else_4
+ne_done19:
+beq a0, zero, else_16
 addi a0, zero, 14
 sw a0, 24(sp)
 nop
@@ -317,17 +442,33 @@ lw a0, 4(sp)
 lw a1, 24(sp)
 sw a1, 0(a0)
 mv a0, a1
-jal ra, bios_buzzer_on
-while_8:
+la a0, .str10
+sw a0, 24(sp)
+nop
+lw a0, 24(sp)
+jal ra, bios_uart_puts
+li a0, 80000
+sw a0, 24(sp)
+nop
+lw a0, 24(sp)
+jal ra, bios_buzzer_beep
+addi a0, zero, 0
+sw a0, 24(sp)
+nop
+lw a0, 8(sp)
+lw a1, 24(sp)
+sw a1, 0(a0)
+mv a0, a1
 addi a0, zero, 1
-beq a0, zero, while_end_9
-jal ra, bios_wdt_feed
-j while_8
-while_end_9:
-j endif_5
-else_4:
-endif_5:
-jal ra, bios_key_init
+sw a0, 24(sp)
+nop
+lw a0, 4(sp)
+lw a1, 24(sp)
+sw a1, 0(a0)
+mv a0, a1
+j endif_17
+else_16:
+endif_17:
 addi a0, zero, 1
 sw a0, 24(sp)
 nop
@@ -347,7 +488,7 @@ sw a0, 24(sp)
 nop
 lw a0, 24(sp)
 jal ra, bios_buzzer_beep
-la a0, .str7
+la a0, .str11
 sw a0, 24(sp)
 nop
 lw a0, 24(sp)
@@ -366,19 +507,19 @@ sw a0, 28(sp)
 nop
 addi a0, zero, 0
 lw a1, 28(sp)
-bne a1, a0, ne12
+bne a1, a0, ne22
 addi a0, zero, 0
-j ne_done13
-ne12:
+j ne_done23
+ne22:
 addi a0, zero, 1
-ne_done13:
-beq a0, zero, else_10
-la a0, .str8
+ne_done23:
+beq a0, zero, else_20
+la a0, .str12
 sw a0, 28(sp)
 nop
 lw a0, 28(sp)
 jal ra, bios_uart_puts
-la a0, .str9
+la a0, .str13
 sw a0, 28(sp)
 nop
 lw a0, 28(sp)
@@ -391,27 +532,494 @@ lw a1, 28(sp)
 sw a1, 0(a0)
 mv a0, a1
 jal ra, bios_bootloader
-j endif_11
-else_10:
-la a0, .str10
+j endif_21
+else_20:
+la a0, .str14
 sw a0, 28(sp)
 nop
 lw a0, 28(sp)
 jal ra, bios_uart_puts
-la a0, .str11
+la a0, .str15
 sw a0, 28(sp)
 nop
 lw a0, 28(sp)
 jal ra, bios_uart_puts
-jal ra, user_main
-endif_11:
-while_14:
-addi a0, zero, 1
-beq a0, zero, while_end_15
-jal ra, bios_wdt_feed
-j while_14
-while_end_15:
+addi a0, zero, 720
+sub a0, zero, a0
+sw a0, 32(sp)
+nop
+lw a0, 32(sp)
+jal ra, bios_cp0_read
+sw a0, 28(sp)
+nop
+addi a0, zero, 720
+sub a0, zero, a0
+sw a0, 32(sp)
+nop
 addi a0, zero, 0
+sw a0, 36(sp)
+nop
+lw a0, 32(sp)
+lw a1, 36(sp)
+jal ra, bios_cp0_write
+jal ra, user_main
+addi a0, zero, 720
+sub a0, zero, a0
+sw a0, 32(sp)
+nop
+lw a0, 28(sp)
+sw a0, 36(sp)
+nop
+lw a0, 32(sp)
+lw a1, 36(sp)
+jal ra, bios_cp0_write
+endif_21:
+while_24:
+addi a0, zero, 1
+beq a0, zero, while_end_25
+jal ra, bios_wdt_feed
+j while_24
+while_end_25:
+addi a0, zero, 0
+lw ra, 252(sp)
+addi sp, sp, 256
+ret
+bios_cp0_write:
+addi sp, sp, -256
+sw ra, 252(sp)
+nop
+sw a0, 4(sp)
+nop
+sw a1, 8(sp)
+nop
+lw a0, 4(sp)
+sw a0, 12(sp)
+nop
+lw a0, 8(sp)
+sw a0, 16(sp)
+nop
+lw a0, 12(sp)
+lw a1, 16(sp)
+sw a1, 0(a0)
+mv a0, a1
+li a0, 0
+lw ra, 252(sp)
+addi sp, sp, 256
+ret
+
+bios_cp0_read:
+addi sp, sp, -256
+sw ra, 252(sp)
+nop
+sw a0, 4(sp)
+nop
+lw a0, 4(sp)
+sw a0, 8(sp)
+nop
+lw a0, 8(sp)
+lw a0, 0(a0)
+lw ra, 252(sp)
+addi sp, sp, 256
+ret
+bios_encode_jal:
+addi sp, sp, -256
+sw ra, 252(sp)
+nop
+sw a0, 4(sp)
+nop
+sw a1, 8(sp)
+nop
+lw a0, 8(sp)
+sw a0, 16(sp)
+nop
+lw a0, 4(sp)
+lw a1, 16(sp)
+sub a0, a1, a0
+sw a0, 12(sp)
+nop
+lw a0, 12(sp)
+sw a0, 16(sp)
+nop
+addi a0, zero, 0
+sw a0, 20(sp)
+nop
+lw a0, 20(sp)
+sw a0, 24(sp)
+nop
+lw a0, 16(sp)
+sw a0, 28(sp)
+nop
+addi a0, zero, 20
+lw a1, 28(sp)
+srl a0, a1, a0
+sw a0, 28(sp)
+nop
+addi a0, zero, 1
+lw a1, 28(sp)
+and a0, a1, a0
+sw a0, 28(sp)
+nop
+addi a0, zero, 31
+lw a1, 28(sp)
+sll a0, a1, a0
+lw a1, 24(sp)
+or a0, a1, a0
+sw a0, 20(sp)
+nop
+lw a0, 20(sp)
+sw a0, 24(sp)
+nop
+lw a0, 16(sp)
+sw a0, 28(sp)
+nop
+addi a0, zero, 1
+lw a1, 28(sp)
+srl a0, a1, a0
+sw a0, 28(sp)
+nop
+addi a0, zero, 1023
+lw a1, 28(sp)
+and a0, a1, a0
+sw a0, 28(sp)
+nop
+addi a0, zero, 21
+lw a1, 28(sp)
+sll a0, a1, a0
+lw a1, 24(sp)
+or a0, a1, a0
+sw a0, 20(sp)
+nop
+lw a0, 20(sp)
+sw a0, 24(sp)
+nop
+lw a0, 16(sp)
+sw a0, 28(sp)
+nop
+addi a0, zero, 11
+lw a1, 28(sp)
+srl a0, a1, a0
+sw a0, 28(sp)
+nop
+addi a0, zero, 1
+lw a1, 28(sp)
+and a0, a1, a0
+sw a0, 28(sp)
+nop
+addi a0, zero, 20
+lw a1, 28(sp)
+sll a0, a1, a0
+lw a1, 24(sp)
+or a0, a1, a0
+sw a0, 20(sp)
+nop
+lw a0, 20(sp)
+sw a0, 24(sp)
+nop
+lw a0, 16(sp)
+sw a0, 28(sp)
+nop
+addi a0, zero, 12
+lw a1, 28(sp)
+srl a0, a1, a0
+sw a0, 28(sp)
+nop
+addi a0, zero, 255
+lw a1, 28(sp)
+and a0, a1, a0
+sw a0, 28(sp)
+nop
+addi a0, zero, 12
+lw a1, 28(sp)
+sll a0, a1, a0
+lw a1, 24(sp)
+or a0, a1, a0
+sw a0, 20(sp)
+nop
+lw a0, 20(sp)
+sw a0, 24(sp)
+nop
+addi a0, zero, 0
+sw a0, 28(sp)
+nop
+addi a0, zero, 7
+lw a1, 28(sp)
+sll a0, a1, a0
+lw a1, 24(sp)
+or a0, a1, a0
+sw a0, 20(sp)
+nop
+lw a0, 20(sp)
+sw a0, 24(sp)
+nop
+addi a0, zero, 111
+lw a1, 24(sp)
+or a0, a1, a0
+sw a0, 20(sp)
+nop
+lw a0, 20(sp)
+lw ra, 252(sp)
+addi sp, sp, 256
+ret
+bios_mret:
+addi sp, sp, -256
+sw ra, 252(sp)
+nop
+li a0, 65536
+sw a0, 4(sp)
+nop
+li a0, 4096
+sw a0, 8(sp)
+nop
+addi a0, zero, 256
+lw a1, 8(sp)
+sub a0, a1, a0
+sw a0, 8(sp)
+nop
+addi a0, zero, 4
+lw a1, 8(sp)
+mul a0, a1, a0
+lw a1, 4(sp)
+add a0, a1, a0
+sw a0, 4(sp)
+nop
+addi a0, zero, 4
+lw a1, 4(sp)
+sub a0, a1, a0
+mv t0, a0
+jalr ra, t0, 0
+li a0, 0
+lw ra, 252(sp)
+addi sp, sp, 256
+ret
+
+bios_addr_check:
+addi sp, sp, -256
+sw ra, 252(sp)
+nop
+sw a0, 4(sp)
+nop
+sw a1, 8(sp)
+nop
+sw a2, 12(sp)
+nop
+addi a0, zero, 1
+sw a0, 16(sp)
+nop
+lw a0, 8(sp)
+sw a0, 20(sp)
+nop
+addi a0, zero, 4
+lw a1, 20(sp)
+beq a1, a0, eq28
+addi a0, zero, 0
+j eq_done29
+eq28:
+addi a0, zero, 1
+eq_done29:
+sw a0, 20(sp)
+nop
+lw a0, 4(sp)
+sw a0, 24(sp)
+nop
+addi a0, zero, 3
+lw a1, 24(sp)
+and a0, a1, a0
+lw a1, 20(sp)
+beq a1, zero, and_false30
+beq a0, zero, and_false30
+addi a0, zero, 1
+j and_done31
+and_false30:
+addi a0, zero, 0
+and_done31:
+beq a0, zero, else_26
+addi a0, zero, 0
+sw a0, 16(sp)
+nop
+j endif_27
+else_26:
+endif_27:
+lw a0, 8(sp)
+sw a0, 20(sp)
+nop
+addi a0, zero, 2
+lw a1, 20(sp)
+beq a1, a0, eq34
+addi a0, zero, 0
+j eq_done35
+eq34:
+addi a0, zero, 1
+eq_done35:
+sw a0, 20(sp)
+nop
+lw a0, 4(sp)
+sw a0, 24(sp)
+nop
+addi a0, zero, 1
+lw a1, 24(sp)
+and a0, a1, a0
+lw a1, 20(sp)
+beq a1, zero, and_false36
+beq a0, zero, and_false36
+addi a0, zero, 1
+j and_done37
+and_false36:
+addi a0, zero, 0
+and_done37:
+beq a0, zero, else_32
+addi a0, zero, 0
+sw a0, 16(sp)
+nop
+j endif_33
+else_32:
+endif_33:
+lw a0, 16(sp)
+beq a0, zero, not_zero40
+addi a0, zero, 0
+j not_done41
+not_zero40:
+addi a0, zero, 1
+not_done41:
+beq a0, zero, else_38
+addi a0, zero, 1
+sub a0, zero, a0
+lw ra, 252(sp)
+addi sp, sp, 256
+ret
+else_38:
+endif_39:
+lw a0, 4(sp)
+sw a0, 20(sp)
+nop
+addi a0, zero, 0
+lw a1, 20(sp)
+bge a1, a0, ge44
+addi a0, zero, 0
+j ge_done45
+ge44:
+addi a0, zero, 1
+ge_done45:
+sw a0, 20(sp)
+nop
+lw a0, 4(sp)
+sw a0, 24(sp)
+nop
+li a0, 65535
+lw a1, 24(sp)
+bge a0, a1, le46
+addi a0, zero, 0
+j le_done47
+le46:
+addi a0, zero, 1
+le_done47:
+lw a1, 20(sp)
+beq a1, zero, and_false48
+beq a0, zero, and_false48
+addi a0, zero, 1
+j and_done49
+and_false48:
+addi a0, zero, 0
+and_done49:
+sw a0, 20(sp)
+nop
+lw a0, 4(sp)
+sw a0, 24(sp)
+nop
+li a0, 65536
+lw a1, 24(sp)
+bge a1, a0, ge50
+addi a0, zero, 0
+j ge_done51
+ge50:
+addi a0, zero, 1
+ge_done51:
+sw a0, 24(sp)
+nop
+lw a0, 4(sp)
+sw a0, 28(sp)
+nop
+li a0, 131071
+lw a1, 28(sp)
+bge a0, a1, le52
+addi a0, zero, 0
+j le_done53
+le52:
+addi a0, zero, 1
+le_done53:
+lw a1, 24(sp)
+beq a1, zero, and_false54
+beq a0, zero, and_false54
+addi a0, zero, 1
+j and_done55
+and_false54:
+addi a0, zero, 0
+and_done55:
+lw a1, 20(sp)
+bne a1, zero, or_true56
+bne a0, zero, or_true56
+addi a0, zero, 0
+j or_done57
+or_true56:
+addi a0, zero, 1
+or_done57:
+sw a0, 20(sp)
+nop
+lw a0, 4(sp)
+sw a0, 24(sp)
+nop
+addi a0, zero, -1024
+lw a1, 24(sp)
+bge a1, a0, ge58
+addi a0, zero, 0
+j ge_done59
+ge58:
+addi a0, zero, 1
+ge_done59:
+sw a0, 24(sp)
+nop
+lw a0, 4(sp)
+sw a0, 28(sp)
+nop
+addi a0, zero, -705
+lw a1, 28(sp)
+bge a0, a1, le60
+addi a0, zero, 0
+j le_done61
+le60:
+addi a0, zero, 1
+le_done61:
+lw a1, 24(sp)
+beq a1, zero, and_false62
+beq a0, zero, and_false62
+addi a0, zero, 1
+j and_done63
+and_false62:
+addi a0, zero, 0
+and_done63:
+lw a1, 20(sp)
+bne a1, zero, or_true64
+bne a0, zero, or_true64
+addi a0, zero, 0
+j or_done65
+or_true64:
+addi a0, zero, 1
+or_done65:
+beq a0, zero, else_42
+addi a0, zero, 0
+lw ra, 252(sp)
+addi sp, sp, 256
+ret
+else_42:
+endif_43:
+lw a0, 12(sp)
+beq a0, zero, ternary_else66
+addi a0, zero, 3
+sub a0, zero, a0
+j ternary_end67
+ternary_else66:
+addi a0, zero, 2
+sub a0, zero, a0
+ternary_end67:
 lw ra, 252(sp)
 addi sp, sp, 256
 ret
@@ -421,19 +1029,19 @@ sw ra, 252(sp)
 nop
 sw a0, 4(sp)
 nop
-while_16:
+while_68:
 lw a0, 4(sp)
 sw a0, 8(sp)
 nop
 addi a0, zero, 0
 lw a1, 8(sp)
-blt a0, a1, gt18
+blt a0, a1, gt70
 addi a0, zero, 0
-j gt_done19
-gt18:
+j gt_done71
+gt70:
 addi a0, zero, 1
-gt_done19:
-beq a0, zero, while_end_17
+gt_done71:
+beq a0, zero, while_end_69
 lw a0, 4(sp)
 sw a0, 8(sp)
 nop
@@ -442,8 +1050,8 @@ lw a1, 8(sp)
 sub a0, a1, a0
 sw a0, 4(sp)
 nop
-j while_16
-while_end_17:
+j while_68
+while_end_69:
 li a0, 0
 lw ra, 252(sp)
 addi sp, sp, 256
@@ -631,19 +1239,19 @@ nop
 addi a0, zero, 0
 sw a0, 16(sp)
 nop
-for_20:
+for_72:
 lw a0, 16(sp)
 sw a0, 20(sp)
 nop
 li a0, 1000000
 lw a1, 20(sp)
-blt a1, a0, lt23
+blt a1, a0, lt75
 addi a0, zero, 0
-j lt_done24
-lt23:
+j lt_done76
+lt75:
 addi a0, zero, 1
-lt_done24:
-beq a0, zero, for_end_21
+lt_done76:
+beq a0, zero, for_end_73
 lw a0, 12(sp)
 lw a0, 0(a0)
 sw a0, 20(sp)
@@ -655,18 +1263,18 @@ sw a0, 20(sp)
 nop
 addi a0, zero, 0
 lw a1, 20(sp)
-beq a1, a0, eq27
+beq a1, a0, eq79
 addi a0, zero, 0
-j eq_done28
-eq27:
+j eq_done80
+eq79:
 addi a0, zero, 1
-eq_done28:
-beq a0, zero, else_25
-j for_end_21
-j endif_26
-else_25:
-endif_26:
-for_continue_22:
+eq_done80:
+beq a0, zero, else_77
+j for_end_73
+j endif_78
+else_77:
+endif_78:
+for_continue_74:
 lw a0, 16(sp)
 sw a0, 20(sp)
 nop
@@ -675,8 +1283,8 @@ lw a1, 20(sp)
 add a0, a1, a0
 sw a0, 16(sp)
 nop
-j for_20
-for_end_21:
+j for_72
+for_end_73:
 lw a0, 4(sp)
 sw a0, 20(sp)
 nop
@@ -698,9 +1306,9 @@ nop
 lw a0, 4(sp)
 sw a0, 24(sp)
 nop
-while_29:
+while_81:
 addi a0, zero, 1
-beq a0, zero, while_end_30
+beq a0, zero, while_end_82
 lw a0, 24(sp)
 sw a0, 32(sp)
 nop
@@ -750,18 +1358,18 @@ sw a0, 32(sp)
 nop
 addi a0, zero, 0
 lw a1, 32(sp)
-beq a1, a0, eq33
+beq a1, a0, eq85
 addi a0, zero, 0
-j eq_done34
-eq33:
+j eq_done86
+eq85:
 addi a0, zero, 1
-eq_done34:
-beq a0, zero, else_31
+eq_done86:
+beq a0, zero, else_83
 lw ra, 252(sp)
 addi sp, sp, 256
 ret
-else_31:
-endif_32:
+else_83:
+endif_84:
 lw a0, 16(sp)
 sw a0, 32(sp)
 nop
@@ -780,8 +1388,8 @@ lw a1, 32(sp)
 add a0, a1, a0
 sw a0, 24(sp)
 nop
-j while_29
-while_end_30:
+j while_81
+while_end_82:
 li a0, 0
 lw ra, 252(sp)
 addi sp, sp, 256
@@ -798,13 +1406,13 @@ sw a0, 36(sp)
 nop
 addi a0, zero, 0
 lw a1, 36(sp)
-beq a1, a0, eq37
+beq a1, a0, eq89
 addi a0, zero, 0
-j eq_done38
-eq37:
+j eq_done90
+eq89:
 addi a0, zero, 1
-eq_done38:
-beq a0, zero, else_35
+eq_done90:
+beq a0, zero, else_87
 addi a0, zero, 48
 sw a0, 36(sp)
 nop
@@ -813,8 +1421,8 @@ jal ra, bios_uart_putc
 lw ra, 252(sp)
 addi sp, sp, 256
 ret
-else_35:
-endif_36:
+else_87:
+endif_88:
 addi a0, zero, 0
 sw a0, 24(sp)
 nop
@@ -823,13 +1431,13 @@ sw a0, 36(sp)
 nop
 addi a0, zero, 0
 lw a1, 36(sp)
-blt a1, a0, lt41
+blt a1, a0, lt93
 addi a0, zero, 0
-j lt_done42
-lt41:
+j lt_done94
+lt93:
 addi a0, zero, 1
-lt_done42:
-beq a0, zero, else_39
+lt_done94:
+beq a0, zero, else_91
 addi a0, zero, 1
 sw a0, 24(sp)
 nop
@@ -841,44 +1449,44 @@ lw a1, 36(sp)
 sub a0, a1, a0
 sw a0, 4(sp)
 nop
-j endif_40
-else_39:
-endif_40:
+j endif_92
+else_91:
+endif_92:
 addi a0, zero, 0
 sw a0, 20(sp)
 nop
 lw a0, 4(sp)
 sw a0, 32(sp)
 nop
-while_43:
+while_95:
 lw a0, 32(sp)
 sw a0, 36(sp)
 nop
 addi a0, zero, 0
 lw a1, 36(sp)
-blt a0, a1, gt45
+blt a0, a1, gt97
 addi a0, zero, 0
-j gt_done46
-gt45:
+j gt_done98
+gt97:
 addi a0, zero, 1
-gt_done46:
-beq a0, zero, while_end_44
+gt_done98:
+beq a0, zero, while_end_96
 lw a0, 32(sp)
 sw a0, 28(sp)
 nop
-while_47:
+while_99:
 lw a0, 28(sp)
 sw a0, 36(sp)
 nop
 addi a0, zero, 10
 lw a1, 36(sp)
-bge a1, a0, ge49
+bge a1, a0, ge101
 addi a0, zero, 0
-j ge_done50
-ge49:
+j ge_done102
+ge101:
 addi a0, zero, 1
-ge_done50:
-beq a0, zero, while_end_48
+ge_done102:
+beq a0, zero, while_end_100
 lw a0, 28(sp)
 sw a0, 36(sp)
 nop
@@ -887,8 +1495,8 @@ lw a1, 36(sp)
 sub a0, a1, a0
 sw a0, 28(sp)
 nop
-j while_47
-while_end_48:
+j while_99
+while_end_100:
 addi a0, zero, 48
 sw a0, 36(sp)
 nop
@@ -926,19 +1534,19 @@ nop
 addi a0, zero, 0
 sw a0, 36(sp)
 nop
-while_51:
+while_103:
 lw a0, 32(sp)
 sw a0, 40(sp)
 nop
 addi a0, zero, 10
 lw a1, 40(sp)
-bge a1, a0, ge53
+bge a1, a0, ge105
 addi a0, zero, 0
-j ge_done54
-ge53:
+j ge_done106
+ge105:
 addi a0, zero, 1
-ge_done54:
-beq a0, zero, while_end_52
+ge_done106:
+beq a0, zero, while_end_104
 lw a0, 32(sp)
 sw a0, 40(sp)
 nop
@@ -955,36 +1563,36 @@ lw a1, 40(sp)
 add a0, a1, a0
 sw a0, 36(sp)
 nop
-j while_51
-while_end_52:
+j while_103
+while_end_104:
 lw a0, 36(sp)
 sw a0, 32(sp)
 nop
-j while_43
-while_end_44:
+j while_95
+while_end_96:
 lw a0, 24(sp)
-beq a0, zero, else_55
+beq a0, zero, else_107
 addi a0, zero, 45
 sw a0, 40(sp)
 nop
 lw a0, 40(sp)
 jal ra, bios_uart_putc
-j endif_56
-else_55:
-endif_56:
-while_57:
+j endif_108
+else_107:
+endif_108:
+while_109:
 lw a0, 20(sp)
 sw a0, 40(sp)
 nop
 addi a0, zero, 0
 lw a1, 40(sp)
-blt a0, a1, gt59
+blt a0, a1, gt111
 addi a0, zero, 0
-j gt_done60
-gt59:
+j gt_done112
+gt111:
 addi a0, zero, 1
-gt_done60:
-beq a0, zero, while_end_58
+gt_done112:
+beq a0, zero, while_end_110
 lw a0, 20(sp)
 sw a0, 40(sp)
 nop
@@ -1005,8 +1613,8 @@ sw a0, 40(sp)
 nop
 lw a0, 40(sp)
 jal ra, bios_uart_putc
-j while_57
-while_end_58:
+j while_109
+while_end_110:
 li a0, 0
 lw ra, 252(sp)
 addi sp, sp, 256
@@ -1226,7 +1834,7 @@ add a0, a1, a0
 lw a1, 32(sp)
 sw a1, 0(a0)
 mv a0, a1
-la a0, .str12
+la a0, .str16
 sw a0, 32(sp)
 nop
 lw a0, 32(sp)
@@ -1234,19 +1842,19 @@ jal ra, bios_uart_puts
 addi a0, zero, 28
 sw a0, 24(sp)
 nop
-while_61:
+while_113:
 lw a0, 24(sp)
 sw a0, 32(sp)
 nop
 addi a0, zero, 0
 lw a1, 32(sp)
-bge a1, a0, ge63
+bge a1, a0, ge115
 addi a0, zero, 0
-j ge_done64
-ge63:
+j ge_done116
+ge115:
 addi a0, zero, 1
-ge_done64:
-beq a0, zero, while_end_62
+ge_done116:
+beq a0, zero, while_end_114
 lw a0, 4(sp)
 sw a0, 32(sp)
 nop
@@ -1280,8 +1888,8 @@ lw a1, 32(sp)
 sub a0, a1, a0
 sw a0, 24(sp)
 nop
-j while_61
-while_end_62:
+j while_113
+while_end_114:
 li a0, 0
 lw ra, 252(sp)
 addi sp, sp, 256
@@ -1303,7 +1911,7 @@ addi a0, zero, 952
 sub a0, zero, a0
 sw a0, 12(sp)
 nop
-while_65:
+while_117:
 lw a0, 8(sp)
 lw a0, 0(a0)
 sw a0, 20(sp)
@@ -1311,15 +1919,15 @@ nop
 addi a0, zero, 2
 lw a1, 20(sp)
 and a0, a1, a0
-beq a0, zero, not_zero67
+beq a0, zero, not_zero119
 addi a0, zero, 0
-j not_done68
-not_zero67:
+j not_done120
+not_zero119:
 addi a0, zero, 1
-not_done68:
-beq a0, zero, while_end_66
-j while_65
-while_end_66:
+not_done120:
+beq a0, zero, while_end_118
+j while_117
+while_end_118:
 lw a0, 4(sp)
 lw a0, 0(a0)
 sw a0, 16(sp)
@@ -1350,12 +1958,12 @@ nop
 addi a0, zero, 2
 lw a1, 8(sp)
 and a0, a1, a0
-beq a0, zero, ternary_else69
+beq a0, zero, ternary_else121
 addi a0, zero, 1
-j ternary_end70
-ternary_else69:
+j ternary_end122
+ternary_else121:
 addi a0, zero, 0
-ternary_end70:
+ternary_end122:
 lw ra, 252(sp)
 addi sp, sp, 256
 ret
@@ -1377,13 +1985,13 @@ sw a0, 36(sp)
 nop
 addi a0, zero, 0
 lw a1, 36(sp)
-blt a1, a0, lt73
+blt a1, a0, lt125
 addi a0, zero, 0
-j lt_done74
-lt73:
+j lt_done126
+lt125:
 addi a0, zero, 1
-lt_done74:
-beq a0, zero, else_71
+lt_done126:
+beq a0, zero, else_123
 addi a0, zero, 0
 sw a0, 36(sp)
 nop
@@ -1395,24 +2003,24 @@ nop
 addi a0, zero, 1
 sw a0, 32(sp)
 nop
-j endif_72
-else_71:
+j endif_124
+else_123:
 lw a0, 4(sp)
 sw a0, 12(sp)
 nop
-endif_72:
+endif_124:
 lw a0, 12(sp)
 sw a0, 36(sp)
 nop
 addi a0, zero, 0
 lw a1, 36(sp)
-beq a1, a0, eq77
+beq a1, a0, eq129
 addi a0, zero, 0
-j eq_done78
-eq77:
+j eq_done130
+eq129:
 addi a0, zero, 1
-eq_done78:
-beq a0, zero, else_75
+eq_done130:
+beq a0, zero, else_127
 addi a0, zero, 0
 sw a0, 36(sp)
 nop
@@ -1420,43 +2028,43 @@ lw a0, 8(sp)
 lw a1, 36(sp)
 sw a1, 0(a0)
 mv a0, a1
-j endif_76
-else_75:
+j endif_128
+else_127:
 addi a0, zero, 0
 sw a0, 16(sp)
 nop
 addi a0, zero, 0
 sw a0, 20(sp)
 nop
-while_79:
+while_131:
 lw a0, 12(sp)
 sw a0, 36(sp)
 nop
 addi a0, zero, 0
 lw a1, 36(sp)
-blt a0, a1, gt81
+blt a0, a1, gt133
 addi a0, zero, 0
-j gt_done82
-gt81:
+j gt_done134
+gt133:
 addi a0, zero, 1
-gt_done82:
-beq a0, zero, while_end_80
+gt_done134:
+beq a0, zero, while_end_132
 lw a0, 12(sp)
 sw a0, 24(sp)
 nop
-while_83:
+while_135:
 lw a0, 24(sp)
 sw a0, 36(sp)
 nop
 addi a0, zero, 10
 lw a1, 36(sp)
-bge a1, a0, ge85
+bge a1, a0, ge137
 addi a0, zero, 0
-j ge_done86
-ge85:
+j ge_done138
+ge137:
 addi a0, zero, 1
-ge_done86:
-beq a0, zero, while_end_84
+ge_done138:
+beq a0, zero, while_end_136
 lw a0, 24(sp)
 sw a0, 36(sp)
 nop
@@ -1465,8 +2073,8 @@ lw a1, 36(sp)
 sub a0, a1, a0
 sw a0, 24(sp)
 nop
-j while_83
-while_end_84:
+j while_135
+while_end_136:
 lw a0, 16(sp)
 sw a0, 36(sp)
 nop
@@ -1499,19 +2107,19 @@ lw a1, 36(sp)
 sub a0, a1, a0
 sw a0, 12(sp)
 nop
-while_87:
+while_139:
 lw a0, 12(sp)
 sw a0, 36(sp)
 nop
 addi a0, zero, 10
 lw a1, 36(sp)
-bge a1, a0, ge89
+bge a1, a0, ge141
 addi a0, zero, 0
-j ge_done90
-ge89:
+j ge_done142
+ge141:
 addi a0, zero, 1
-ge_done90:
-beq a0, zero, while_end_88
+ge_done142:
+beq a0, zero, while_end_140
 lw a0, 12(sp)
 sw a0, 36(sp)
 nop
@@ -1528,25 +2136,25 @@ lw a1, 36(sp)
 add a0, a1, a0
 sw a0, 28(sp)
 nop
-j while_87
-while_end_88:
+j while_139
+while_end_140:
 lw a0, 28(sp)
 sw a0, 12(sp)
 nop
-j while_79
-while_end_80:
+j while_131
+while_end_132:
 lw a0, 32(sp)
 sw a0, 36(sp)
 nop
 addi a0, zero, 0
 lw a1, 36(sp)
-bne a1, a0, ne93
+bne a1, a0, ne145
 addi a0, zero, 0
-j ne_done94
-ne93:
+j ne_done146
+ne145:
 addi a0, zero, 1
-ne_done94:
-beq a0, zero, else_91
+ne_done146:
+beq a0, zero, else_143
 lw a0, 16(sp)
 sw a0, 36(sp)
 nop
@@ -1560,9 +2168,9 @@ lw a1, 36(sp)
 or a0, a1, a0
 sw a0, 16(sp)
 nop
-j endif_92
-else_91:
-endif_92:
+j endif_144
+else_143:
+endif_144:
 lw a0, 16(sp)
 sw a0, 36(sp)
 nop
@@ -1570,7 +2178,7 @@ lw a0, 8(sp)
 lw a1, 36(sp)
 sw a1, 0(a0)
 mv a0, a1
-endif_76:
+endif_128:
 li a0, 0
 lw ra, 252(sp)
 addi sp, sp, 256
@@ -1606,7 +2214,7 @@ addi a0, zero, 1008
 sub a0, zero, a0
 sw a0, 4(sp)
 nop
-addi a0, zero, 1006
+addi a0, zero, 1004
 sub a0, zero, a0
 sw a0, 8(sp)
 nop
@@ -1634,49 +2242,49 @@ sw a0, 32(sp)
 nop
 addi a0, zero, 0
 lw a1, 32(sp)
-bne a1, a0, ne97
+bne a1, a0, ne149
 addi a0, zero, 0
-j ne_done98
-ne97:
+j ne_done150
+ne149:
 addi a0, zero, 1
-ne_done98:
-beq a0, zero, else_95
+ne_done150:
+beq a0, zero, else_147
 lw a0, 20(sp)
 sw a0, 32(sp)
 nop
 addi a0, zero, 0
 lw a1, 32(sp)
-beq a1, a0, eq101
+beq a1, a0, eq153
 addi a0, zero, 0
-j eq_done102
-eq101:
+j eq_done154
+eq153:
 addi a0, zero, 1
-eq_done102:
-beq a0, zero, else_99
+eq_done154:
+beq a0, zero, else_151
 lw a0, 4(sp)
 lw a0, 0(a0)
 sw a0, 24(sp)
 nop
-while_103:
+while_155:
 lw a0, 24(sp)
 sw a0, 32(sp)
 nop
 addi a0, zero, 1
 sub a0, zero, a0
 lw a1, 32(sp)
-beq a1, a0, eq105
+beq a1, a0, eq157
 addi a0, zero, 0
-j eq_done106
-eq105:
+j eq_done158
+eq157:
 addi a0, zero, 1
-eq_done106:
-beq a0, zero, while_end_104
+eq_done158:
+beq a0, zero, while_end_156
 lw a0, 4(sp)
 lw a0, 0(a0)
 sw a0, 24(sp)
 nop
-j while_103
-while_end_104:
+j while_155
+while_end_156:
 lw a0, 24(sp)
 sw a0, 32(sp)
 nop
@@ -1703,10 +2311,10 @@ lw a0, 28(sp)
 lw ra, 252(sp)
 addi sp, sp, 256
 ret
-else_99:
-endif_100:
-j endif_96
-else_95:
+else_151:
+endif_152:
+j endif_148
+else_147:
 addi a0, zero, 0
 sw a0, 32(sp)
 nop
@@ -1714,7 +2322,7 @@ lw a0, 12(sp)
 lw a1, 32(sp)
 sw a1, 0(a0)
 mv a0, a1
-endif_96:
+endif_148:
 addi a0, zero, 1
 sub a0, zero, a0
 lw ra, 252(sp)
@@ -1728,21 +2336,32 @@ addi a0, zero, 1008
 sub a0, zero, a0
 sw a0, 4(sp)
 nop
-li a0, 32752
+addi a0, zero, 1000
+sub a0, zero, a0
 sw a0, 8(sp)
 nop
-addi a0, zero, 0
+li a0, 32752
 sw a0, 12(sp)
 nop
+addi a0, zero, 0
+sw a0, 16(sp)
+nop
 lw a0, 4(sp)
-lw a1, 12(sp)
+lw a1, 16(sp)
+sw a1, 0(a0)
+mv a0, a1
+addi a0, zero, 4
+sw a0, 16(sp)
+nop
+lw a0, 8(sp)
+lw a1, 16(sp)
 sw a1, 0(a0)
 mv a0, a1
 addi a0, zero, 0
-sw a0, 12(sp)
+sw a0, 16(sp)
 nop
-lw a0, 8(sp)
-lw a1, 12(sp)
+lw a0, 12(sp)
+lw a1, 16(sp)
 sw a1, 0(a0)
 mv a0, a1
 li a0, 0
@@ -1798,19 +2417,19 @@ nop
 lw a0, 8(sp)
 sw a0, 20(sp)
 nop
-while_107:
+while_159:
 lw a0, 20(sp)
 sw a0, 24(sp)
 nop
 addi a0, zero, 0
 lw a1, 24(sp)
-bne a1, a0, ne109
+bne a1, a0, ne161
 addi a0, zero, 0
-j ne_done110
-ne109:
+j ne_done162
+ne161:
 addi a0, zero, 1
-ne_done110:
-beq a0, zero, while_end_108
+ne_done162:
+beq a0, zero, while_end_160
 lw a0, 20(sp)
 sw a0, 24(sp)
 nop
@@ -1821,13 +2440,13 @@ sw a0, 24(sp)
 nop
 addi a0, zero, 0
 lw a1, 24(sp)
-bne a1, a0, ne113
+bne a1, a0, ne165
 addi a0, zero, 0
-j ne_done114
-ne113:
+j ne_done166
+ne165:
 addi a0, zero, 1
-ne_done114:
-beq a0, zero, else_111
+ne_done166:
+beq a0, zero, else_163
 lw a0, 12(sp)
 sw a0, 24(sp)
 nop
@@ -1836,9 +2455,9 @@ lw a1, 24(sp)
 add a0, a1, a0
 sw a0, 12(sp)
 nop
-j endif_112
-else_111:
-endif_112:
+j endif_164
+else_163:
+endif_164:
 lw a0, 16(sp)
 sw a0, 24(sp)
 nop
@@ -1855,8 +2474,8 @@ lw a1, 24(sp)
 srl a0, a1, a0
 sw a0, 20(sp)
 nop
-j while_107
-while_end_108:
+j while_159
+while_end_160:
 lw a0, 12(sp)
 lw ra, 252(sp)
 addi sp, sp, 256
@@ -1874,19 +2493,19 @@ sw a0, 28(sp)
 nop
 addi a0, zero, 0
 lw a1, 28(sp)
-beq a1, a0, eq117
+beq a1, a0, eq169
 addi a0, zero, 0
-j eq_done118
-eq117:
+j eq_done170
+eq169:
 addi a0, zero, 1
-eq_done118:
-beq a0, zero, else_115
+eq_done170:
+beq a0, zero, else_167
 addi a0, zero, 0
 lw ra, 252(sp)
 addi sp, sp, 256
 ret
-else_115:
-endif_116:
+else_167:
+endif_168:
 addi a0, zero, 1
 sw a0, 12(sp)
 nop
@@ -1895,13 +2514,13 @@ sw a0, 28(sp)
 nop
 addi a0, zero, 0
 lw a1, 28(sp)
-blt a1, a0, lt121
+blt a1, a0, lt173
 addi a0, zero, 0
-j lt_done122
-lt121:
+j lt_done174
+lt173:
 addi a0, zero, 1
-lt_done122:
-beq a0, zero, else_119
+lt_done174:
+beq a0, zero, else_171
 lw a0, 4(sp)
 sub a0, zero, a0
 sw a0, 4(sp)
@@ -1910,21 +2529,21 @@ lw a0, 12(sp)
 sub a0, zero, a0
 sw a0, 12(sp)
 nop
-j endif_120
-else_119:
-endif_120:
+j endif_172
+else_171:
+endif_172:
 lw a0, 8(sp)
 sw a0, 28(sp)
 nop
 addi a0, zero, 0
 lw a1, 28(sp)
-blt a1, a0, lt125
+blt a1, a0, lt177
 addi a0, zero, 0
-j lt_done126
-lt125:
+j lt_done178
+lt177:
 addi a0, zero, 1
-lt_done126:
-beq a0, zero, else_123
+lt_done178:
+beq a0, zero, else_175
 lw a0, 8(sp)
 sub a0, zero, a0
 sw a0, 8(sp)
@@ -1933,9 +2552,9 @@ lw a0, 12(sp)
 sub a0, zero, a0
 sw a0, 12(sp)
 nop
-j endif_124
-else_123:
-endif_124:
+j endif_176
+else_175:
+endif_176:
 addi a0, zero, 0
 sw a0, 16(sp)
 nop
@@ -1945,19 +2564,19 @@ nop
 addi a0, zero, 31
 sw a0, 24(sp)
 nop
-for_127:
+for_179:
 lw a0, 24(sp)
 sw a0, 28(sp)
 nop
 addi a0, zero, 0
 lw a1, 28(sp)
-bge a1, a0, ge130
+bge a1, a0, ge182
 addi a0, zero, 0
-j ge_done131
-ge130:
+j ge_done183
+ge182:
 addi a0, zero, 1
-ge_done131:
-beq a0, zero, for_end_128
+ge_done183:
+beq a0, zero, for_end_180
 lw a0, 20(sp)
 sw a0, 28(sp)
 nop
@@ -1986,13 +2605,13 @@ sw a0, 28(sp)
 nop
 lw a0, 8(sp)
 lw a1, 28(sp)
-bge a1, a0, ge134
+bge a1, a0, ge186
 addi a0, zero, 0
-j ge_done135
-ge134:
+j ge_done187
+ge186:
 addi a0, zero, 1
-ge_done135:
-beq a0, zero, else_132
+ge_done187:
+beq a0, zero, else_184
 lw a0, 20(sp)
 sw a0, 28(sp)
 nop
@@ -2014,10 +2633,10 @@ lw a1, 28(sp)
 or a0, a1, a0
 sw a0, 16(sp)
 nop
-j endif_133
-else_132:
-endif_133:
-for_continue_129:
+j endif_185
+else_184:
+endif_185:
+for_continue_181:
 lw a0, 24(sp)
 sw a0, 28(sp)
 nop
@@ -2026,27 +2645,27 @@ lw a1, 28(sp)
 sub a0, a1, a0
 sw a0, 24(sp)
 nop
-j for_127
-for_end_128:
+j for_179
+for_end_180:
 lw a0, 12(sp)
 sw a0, 28(sp)
 nop
 addi a0, zero, 0
 lw a1, 28(sp)
-blt a1, a0, lt138
+blt a1, a0, lt190
 addi a0, zero, 0
-j lt_done139
-lt138:
+j lt_done191
+lt190:
 addi a0, zero, 1
-lt_done139:
-beq a0, zero, else_136
+lt_done191:
+beq a0, zero, else_188
 lw a0, 16(sp)
 sub a0, zero, a0
 lw ra, 252(sp)
 addi sp, sp, 256
 ret
-else_136:
-endif_137:
+else_188:
+endif_189:
 lw a0, 16(sp)
 lw ra, 252(sp)
 addi sp, sp, 256
@@ -2064,19 +2683,19 @@ sw a0, 24(sp)
 nop
 addi a0, zero, 0
 lw a1, 24(sp)
-beq a1, a0, eq142
+beq a1, a0, eq194
 addi a0, zero, 0
-j eq_done143
-eq142:
+j eq_done195
+eq194:
 addi a0, zero, 1
-eq_done143:
-beq a0, zero, else_140
+eq_done195:
+beq a0, zero, else_192
 addi a0, zero, 0
 lw ra, 252(sp)
 addi sp, sp, 256
 ret
-else_140:
-endif_141:
+else_192:
+endif_193:
 addi a0, zero, 1
 sw a0, 20(sp)
 nop
@@ -2085,13 +2704,13 @@ sw a0, 24(sp)
 nop
 addi a0, zero, 0
 lw a1, 24(sp)
-blt a1, a0, lt146
+blt a1, a0, lt198
 addi a0, zero, 0
-j lt_done147
-lt146:
+j lt_done199
+lt198:
 addi a0, zero, 1
-lt_done147:
-beq a0, zero, else_144
+lt_done199:
+beq a0, zero, else_196
 lw a0, 4(sp)
 sub a0, zero, a0
 sw a0, 4(sp)
@@ -2100,47 +2719,47 @@ addi a0, zero, 1
 sub a0, zero, a0
 sw a0, 20(sp)
 nop
-j endif_145
-else_144:
-endif_145:
+j endif_197
+else_196:
+endif_197:
 lw a0, 8(sp)
 sw a0, 24(sp)
 nop
 addi a0, zero, 0
 lw a1, 24(sp)
-blt a1, a0, lt150
+blt a1, a0, lt202
 addi a0, zero, 0
-j lt_done151
-lt150:
+j lt_done203
+lt202:
 addi a0, zero, 1
-lt_done151:
-beq a0, zero, else_148
+lt_done203:
+beq a0, zero, else_200
 lw a0, 8(sp)
 sub a0, zero, a0
 sw a0, 8(sp)
 nop
-j endif_149
-else_148:
-endif_149:
+j endif_201
+else_200:
+endif_201:
 addi a0, zero, 0
 sw a0, 12(sp)
 nop
 addi a0, zero, 31
 sw a0, 16(sp)
 nop
-for_152:
+for_204:
 lw a0, 16(sp)
 sw a0, 24(sp)
 nop
 addi a0, zero, 0
 lw a1, 24(sp)
-bge a1, a0, ge155
+bge a1, a0, ge207
 addi a0, zero, 0
-j ge_done156
-ge155:
+j ge_done208
+ge207:
 addi a0, zero, 1
-ge_done156:
-beq a0, zero, for_end_153
+ge_done208:
+beq a0, zero, for_end_205
 lw a0, 12(sp)
 sw a0, 24(sp)
 nop
@@ -2169,13 +2788,13 @@ sw a0, 24(sp)
 nop
 lw a0, 8(sp)
 lw a1, 24(sp)
-bge a1, a0, ge159
+bge a1, a0, ge211
 addi a0, zero, 0
-j ge_done160
-ge159:
+j ge_done212
+ge211:
 addi a0, zero, 1
-ge_done160:
-beq a0, zero, else_157
+ge_done212:
+beq a0, zero, else_209
 lw a0, 12(sp)
 sw a0, 24(sp)
 nop
@@ -2184,10 +2803,10 @@ lw a1, 24(sp)
 sub a0, a1, a0
 sw a0, 12(sp)
 nop
-j endif_158
-else_157:
-endif_158:
-for_continue_154:
+j endif_210
+else_209:
+endif_210:
+for_continue_206:
 lw a0, 16(sp)
 sw a0, 24(sp)
 nop
@@ -2196,27 +2815,27 @@ lw a1, 24(sp)
 sub a0, a1, a0
 sw a0, 16(sp)
 nop
-j for_152
-for_end_153:
+j for_204
+for_end_205:
 lw a0, 20(sp)
 sw a0, 24(sp)
 nop
 addi a0, zero, 0
 lw a1, 24(sp)
-blt a1, a0, lt163
+blt a1, a0, lt215
 addi a0, zero, 0
-j lt_done164
-lt163:
+j lt_done216
+lt215:
 addi a0, zero, 1
-lt_done164:
-beq a0, zero, else_161
+lt_done216:
+beq a0, zero, else_213
 lw a0, 12(sp)
 sub a0, zero, a0
 lw ra, 252(sp)
 addi sp, sp, 256
 ret
-else_161:
-endif_162:
+else_213:
+endif_214:
 lw a0, 12(sp)
 lw ra, 252(sp)
 addi sp, sp, 256
@@ -2225,7 +2844,7 @@ bios_jump_to_pram:
 addi sp, sp, -256
 sw ra, 252(sp)
 nop
-la a0, .str13
+la a0, .str17
 sw a0, 8(sp)
 nop
 lw a0, 8(sp)
@@ -2241,7 +2860,7 @@ nop
 lw a0, 4(sp)
 mv t0, a0
 jalr ra, t0, 0
-la a0, .str14
+la a0, .str18
 sw a0, 8(sp)
 nop
 lw a0, 8(sp)
@@ -2288,6 +2907,329 @@ lw a0, 0(a0)
 lw ra, 252(sp)
 addi sp, sp, 256
 ret
+bios_install_vectors:
+addi sp, sp, -256
+sw ra, 252(sp)
+nop
+li a0, 65536
+sw a0, 20(sp)
+nop
+li a0, 4096
+sw a0, 24(sp)
+nop
+addi a0, zero, 256
+lw a1, 24(sp)
+sub a0, a1, a0
+sw a0, 24(sp)
+nop
+addi a0, zero, 4
+lw a1, 24(sp)
+mul a0, a1, a0
+lw a1, 20(sp)
+add a0, a1, a0
+sw a0, 20(sp)
+nop
+addi a0, zero, 4
+lw a1, 20(sp)
+sub a0, a1, a0
+sw a0, 20(sp)
+nop
+li a0, 807403635
+sw a0, 24(sp)
+nop
+lw a0, 20(sp)
+lw a1, 24(sp)
+jal ra, bios_pram_write
+la a0, bios_exception_entry
+sw a0, 16(sp)
+nop
+addi a0, zero, 0
+sw a0, 4(sp)
+nop
+while_217:
+lw a0, 4(sp)
+sw a0, 20(sp)
+nop
+addi a0, zero, 256
+lw a1, 20(sp)
+blt a1, a0, lt219
+addi a0, zero, 0
+j lt_done220
+lt219:
+addi a0, zero, 1
+lt_done220:
+beq a0, zero, while_end_218
+li a0, 65536
+sw a0, 20(sp)
+nop
+li a0, 4096
+sw a0, 24(sp)
+nop
+addi a0, zero, 256
+lw a1, 24(sp)
+sub a0, a1, a0
+sw a0, 24(sp)
+nop
+addi a0, zero, 4
+lw a1, 24(sp)
+mul a0, a1, a0
+lw a1, 20(sp)
+add a0, a1, a0
+sw a0, 20(sp)
+nop
+lw a0, 4(sp)
+sw a0, 24(sp)
+nop
+addi a0, zero, 2
+lw a1, 24(sp)
+sll a0, a1, a0
+lw a1, 20(sp)
+add a0, a1, a0
+sw a0, 8(sp)
+nop
+lw a0, 8(sp)
+sw a0, 20(sp)
+nop
+lw a0, 16(sp)
+sw a0, 24(sp)
+nop
+lw a0, 20(sp)
+lw a1, 24(sp)
+jal ra, bios_encode_jal
+sw a0, 12(sp)
+nop
+lw a0, 8(sp)
+sw a0, 20(sp)
+nop
+lw a0, 12(sp)
+sw a0, 24(sp)
+nop
+lw a0, 20(sp)
+lw a1, 24(sp)
+jal ra, bios_pram_write
+lw a0, 4(sp)
+sw a0, 20(sp)
+nop
+addi a0, zero, 1
+lw a1, 20(sp)
+add a0, a1, a0
+sw a0, 4(sp)
+nop
+j while_217
+while_end_218:
+addi a0, zero, 708
+sub a0, zero, a0
+sw a0, 20(sp)
+nop
+li a0, 65536
+sw a0, 20(sp)
+nop
+li a0, 4096
+sw a0, 24(sp)
+nop
+addi a0, zero, 256
+lw a1, 24(sp)
+sub a0, a1, a0
+sw a0, 24(sp)
+nop
+addi a0, zero, 4
+lw a1, 24(sp)
+mul a0, a1, a0
+lw a1, 20(sp)
+add a0, a1, a0
+sw a0, 24(sp)
+nop
+lw a0, 20(sp)
+lw a1, 24(sp)
+jal ra, bios_cp0_write
+li a0, 0
+lw ra, 252(sp)
+addi sp, sp, 256
+ret
+
+bios_exception_entry:
+addi sp, sp, -256
+sw ra, 252(sp)
+nop
+addi a0, zero, 712
+sub a0, zero, a0
+sw a0, 20(sp)
+nop
+lw a0, 20(sp)
+jal ra, bios_cp0_read
+sw a0, 4(sp)
+nop
+addi a0, zero, 716
+sub a0, zero, a0
+sw a0, 20(sp)
+nop
+lw a0, 20(sp)
+jal ra, bios_cp0_read
+sw a0, 8(sp)
+nop
+lw a0, 4(sp)
+sw a0, 20(sp)
+nop
+addi a0, zero, 255
+lw a1, 20(sp)
+and a0, a1, a0
+sw a0, 12(sp)
+nop
+lw a0, 4(sp)
+sw a0, 20(sp)
+nop
+addi a0, zero, 0
+lw a1, 20(sp)
+blt a1, a0, lt223
+addi a0, zero, 0
+j lt_done224
+lt223:
+addi a0, zero, 1
+lt_done224:
+beq a0, zero, ternary_else221
+addi a0, zero, 1
+j ternary_end222
+ternary_else221:
+addi a0, zero, 0
+ternary_end222:
+sw a0, 16(sp)
+nop
+la a0, .str19
+sw a0, 20(sp)
+nop
+lw a0, 20(sp)
+jal ra, bios_uart_puts
+lw a0, 4(sp)
+sw a0, 20(sp)
+nop
+lw a0, 20(sp)
+jal ra, bios_uart_puthex
+la a0, .str20
+sw a0, 20(sp)
+nop
+lw a0, 20(sp)
+jal ra, bios_uart_puts
+lw a0, 8(sp)
+sw a0, 20(sp)
+nop
+lw a0, 20(sp)
+jal ra, bios_uart_puthex
+la a0, .str21
+sw a0, 20(sp)
+nop
+lw a0, 20(sp)
+jal ra, bios_uart_puts
+lw a0, 16(sp)
+beq a0, zero, else_225
+lw a0, 12(sp)
+sw a0, 20(sp)
+nop
+addi a0, zero, 7
+lw a1, 20(sp)
+beq a1, a0, eq229
+addi a0, zero, 0
+j eq_done230
+eq229:
+addi a0, zero, 1
+eq_done230:
+beq a0, zero, else_227
+addi a0, zero, 980
+sub a0, zero, a0
+sw a0, 20(sp)
+nop
+addi a0, zero, 1
+sw a0, 24(sp)
+nop
+lw a0, 20(sp)
+lw a1, 24(sp)
+sw a1, 0(a0)
+mv a0, a1
+j endif_228
+else_227:
+lw a0, 12(sp)
+sw a0, 24(sp)
+nop
+addi a0, zero, 11
+lw a1, 24(sp)
+beq a1, a0, eq233
+addi a0, zero, 0
+j eq_done234
+eq233:
+addi a0, zero, 1
+eq_done234:
+beq a0, zero, else_231
+jal ra, bios_uart_available
+beq a0, zero, else_235
+jal ra, bios_uart_getc
+j endif_236
+else_235:
+addi a0, zero, 952
+sub a0, zero, a0
+sw a0, 24(sp)
+nop
+addi a0, zero, 1
+sw a0, 28(sp)
+nop
+lw a0, 24(sp)
+lw a1, 28(sp)
+sw a1, 0(a0)
+mv a0, a1
+endif_236:
+j endif_232
+else_231:
+endif_232:
+endif_228:
+jal ra, bios_mret
+j endif_226
+else_225:
+endif_226:
+lw a0, 12(sp)
+sw a0, 28(sp)
+nop
+addi a0, zero, 11
+lw a1, 28(sp)
+beq a1, a0, eq239
+addi a0, zero, 0
+j eq_done240
+eq239:
+addi a0, zero, 1
+eq_done240:
+beq a0, zero, else_237
+addi a0, zero, 716
+sub a0, zero, a0
+sw a0, 28(sp)
+nop
+lw a0, 8(sp)
+sw a0, 28(sp)
+nop
+addi a0, zero, 4
+lw a1, 28(sp)
+add a0, a1, a0
+sw a0, 32(sp)
+nop
+lw a0, 28(sp)
+lw a1, 32(sp)
+jal ra, bios_cp0_write
+jal ra, bios_mret
+j endif_238
+else_237:
+endif_238:
+lw a0, 12(sp)
+sw a0, 28(sp)
+nop
+lw a0, 28(sp)
+jal ra, bios_display_bcd
+while_241:
+addi a0, zero, 1
+beq a0, zero, while_end_242
+jal ra, bios_wdt_feed
+j while_241
+while_end_242:
+li a0, 0
+lw ra, 252(sp)
+addi sp, sp, 256
+ret
+
 bios_uart_recv_word:
 addi sp, sp, -256
 sw ra, 252(sp)
@@ -2365,22 +3307,22 @@ bios_bootloader:
 addi sp, sp, -256
 sw ra, 252(sp)
 nop
-la a0, .str15
+la a0, .str22
 sw a0, 32(sp)
 nop
 lw a0, 32(sp)
 jal ra, bios_uart_puts
-la a0, .str16
+la a0, .str23
 sw a0, 32(sp)
 nop
 lw a0, 32(sp)
 jal ra, bios_uart_puts
-while_165:
+while_243:
 addi a0, zero, 1
-beq a0, zero, while_end_166
+beq a0, zero, while_end_244
 jal ra, bios_wdt_feed
 jal ra, bios_uart_available
-beq a0, zero, else_167
+beq a0, zero, else_245
 jal ra, bios_uart_getc
 sw a0, 4(sp)
 nop
@@ -2389,14 +3331,14 @@ sw a0, 32(sp)
 nop
 addi a0, zero, 76
 lw a1, 32(sp)
-beq a1, a0, eq171
+beq a1, a0, eq249
 addi a0, zero, 0
-j eq_done172
-eq171:
+j eq_done250
+eq249:
 addi a0, zero, 1
-eq_done172:
-beq a0, zero, else_169
-la a0, .str17
+eq_done250:
+beq a0, zero, else_247
+la a0, .str24
 sw a0, 32(sp)
 nop
 lw a0, 32(sp)
@@ -2404,7 +3346,7 @@ jal ra, bios_uart_puts
 jal ra, bios_uart_recv_word
 sw a0, 8(sp)
 nop
-la a0, .str18
+la a0, .str25
 sw a0, 32(sp)
 nop
 lw a0, 32(sp)
@@ -2414,7 +3356,7 @@ sw a0, 32(sp)
 nop
 lw a0, 32(sp)
 jal ra, bios_uart_putnum
-la a0, .str19
+la a0, .str26
 sw a0, 32(sp)
 nop
 lw a0, 32(sp)
@@ -2423,15 +3365,20 @@ lw a0, 8(sp)
 sw a0, 32(sp)
 nop
 li a0, 4096
+sw a0, 36(sp)
+nop
+addi a0, zero, 257
+lw a1, 36(sp)
+sub a0, a1, a0
 lw a1, 32(sp)
-blt a0, a1, gt175
+blt a0, a1, gt253
 addi a0, zero, 0
-j gt_done176
-gt175:
+j gt_done254
+gt253:
 addi a0, zero, 1
-gt_done176:
-beq a0, zero, else_173
-la a0, .str20
+gt_done254:
+beq a0, zero, else_251
+la a0, .str27
 sw a0, 32(sp)
 nop
 lw a0, 32(sp)
@@ -2441,27 +3388,27 @@ sub a0, zero, a0
 lw ra, 252(sp)
 addi sp, sp, 256
 ret
-else_173:
-endif_174:
+else_251:
+endif_252:
 li a0, 65536
 sw a0, 16(sp)
 nop
 addi a0, zero, 0
 sw a0, 12(sp)
 nop
-while_177:
+while_255:
 lw a0, 12(sp)
 sw a0, 32(sp)
 nop
 lw a0, 8(sp)
 lw a1, 32(sp)
-blt a1, a0, lt179
+blt a1, a0, lt257
 addi a0, zero, 0
-j lt_done180
-lt179:
+j lt_done258
+lt257:
 addi a0, zero, 1
-lt_done180:
-beq a0, zero, while_end_178
+lt_done258:
+beq a0, zero, while_end_256
 jal ra, bios_wdt_feed
 jal ra, bios_uart_recv_word
 sw a0, 20(sp)
@@ -2501,14 +3448,14 @@ sw a0, 32(sp)
 nop
 addi a0, zero, 0
 lw a1, 32(sp)
-beq a1, a0, eq183
+beq a1, a0, eq261
 addi a0, zero, 0
-j eq_done184
-eq183:
+j eq_done262
+eq261:
 addi a0, zero, 1
-eq_done184:
-beq a0, zero, else_181
-la a0, .str21
+eq_done262:
+beq a0, zero, else_259
+la a0, .str28
 sw a0, 32(sp)
 nop
 lw a0, 32(sp)
@@ -2518,12 +3465,12 @@ sw a0, 32(sp)
 nop
 lw a0, 32(sp)
 jal ra, bios_led_write
-j endif_182
-else_181:
-endif_182:
-j while_177
-while_end_178:
-la a0, .str22
+j endif_260
+else_259:
+endif_260:
+j while_255
+while_end_256:
+la a0, .str29
 sw a0, 32(sp)
 nop
 lw a0, 32(sp)
@@ -2533,31 +3480,31 @@ sw a0, 32(sp)
 nop
 lw a0, 32(sp)
 jal ra, bios_uart_putnum
-la a0, .str23
+la a0, .str30
 sw a0, 32(sp)
 nop
 lw a0, 32(sp)
 jal ra, bios_uart_puts
-la a0, .str24
+la a0, .str31
 sw a0, 32(sp)
 nop
 lw a0, 32(sp)
 jal ra, bios_uart_puts
-j endif_170
-else_169:
+j endif_248
+else_247:
 lw a0, 4(sp)
 sw a0, 32(sp)
 nop
 addi a0, zero, 71
 lw a1, 32(sp)
-beq a1, a0, eq187
+beq a1, a0, eq265
 addi a0, zero, 0
-j eq_done188
-eq187:
+j eq_done266
+eq265:
 addi a0, zero, 1
-eq_done188:
-beq a0, zero, else_185
-la a0, .str25
+eq_done266:
+beq a0, zero, else_263
+la a0, .str32
 sw a0, 32(sp)
 nop
 lw a0, 32(sp)
@@ -2568,60 +3515,60 @@ nop
 lw a0, 32(sp)
 jal ra, bios_buzzer_beep
 jal ra, bios_jump_to_pram
-la a0, .str26
+la a0, .str33
 sw a0, 32(sp)
 nop
 lw a0, 32(sp)
 jal ra, bios_uart_puts
-j endif_186
-else_185:
+j endif_264
+else_263:
 lw a0, 4(sp)
 sw a0, 32(sp)
 nop
 addi a0, zero, 63
 lw a1, 32(sp)
-beq a1, a0, eq191
+beq a1, a0, eq269
 addi a0, zero, 0
-j eq_done192
-eq191:
+j eq_done270
+eq269:
 addi a0, zero, 1
-eq_done192:
-beq a0, zero, else_189
-la a0, .str27
+eq_done270:
+beq a0, zero, else_267
+la a0, .str34
 sw a0, 32(sp)
 nop
 lw a0, 32(sp)
 jal ra, bios_uart_puts
-la a0, .str28
+la a0, .str35
 sw a0, 32(sp)
 nop
 lw a0, 32(sp)
 jal ra, bios_uart_puts
-la a0, .str29
+la a0, .str36
 sw a0, 32(sp)
 nop
 lw a0, 32(sp)
 jal ra, bios_uart_puts
-la a0, .str30
+la a0, .str37
 sw a0, 32(sp)
 nop
 lw a0, 32(sp)
 jal ra, bios_uart_puts
-j endif_190
-else_189:
+j endif_268
+else_267:
 lw a0, 4(sp)
 sw a0, 32(sp)
 nop
 lw a0, 32(sp)
 jal ra, bios_uart_putc
-endif_190:
-endif_186:
-endif_170:
-j endif_168
-else_167:
-endif_168:
-j while_165
-while_end_166:
+endif_268:
+endif_264:
+endif_248:
+j endif_246
+else_245:
+endif_246:
+j while_243
+while_end_244:
 addi a0, zero, 0
 lw ra, 252(sp)
 addi sp, sp, 256
@@ -2776,25 +3723,25 @@ bios_btn_wait:
 addi sp, sp, -256
 sw ra, 252(sp)
 nop
-while_193:
+while_271:
 jal ra, bios_btn_read
 sw a0, 12(sp)
 nop
 addi a0, zero, 0
 lw a1, 12(sp)
-bne a1, a0, ne195
+bne a1, a0, ne273
 addi a0, zero, 0
-j ne_done196
-ne195:
+j ne_done274
+ne273:
 addi a0, zero, 1
-ne_done196:
-beq a0, zero, while_end_194
+ne_done274:
+beq a0, zero, while_end_272
 jal ra, bios_wdt_feed
-j while_193
-while_end_194:
-while_197:
+j while_271
+while_end_272:
+while_275:
 addi a0, zero, 1
-beq a0, zero, while_end_198
+beq a0, zero, while_end_276
 jal ra, bios_btn_read
 sw a0, 4(sp)
 nop
@@ -2803,29 +3750,29 @@ sw a0, 12(sp)
 nop
 addi a0, zero, 0
 lw a1, 12(sp)
-bne a1, a0, ne201
+bne a1, a0, ne279
 addi a0, zero, 0
-j ne_done202
-ne201:
+j ne_done280
+ne279:
 addi a0, zero, 1
-ne_done202:
-beq a0, zero, else_199
+ne_done280:
+beq a0, zero, else_277
 addi a0, zero, 0
 sw a0, 8(sp)
 nop
-for_203:
+for_281:
 lw a0, 8(sp)
 sw a0, 12(sp)
 nop
 addi a0, zero, 5
 lw a1, 12(sp)
-blt a1, a0, lt206
+blt a1, a0, lt284
 addi a0, zero, 0
-j lt_done207
-lt206:
+j lt_done285
+lt284:
 addi a0, zero, 1
-lt_done207:
-beq a0, zero, for_end_204
+lt_done285:
+beq a0, zero, for_end_282
 lw a0, 4(sp)
 sw a0, 12(sp)
 nop
@@ -2837,14 +3784,14 @@ nop
 addi a0, zero, 1
 lw a1, 12(sp)
 and a0, a1, a0
-beq a0, zero, else_208
+beq a0, zero, else_286
 lw a0, 8(sp)
 lw ra, 252(sp)
 addi sp, sp, 256
 ret
-else_208:
-endif_209:
-for_continue_205:
+else_286:
+endif_287:
+for_continue_283:
 lw a0, 8(sp)
 sw a0, 12(sp)
 nop
@@ -2853,14 +3800,14 @@ lw a1, 12(sp)
 add a0, a1, a0
 sw a0, 8(sp)
 nop
-j for_203
-for_end_204:
-j endif_200
-else_199:
-endif_200:
+j for_281
+for_end_282:
+j endif_278
+else_277:
+endif_278:
 jal ra, bios_wdt_feed
-j while_197
-while_end_198:
+j while_275
+while_end_276:
 li a0, 0
 lw ra, 252(sp)
 addi sp, sp, 256
@@ -2872,7 +3819,7 @@ sw ra, 252(sp)
 nop
 sw a0, 4(sp)
 nop
-while_210:
+while_288:
 lw a0, 4(sp)
 sw a0, 8(sp)
 nop
@@ -2882,17 +3829,17 @@ sw a0, 8(sp)
 nop
 addi a0, zero, 0
 lw a1, 8(sp)
-bne a1, a0, ne212
+bne a1, a0, ne290
 addi a0, zero, 0
-j ne_done213
-ne212:
+j ne_done291
+ne290:
 addi a0, zero, 1
-ne_done213:
-beq a0, zero, while_end_211
+ne_done291:
+beq a0, zero, while_end_289
 jal ra, bios_wdt_feed
-j while_210
-while_end_211:
-while_214:
+j while_288
+while_end_289:
+while_292:
 lw a0, 4(sp)
 sw a0, 8(sp)
 nop
@@ -2902,16 +3849,16 @@ sw a0, 8(sp)
 nop
 addi a0, zero, 0
 lw a1, 8(sp)
-beq a1, a0, eq216
+beq a1, a0, eq294
 addi a0, zero, 0
-j eq_done217
-eq216:
+j eq_done295
+eq294:
 addi a0, zero, 1
-eq_done217:
-beq a0, zero, while_end_215
+eq_done295:
+beq a0, zero, while_end_293
 jal ra, bios_wdt_feed
-j while_214
-while_end_215:
+j while_292
+while_end_293:
 li a0, 0
 lw ra, 252(sp)
 addi sp, sp, 256
@@ -2958,19 +3905,19 @@ sw a0, 48(sp)
 nop
 lw a0, 48(sp)
 jal ra, bios_led_write
-la a0, .str31
+la a0, .str38
 sw a0, 48(sp)
 nop
 lw a0, 48(sp)
 jal ra, bios_uart_puts
-la a0, .str32
+la a0, .str39
 sw a0, 48(sp)
 nop
 lw a0, 48(sp)
 jal ra, bios_uart_puts
-while_218:
+while_296:
 addi a0, zero, 1
-beq a0, zero, while_end_219
+beq a0, zero, while_end_297
 lw a0, 32(sp)
 sw a0, 48(sp)
 nop
@@ -2984,20 +3931,20 @@ sw a0, 48(sp)
 nop
 addi a0, zero, 1000
 lw a1, 48(sp)
-bge a1, a0, ge222
+bge a1, a0, ge300
 addi a0, zero, 0
-j ge_done223
-ge222:
+j ge_done301
+ge300:
 addi a0, zero, 1
-ge_done223:
-beq a0, zero, else_220
+ge_done301:
+beq a0, zero, else_298
 jal ra, bios_wdt_feed
 addi a0, zero, 0
 sw a0, 32(sp)
 nop
-j endif_221
-else_220:
-endif_221:
+j endif_299
+else_298:
+endif_299:
 jal ra, bios_key_read
 sw a0, 36(sp)
 nop
@@ -3006,18 +3953,18 @@ sw a0, 48(sp)
 nop
 addi a0, zero, 0
 lw a1, 48(sp)
-bge a1, a0, ge226
+bge a1, a0, ge304
 addi a0, zero, 0
-j ge_done227
-ge226:
+j ge_done305
+ge304:
 addi a0, zero, 1
-ge_done227:
-beq a0, zero, else_224
+ge_done305:
+beq a0, zero, else_302
 jal ra, bios_wdt_feed
 lw a0, 36(sp)
 sw a0, 24(sp)
 nop
-la a0, .str33
+la a0, .str40
 sw a0, 48(sp)
 nop
 lw a0, 48(sp)
@@ -3032,24 +3979,24 @@ sw a0, 48(sp)
 nop
 addi a0, zero, 10
 lw a1, 48(sp)
-blt a1, a0, lt230
+blt a1, a0, lt308
 addi a0, zero, 0
-j lt_done231
-lt230:
+j lt_done309
+lt308:
 addi a0, zero, 1
-lt_done231:
-beq a0, zero, else_228
+lt_done309:
+beq a0, zero, else_306
 lw a0, 28(sp)
-beq a0, zero, else_232
+beq a0, zero, else_310
 addi a0, zero, 0
 sw a0, 12(sp)
 nop
 addi a0, zero, 0
 sw a0, 28(sp)
 nop
-j endif_233
-else_232:
-endif_233:
+j endif_311
+else_310:
+endif_311:
 lw a0, 12(sp)
 sw a0, 48(sp)
 nop
@@ -3065,22 +4012,22 @@ nop
 lw a0, 12(sp)
 sw a0, 44(sp)
 nop
-j endif_229
-else_228:
+j endif_307
+else_306:
 lw a0, 36(sp)
 sw a0, 48(sp)
 nop
 addi a0, zero, 10
 lw a1, 48(sp)
-beq a1, a0, eq236
+beq a1, a0, eq314
 addi a0, zero, 0
-j eq_done237
-eq236:
+j eq_done315
+eq314:
 addi a0, zero, 1
-eq_done237:
-beq a0, zero, else_234
+eq_done315:
+beq a0, zero, else_312
 lw a0, 20(sp)
-beq a0, zero, else_238
+beq a0, zero, else_316
 lw a0, 8(sp)
 sw a0, 48(sp)
 nop
@@ -3092,12 +4039,12 @@ lw a1, 52(sp)
 jal ra, bios_multiply
 sw a0, 8(sp)
 nop
-j endif_239
-else_238:
+j endif_317
+else_316:
 lw a0, 12(sp)
 sw a0, 8(sp)
 nop
-endif_239:
+endif_317:
 addi a0, zero, 0
 sw a0, 20(sp)
 nop
@@ -3106,13 +4053,13 @@ sw a0, 48(sp)
 nop
 addi a0, zero, 1
 lw a1, 48(sp)
-beq a1, a0, eq242
+beq a1, a0, eq320
 addi a0, zero, 0
-j eq_done243
-eq242:
+j eq_done321
+eq320:
 addi a0, zero, 1
-eq_done243:
-beq a0, zero, else_240
+eq_done321:
+beq a0, zero, else_318
 lw a0, 4(sp)
 sw a0, 48(sp)
 nop
@@ -3121,20 +4068,20 @@ lw a1, 48(sp)
 add a0, a1, a0
 sw a0, 4(sp)
 nop
-j endif_241
-else_240:
+j endif_319
+else_318:
 lw a0, 16(sp)
 sw a0, 48(sp)
 nop
 addi a0, zero, 2
 lw a1, 48(sp)
-beq a1, a0, eq246
+beq a1, a0, eq324
 addi a0, zero, 0
-j eq_done247
-eq246:
+j eq_done325
+eq324:
 addi a0, zero, 1
-eq_done247:
-beq a0, zero, else_244
+eq_done325:
+beq a0, zero, else_322
 lw a0, 4(sp)
 sw a0, 48(sp)
 nop
@@ -3143,13 +4090,13 @@ lw a1, 48(sp)
 sub a0, a1, a0
 sw a0, 4(sp)
 nop
-j endif_245
-else_244:
+j endif_323
+else_322:
 lw a0, 8(sp)
 sw a0, 4(sp)
 nop
-endif_245:
-endif_241:
+endif_323:
+endif_319:
 addi a0, zero, 1
 sw a0, 16(sp)
 nop
@@ -3165,7 +4112,7 @@ nop
 lw a0, 4(sp)
 sw a0, 44(sp)
 nop
-la a0, .str34
+la a0, .str41
 sw a0, 48(sp)
 nop
 lw a0, 48(sp)
@@ -3175,22 +4122,22 @@ sw a0, 48(sp)
 nop
 lw a0, 48(sp)
 jal ra, bios_uart_putnum
-j endif_235
-else_234:
+j endif_313
+else_312:
 lw a0, 36(sp)
 sw a0, 48(sp)
 nop
 addi a0, zero, 11
 lw a1, 48(sp)
-beq a1, a0, eq250
+beq a1, a0, eq328
 addi a0, zero, 0
-j eq_done251
-eq250:
+j eq_done329
+eq328:
 addi a0, zero, 1
-eq_done251:
-beq a0, zero, else_248
+eq_done329:
+beq a0, zero, else_326
 lw a0, 20(sp)
-beq a0, zero, else_252
+beq a0, zero, else_330
 lw a0, 8(sp)
 sw a0, 48(sp)
 nop
@@ -3202,12 +4149,12 @@ lw a1, 52(sp)
 jal ra, bios_multiply
 sw a0, 8(sp)
 nop
-j endif_253
-else_252:
+j endif_331
+else_330:
 lw a0, 12(sp)
 sw a0, 8(sp)
 nop
-endif_253:
+endif_331:
 addi a0, zero, 0
 sw a0, 20(sp)
 nop
@@ -3216,13 +4163,13 @@ sw a0, 48(sp)
 nop
 addi a0, zero, 1
 lw a1, 48(sp)
-beq a1, a0, eq256
+beq a1, a0, eq334
 addi a0, zero, 0
-j eq_done257
-eq256:
+j eq_done335
+eq334:
 addi a0, zero, 1
-eq_done257:
-beq a0, zero, else_254
+eq_done335:
+beq a0, zero, else_332
 lw a0, 4(sp)
 sw a0, 48(sp)
 nop
@@ -3231,20 +4178,20 @@ lw a1, 48(sp)
 add a0, a1, a0
 sw a0, 4(sp)
 nop
-j endif_255
-else_254:
+j endif_333
+else_332:
 lw a0, 16(sp)
 sw a0, 48(sp)
 nop
 addi a0, zero, 2
 lw a1, 48(sp)
-beq a1, a0, eq260
+beq a1, a0, eq338
 addi a0, zero, 0
-j eq_done261
-eq260:
+j eq_done339
+eq338:
 addi a0, zero, 1
-eq_done261:
-beq a0, zero, else_258
+eq_done339:
+beq a0, zero, else_336
 lw a0, 4(sp)
 sw a0, 48(sp)
 nop
@@ -3253,13 +4200,13 @@ lw a1, 48(sp)
 sub a0, a1, a0
 sw a0, 4(sp)
 nop
-j endif_259
-else_258:
+j endif_337
+else_336:
 lw a0, 8(sp)
 sw a0, 4(sp)
 nop
-endif_259:
-endif_255:
+endif_337:
+endif_333:
 addi a0, zero, 2
 sw a0, 16(sp)
 nop
@@ -3275,7 +4222,7 @@ nop
 lw a0, 4(sp)
 sw a0, 44(sp)
 nop
-la a0, .str35
+la a0, .str42
 sw a0, 48(sp)
 nop
 lw a0, 48(sp)
@@ -3285,22 +4232,22 @@ sw a0, 48(sp)
 nop
 lw a0, 48(sp)
 jal ra, bios_uart_putnum
-j endif_249
-else_248:
+j endif_327
+else_326:
 lw a0, 36(sp)
 sw a0, 48(sp)
 nop
 addi a0, zero, 12
 lw a1, 48(sp)
-beq a1, a0, eq264
+beq a1, a0, eq342
 addi a0, zero, 0
-j eq_done265
-eq264:
+j eq_done343
+eq342:
 addi a0, zero, 1
-eq_done265:
-beq a0, zero, else_262
+eq_done343:
+beq a0, zero, else_340
 lw a0, 20(sp)
-beq a0, zero, else_266
+beq a0, zero, else_344
 lw a0, 8(sp)
 sw a0, 48(sp)
 nop
@@ -3312,12 +4259,12 @@ lw a1, 52(sp)
 jal ra, bios_multiply
 sw a0, 8(sp)
 nop
-j endif_267
-else_266:
+j endif_345
+else_344:
 lw a0, 12(sp)
 sw a0, 8(sp)
 nop
-endif_267:
+endif_345:
 addi a0, zero, 1
 sw a0, 20(sp)
 nop
@@ -3330,7 +4277,7 @@ nop
 lw a0, 8(sp)
 sw a0, 44(sp)
 nop
-la a0, .str36
+la a0, .str43
 sw a0, 48(sp)
 nop
 lw a0, 48(sp)
@@ -3340,22 +4287,22 @@ sw a0, 48(sp)
 nop
 lw a0, 48(sp)
 jal ra, bios_uart_putnum
-j endif_263
-else_262:
+j endif_341
+else_340:
 lw a0, 36(sp)
 sw a0, 48(sp)
 nop
 addi a0, zero, 13
 lw a1, 48(sp)
-beq a1, a0, eq270
+beq a1, a0, eq348
 addi a0, zero, 0
-j eq_done271
-eq270:
+j eq_done349
+eq348:
 addi a0, zero, 1
-eq_done271:
-beq a0, zero, else_268
+eq_done349:
+beq a0, zero, else_346
 lw a0, 20(sp)
-beq a0, zero, else_272
+beq a0, zero, else_350
 lw a0, 8(sp)
 sw a0, 48(sp)
 nop
@@ -3367,12 +4314,12 @@ lw a1, 52(sp)
 jal ra, bios_multiply
 sw a0, 8(sp)
 nop
-j endif_273
-else_272:
+j endif_351
+else_350:
 lw a0, 12(sp)
 sw a0, 8(sp)
 nop
-endif_273:
+endif_351:
 addi a0, zero, 0
 sw a0, 20(sp)
 nop
@@ -3381,13 +4328,13 @@ sw a0, 48(sp)
 nop
 addi a0, zero, 1
 lw a1, 48(sp)
-beq a1, a0, eq276
+beq a1, a0, eq354
 addi a0, zero, 0
-j eq_done277
-eq276:
+j eq_done355
+eq354:
 addi a0, zero, 1
-eq_done277:
-beq a0, zero, else_274
+eq_done355:
+beq a0, zero, else_352
 lw a0, 4(sp)
 sw a0, 48(sp)
 nop
@@ -3396,20 +4343,20 @@ lw a1, 48(sp)
 add a0, a1, a0
 sw a0, 4(sp)
 nop
-j endif_275
-else_274:
+j endif_353
+else_352:
 lw a0, 16(sp)
 sw a0, 48(sp)
 nop
 addi a0, zero, 2
 lw a1, 48(sp)
-beq a1, a0, eq280
+beq a1, a0, eq358
 addi a0, zero, 0
-j eq_done281
-eq280:
+j eq_done359
+eq358:
 addi a0, zero, 1
-eq_done281:
-beq a0, zero, else_278
+eq_done359:
+beq a0, zero, else_356
 lw a0, 4(sp)
 sw a0, 48(sp)
 nop
@@ -3418,13 +4365,13 @@ lw a1, 48(sp)
 sub a0, a1, a0
 sw a0, 4(sp)
 nop
-j endif_279
-else_278:
+j endif_357
+else_356:
 lw a0, 8(sp)
 sw a0, 4(sp)
 nop
-endif_279:
-endif_275:
+endif_357:
+endif_353:
 lw a0, 4(sp)
 sw a0, 44(sp)
 nop
@@ -3440,7 +4387,7 @@ nop
 addi a0, zero, 1
 sw a0, 28(sp)
 nop
-la a0, .str37
+la a0, .str44
 sw a0, 48(sp)
 nop
 lw a0, 48(sp)
@@ -3450,20 +4397,20 @@ sw a0, 48(sp)
 nop
 lw a0, 48(sp)
 jal ra, bios_uart_putnum
-j endif_269
-else_268:
+j endif_347
+else_346:
 lw a0, 36(sp)
 sw a0, 48(sp)
 nop
 addi a0, zero, 14
 lw a1, 48(sp)
-beq a1, a0, eq284
+beq a1, a0, eq362
 addi a0, zero, 0
-j eq_done285
-eq284:
+j eq_done363
+eq362:
 addi a0, zero, 1
-eq_done285:
-beq a0, zero, else_282
+eq_done363:
+beq a0, zero, else_360
 addi a0, zero, 0
 sw a0, 4(sp)
 nop
@@ -3485,25 +4432,25 @@ nop
 addi a0, zero, 0
 sw a0, 44(sp)
 nop
-la a0, .str38
+la a0, .str45
 sw a0, 48(sp)
 nop
 lw a0, 48(sp)
 jal ra, bios_uart_puts
-j endif_283
-else_282:
+j endif_361
+else_360:
 lw a0, 36(sp)
 sw a0, 48(sp)
 nop
 addi a0, zero, 15
 lw a1, 48(sp)
-beq a1, a0, eq288
+beq a1, a0, eq366
 addi a0, zero, 0
-j eq_done289
-eq288:
+j eq_done367
+eq366:
 addi a0, zero, 1
-eq_done289:
-beq a0, zero, else_286
+eq_done367:
+beq a0, zero, else_364
 addi a0, zero, 0
 sw a0, 4(sp)
 nop
@@ -3525,26 +4472,26 @@ nop
 addi a0, zero, 0
 sw a0, 44(sp)
 nop
-la a0, .str39
+la a0, .str46
 sw a0, 48(sp)
 nop
 lw a0, 48(sp)
 jal ra, bios_uart_puts
-j endif_287
-else_286:
-endif_287:
-endif_283:
-endif_269:
-endif_263:
-endif_249:
-endif_235:
-endif_229:
+j endif_365
+else_364:
+endif_365:
+endif_361:
+endif_347:
+endif_341:
+endif_327:
+endif_313:
+endif_307:
 lw a0, 44(sp)
 sw a0, 48(sp)
 nop
 lw a0, 48(sp)
 jal ra, bios_display_bcd
-la a0, .str40
+la a0, .str47
 sw a0, 48(sp)
 nop
 lw a0, 48(sp)
@@ -3582,11 +4529,11 @@ sw a0, 48(sp)
 nop
 lw a0, 48(sp)
 jal ra, bios_led_write
-j endif_225
-else_224:
-endif_225:
-j while_218
-while_end_219:
+j endif_303
+else_302:
+endif_303:
+j while_296
+while_end_297:
 addi a0, zero, 0
 lw ra, 252(sp)
 addi sp, sp, 256
@@ -3647,12 +4594,36 @@ ret
 .word 774796403
 .word 658734
 .str7:
+.word 1919181889
+.word 1701339936
+.word 540699491
+.word 0
+.str8:
+.word 168643407
+.word 0
+.str9:
+.word 1279869254
+.word 2573
+.str10:
+.word 1380013915
+.word 1260412238
+.word 1634761061
+.word 1919950948
+.word 1702064997
+.word 1952522340
+.word 1869570592
+.word 1663052916
+.word 1769238127
+.word 778401134
+.word 168635950
+.word 0
+.str11:
 .word 1718379859
 .word 1936028717
 .word 1095770228
 .word 1145394003
 .word 658721
-.str8:
+.str12:
 .word 1953460034
 .word 1685024032
 .word 1428175461
@@ -3661,7 +4632,7 @@ ret
 .word 1684107116
 .word 168653413
 .word 0
-.str9:
+.str13:
 .word 844846931
 .word 826105139
 .word 1852121132
@@ -3672,7 +4643,7 @@ ret
 .word 774778482
 .word 168626701
 .word 0
-.str10:
+.str14:
 .word 1953460034
 .word 1685024032
 .word 1109408357
@@ -3681,7 +4652,7 @@ ret
 .word 1735357008
 .word 225272178
 .word 10
-.str11:
+.str15:
 .word 844846931
 .word 809327923
 .word 1953701932
@@ -3692,9 +4663,9 @@ ret
 .word 778920306
 .word 168635950
 .word 2573
-.str12:
+.str16:
 .word 30768
-.str13:
+.str17:
 .word 1886221642
 .word 543649385
 .word 1344302964
@@ -3704,7 +4675,7 @@ ret
 .word 808464433
 .word 774778416
 .word 2573
-.str14:
+.str18:
 .word 1919251285
 .word 1869770784
 .word 1835102823
@@ -3712,7 +4683,17 @@ ret
 .word 1701737077
 .word 168636004
 .word 0
-.str15:
+.str19:
+.word 1163594253
+.word 542983000
+.word 1937072483
+.word 15717
+.str20:
+.word 1668310304
+.word 61
+.str21:
+.word 2573
+.str22:
 .word 1414676821
 .word 1869562400
 .word 1634692212
@@ -3720,7 +4701,7 @@ ret
 .word 1684104562
 .word 168636025
 .word 0
-.str16:
+.str23:
 .word 1684956499
 .word 659302176
 .word 544175136
@@ -3731,19 +4712,19 @@ ret
 .word 1869881383
 .word 1853190688
 .word 658734
-.str17:
+.str24:
 .word 1684107084
 .word 778530409
 .word 168635950
 .word 0
-.str18:
+.str25:
 .word 1702521171
 .word 8250
-.str19:
+.str26:
 .word 1919907616
 .word 168653668
 .word 0
-.str20:
+.str27:
 .word 1330795077
 .word 1344289362
 .word 1919381362
@@ -3751,29 +4732,32 @@ ret
 .word 1814065007
 .word 1701278305
 .word 1632444449
-.word 808722552
-.word 1998599737
+.word 942874744
+.word 1998600499
 .word 1935962735
-.word 909191200
-.word 220807755
+.word 1702242336
+.word 1919906915
+.word 1701978227
+.word 1987208563
+.word 220816485
 .word 10
-.str21:
+.str28:
 .word 46
-.str22:
+.str29:
 .word 1867254285
 .word 1684366433
 .word 32
-.str23:
+.str30:
 .word 1919907616
 .word 221148004
 .word 10
-.str24:
+.str31:
 .word 1684956499
 .word 658974496
 .word 544175136
 .word 778990962
 .word 2573
-.str25:
+.str32:
 .word 1886221642
 .word 543649385
 .word 807432052
@@ -3781,24 +4765,24 @@ ret
 .word 808464433
 .word 774778416
 .word 2573
-.str26:
+.str33:
 .word 1735357008
 .word 544039282
 .word 1970562418
 .word 1684369010
 .word 658734
-.str27:
+.str34:
 .word 1835888451
 .word 1935961697
 .word 658746
-.str28:
+.str35:
 .word 541859872
 .word 1867259949
 .word 1881171041
 .word 1919381362
 .word 168652129
 .word 0
-.str29:
+.str36:
 .word 541532192
 .word 1866932269
 .word 1970415648
@@ -3806,19 +4790,19 @@ ret
 .word 1634887535
 .word 168634733
 .word 0
-.str30:
+.str37:
 .word 541007904
 .word 1699225645
 .word 168652908
 .word 0
-.str31:
+.str38:
 .word 1668047171
 .word 1952541813
 .word 1981837935
 .word 1699881011
 .word 226059361
 .word 10
-.str32:
+.str39:
 .word 1886418259
 .word 1937011311
 .word 1751326778
@@ -3828,31 +4812,31 @@ ret
 .word 1769107305
 .word 168655220
 .word 0
-.str33:
+.str40:
 .word 981034315
 .word 0
-.str34:
+.str41:
 .word 1563122464
 .word 1667457312
 .word 61
-.str35:
+.str42:
 .word 1563253536
 .word 1667457312
 .word 61
-.str36:
+.str43:
 .word 1563056928
 .word 1919251488
 .word 15725
-.str37:
+.str44:
 .word 1564302112
 .word 1936028192
 .word 1031040117
 .word 0
-.str38:
+.str45:
 .word 1279482656
 .word 23890
-.str39:
+.str46:
 .word 1279482656
 .word 23890
-.str40:
+.str47:
 .word 2573

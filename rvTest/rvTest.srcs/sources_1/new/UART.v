@@ -24,6 +24,7 @@ module UART(
     input  wire [31:0]  addr,
     input  wire [31:0]  wdata,
     output reg  [31:0]  rdata,
+    output wire         irq,
     
     // UART 物理引脚
     input  wire         uart_rx,    // 串口接收
@@ -69,6 +70,7 @@ module UART(
     assign rx_fifo_full  = (rx_wr_ptr[3:0] == rx_rd_ptr[3:0]) && (rx_wr_ptr[4] != rx_rd_ptr[4]);
     assign rx_data       = rx_fifo[rx_rd_ptr[3:0]];
     assign rx_ready      = !rx_fifo_empty;
+    assign irq           = rx_ready;
     
     // RX 输入同步 (防止亚稳态)
     reg [2:0]  rx_sync;

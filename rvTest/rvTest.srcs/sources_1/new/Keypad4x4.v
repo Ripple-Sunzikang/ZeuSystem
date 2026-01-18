@@ -273,9 +273,12 @@ module Keypad4x4(
         // 规范兼容寄存器：
         // 0xFFFF_FC10（偏移 0x0）：按键值（锁存），默认 0xFFFF_FFFF
         // 0xFFFF_FC12（偏移 0x2）：状态（按下=1，否则0）
+        // 0xFFFF_FC14（偏移 0x4）：状态别名（对齐访问，便于异常对齐）
         if (addr[31:4] == (`PERI_BASE_KEYPAD_4X4 >> 4) && addr[3:0] == 4'h0) begin
             rdata = keyvalue_latched;
         end else if (addr[31:4] == (`PERI_BASE_KEYPAD_4X4 >> 4) && addr[3:0] == 4'h2) begin
+            rdata = {31'b0, pressed_latched};
+        end else if (addr[31:4] == (`PERI_BASE_KEYPAD_4X4 >> 4) && addr[3:0] == 4'h4) begin
             rdata = {31'b0, pressed_latched};
         end else if (addr[31:4] == (`PERI_BASE_KEYPAD_4X4 >> 4) && addr[3:0] == 4'h8) begin
             rdata = {29'b0, scan_enable, 2'b0};

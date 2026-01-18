@@ -197,6 +197,73 @@ fn parse_address(s: &str) -> u32 {
     }
 }
 
+/// Very small preprocessor: handles simple `#define NAME VALUE` macros.
+/// Only replaces identifiers exactly matching NAME, ignores includes/complex macros.
+fn preprocess_c(source: &str) -> String {
+    use std::collections::HashMap;
+    let mut defines: HashMap<String, String> = HashMap::new();
+    let mut lines: Vec<String> = Vec::new();
+
+    let expand = |input: &str, defines: &HashMap<String, String>| -> String {
+        let mut output = String::new();
+        let chars: Vec<char> = input.chars().collect();
+        let mut i = 0;
+        while i < chars.len() {
+            let ch = chars[i];
+            if ch.is_alphanumeric() || ch == '_' {
+                let start = i;
+                i += 1;
+                while i < chars.len() && (chars[i].is_alphanumeric() || chars[i] == '_') {
+                    i += 1;
+                }
+                let ident: String = chars[start..i].iter().collect();
+                if let Some(val) = defines.get(&ident) {
+                    output.push_str(val);
+                } else {
+                    output.push_str(&ident);
+                }
+            } else {
+                output.push(ch);
+                i += 1;
+            }
+        }
+        output
+    };
+
+    for line in source.lines() {
+        let trimmed = line.trim_start();
+        if trimmed.starts_with("#define") {
+            let mut line = trimmed;
+            if let Some(idx) = line.find("//") {
+                line = &line[..idx];
+            }
+            if let Some(idx) = line.find("/*") {
+                line = &line[..idx];
+            }
+            let mut parts = line.split_whitespace();
+            let _ = parts.next(); // #define
+            if let Some(name) = parts.next() {
+                let raw_value = parts.collect::<Vec<&str>>().join(" ");
+                let value = expand(&raw_value, &defines);
+                if !value.is_empty() {
+                    defines.insert(name.to_string(), value);
+                }
+            }
+            continue;
+        }
+        lines.push(line.to_string());
+    }
+
+    // Replace identifiers with macro values.
+    let mut output = String::new();
+    for line in lines {
+        output.push_str(&expand(&line, &defines));
+        output.push('\n');
+    }
+
+    output
+}
+
 /// 编译用户程序（用于 UART Bootloader 加载）
 /// 生成独立的程序，BIOS 函数通过系统调用表调用
 fn compile_user_program(input_file: &str, output_file: &str, options: &CompileOptions) {
@@ -214,6 +281,7 @@ fn compile_user_program(input_file: &str, output_file: &str, options: &CompileOp
             std::process::exit(1);
         }
     };
+    let source = preprocess_c(&source);
 
     // 词法分析
     let lexer = Lexer::new(&source);
@@ -385,6 +453,7 @@ fn compile_and_link_c_files(c_files: &[&String], output_file: &str) {
                 std::process::exit(1);
             }
         };
+        let source = preprocess_c(&source);
         
         combined_source.push_str(&format!("// ===== Source from: {} =====\n", file_path));
         combined_source.push_str(&source);
@@ -550,6 +619,7 @@ fn compile_c(input_file: &str, output_file: &str) {
             std::process::exit(1);
         }
     };
+    let source = preprocess_c(&source);
 
     // 词法分析
     let lexer = Lexer::new(&source);
