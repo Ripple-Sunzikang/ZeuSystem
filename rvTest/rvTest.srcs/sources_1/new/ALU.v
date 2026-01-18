@@ -19,7 +19,9 @@ module ALU(
     reg [31:0] B;
     reg [31:0] C_tmp;
     reg [ 1:0] br_tmp;
+`ifdef ENABLE_M
     reg [63:0] mul_tmp;
+`endif
 
     always @(*) begin
         A = rs1;
@@ -39,6 +41,7 @@ module ALU(
             `ALU_SLL: C_tmp = A << B[4:0]; 
             `ALU_SRL: C_tmp = A >> B[4:0];         
             `ALU_SRA: C_tmp = $signed(A) >>> B[4:0];
+`ifdef ENABLE_M
             `ALU_MUL: begin
                 mul_tmp = $signed(A) * $signed(B);
                 C_tmp = mul_tmp[31:0];
@@ -73,6 +76,7 @@ module ALU(
                 if (B == 0) C_tmp = A;
                 else C_tmp = $unsigned(A) % $unsigned(B);
             end
+`endif
             default: C_tmp = 32'd0;
         endcase
     end

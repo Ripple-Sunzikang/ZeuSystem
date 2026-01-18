@@ -5,10 +5,4 @@ Using 8 slave threads.
 Starting static elaboration
 WARNING: [VRFC 10-278] actual bit length 3 differs from formal bit length 4 for port alu_op [/home/vessel/SEU-RISCV-CPU/rvTest/rvTest.srcs/sim_1/new/controller_tb.v:29]
 Completed static elaboration
-Starting simulation data flow analysis
-Completed simulation data flow analysis
-Time Resolution for simulation is 1ps
-Compiling module xil_defaultlib.controller
-Compiling module xil_defaultlib.controller_tb
-Compiling module xil_defaultlib.glbl
-Built simulation snapshot controller_tb_behav
+INFO: [XSIM 43-4323] No Change in HDL. Linking previously generated obj files to create kernel

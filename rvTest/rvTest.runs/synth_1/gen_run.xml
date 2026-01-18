@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="synth_1" LaunchPart="xc7a100tfgg484-1" LaunchTime="1768570547">
+<GenRun Id="synth_1" LaunchPart="xc7a100tfgg484-1" LaunchTime="1768715570">
+  <File Type="VDS-TIMING-PB" Name="miniRV_SoC_timing_summary_synth.pb"/>
+  <File Type="VDS-TIMINGSUMMARY" Name="miniRV_SoC_timing_summary_synth.rpt"/>
+  <File Type="RDS-DCP" Name="miniRV_SoC.dcp"/>
   <File Type="PA-TCL" Name="miniRV_SoC.tcl"/>
   <File Type="REPORTS-TCL" Name="miniRV_SoC_reports.tcl"/>
   <File Type="RDS-RDS" Name="miniRV_SoC.vds"/>
-  <File Type="RDS-DCP" Name="miniRV_SoC.dcp"/>
-  <File Type="RDS-UTIL-PB" Name="miniRV_SoC_utilization_synth.pb"/>
+  <File Type="RDS-PROPCONSTRS" Name="miniRV_SoC_drc_synth.rpt"/>
   <File Type="RDS-UTIL" Name="miniRV_SoC_utilization_synth.rpt"/>
+  <File Type="RDS-UTIL-PB" Name="miniRV_SoC_utilization_synth.pb"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
     <Filter Type="Srcs"/>
     <File Path="$PSRCDIR/sources_1/new/defines.vh">
@@ -251,8 +254,8 @@
     <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2017"/>
     <Step Id="synth_design"/>
   </Strategy>
-  <BlockFileSet Type="BlockSrcs" Name="DRAM"/>
-  <BlockFileSet Type="BlockSrcs" Name="PRAM_BRAM"/>
   <BlockFileSet Type="BlockSrcs" Name="IROM"/>
+  <BlockFileSet Type="BlockSrcs" Name="PRAM_BRAM"/>
+  <BlockFileSet Type="BlockSrcs" Name="DRAM"/>
   <BlockFileSet Type="BlockSrcs" Name="cpuclk"/>
 </GenRun>

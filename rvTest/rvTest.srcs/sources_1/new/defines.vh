@@ -1,6 +1,9 @@
 // Annotate this macro before synthesis
 // `define RUN_TRACE
 
+// Optional: enable RV32M (mul/div) logic. Leave undefined to keep timing reasonable.
+// `define ENABLE_M
+
 // TODO: �ڴ˴�������ĺ�
 // 
 `define NPC_PC4 3'b000

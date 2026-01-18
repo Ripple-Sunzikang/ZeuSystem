@@ -41,6 +41,7 @@ module controller(
     wire inst_sll  = r_typ & (funct7 == 7'b0000000) & (funct3 == 3'b001);
     wire inst_srl  = r_typ & (funct7 == 7'b0000000) & (funct3 == 3'b101);
     wire inst_sra  = r_typ & (funct7 == 7'b0100000) & (funct3 == 3'b101);
+`ifdef ENABLE_M
     wire inst_mul    = r_typ & (funct7 == 7'b0000001) & (funct3 == 3'b000);
     wire inst_mulh   = r_typ & (funct7 == 7'b0000001) & (funct3 == 3'b001);
     wire inst_mulhsu = r_typ & (funct7 == 7'b0000001) & (funct3 == 3'b010);
@@ -49,6 +50,16 @@ module controller(
     wire inst_divu   = r_typ & (funct7 == 7'b0000001) & (funct3 == 3'b101);
     wire inst_rem    = r_typ & (funct7 == 7'b0000001) & (funct3 == 3'b110);
     wire inst_remu   = r_typ & (funct7 == 7'b0000001) & (funct3 == 3'b111);
+`else
+    wire inst_mul    = 1'b0;
+    wire inst_mulh   = 1'b0;
+    wire inst_mulhsu = 1'b0;
+    wire inst_mulhu  = 1'b0;
+    wire inst_div    = 1'b0;
+    wire inst_divu   = 1'b0;
+    wire inst_rem    = 1'b0;
+    wire inst_remu   = 1'b0;
+`endif
     // I型
     wire inst_addi = i_typ & (funct3 == 3'b000);
     wire inst_andi = i_typ & (funct3 == 3'b111);
