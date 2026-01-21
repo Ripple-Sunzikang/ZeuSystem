@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<webTalkData  fileName='usage_statistics_webtalk.xml'  majorVersion='1' minorVersion='0' timeStamp='Mon Jan 19 04:18:58 2026'>
+<webTalkData  fileName='usage_statistics_webtalk.xml'  majorVersion='1' minorVersion='0' timeStamp='Mon Jan 19 09:22:14 2026'>
 <section name="__ROOT__" level="0" order="1" description="">
  <section name="software_version_and_target_device" level="1" order="1" description="">
   <keyValuePair key="beta" value="FALSE" description="" />
   <keyValuePair key="build_version" value="2086221" description="" />
-  <keyValuePair key="date_generated" value="Mon Jan 19 04:18:58 2026" description="" />
+  <keyValuePair key="date_generated" value="Mon Jan 19 09:22:14 2026" description="" />
   <keyValuePair key="os_platform" value="LIN64" description="" />
   <keyValuePair key="product_version" value="Vivado v2017.4 (64-bit)" description="" />
   <keyValuePair key="project_id" value="996e63e4862d405abd584214c71bf515" description="" />
-  <keyValuePair key="project_iteration" value="36" description="" />
+  <keyValuePair key="project_iteration" value="37" description="" />
   <keyValuePair key="random_id" value="99375bb15ac2599ea6b4ec8e8edaf6a7" description="" />
   <keyValuePair key="registration_id" value="99375bb15ac2599ea6b4ec8e8edaf6a7" description="" />
   <keyValuePair key="route_design" value="TRUE" description="" />
@@ -20,7 +20,7 @@
  </section>
  <section name="user_environment" level="1" order="2" description="">
   <keyValuePair key="cpu_name" value="11th Gen Intel(R) Core(TM) i5-1155G7 @ 2.50GHz" description="" />
-  <keyValuePair key="cpu_speed" value="4024.577 MHz" description="" />
+  <keyValuePair key="cpu_speed" value="1322.527 MHz" description="" />
   <keyValuePair key="os_name" value="Linuxmint" description="" />
   <keyValuePair key="os_release" value="Linux Mint 22.2" description="" />
   <keyValuePair key="system_ram" value="16.000 GB" description="" />
@@ -345,7 +345,7 @@
    <keyValuePair key="output_load" value="5.000000" description="" />
    <keyValuePair key="output_toggle" value="12.500000" description="" />
    <keyValuePair key="package" value="fgg484" description="" />
-   <keyValuePair key="pct_clock_constrained" value="12.730000" description="" />
+   <keyValuePair key="pct_clock_constrained" value="16.379999" description="" />
    <keyValuePair key="pct_inputs_defined" value="2" description="" />
    <keyValuePair key="platform" value="lin64" description="" />
    <keyValuePair key="pll" value="0.099360" description="" />
@@ -726,10 +726,10 @@
    <keyValuePair key="-verilog_define" value="default::[not_specified]" description="" />
   </section>
   <section name="usage" level="2" order="2" description="">
-   <keyValuePair key="elapsed" value="00:01:07s" description="" />
+   <keyValuePair key="elapsed" value="00:01:30s" description="" />
    <keyValuePair key="hls_ip" value="0" description="" />
-   <keyValuePair key="memory_gain" value="694.621MB" description="" />
-   <keyValuePair key="memory_peak" value="1856.414MB" description="" />
+   <keyValuePair key="memory_gain" value="695.605MB" description="" />
+   <keyValuePair key="memory_peak" value="1857.398MB" description="" />
   </section>
  </section>
  <section name="unisim_transformation" level="1" order="11" description="">
@@ -782,15 +782,15 @@
  </section>
  <section name="vivado_usage" level="1" order="12" description="">
   <section name="gui_handlers" level="2" order="1" description="">
-   <keyValuePair key="basedialog_cancel" value="11" description="" />
+   <keyValuePair key="basedialog_cancel" value="12" description="" />
    <keyValuePair key="basedialog_ok" value="28" description="" />
-   <keyValuePair key="basedialog_yes" value="43" description="" />
-   <keyValuePair key="cmdmsgdialog_ok" value="4" description="" />
+   <keyValuePair key="basedialog_yes" value="44" description="" />
+   <keyValuePair key="cmdmsgdialog_ok" value="5" description="" />
    <keyValuePair key="cmdmsgdialog_open_messages_view" value="3" description="" />
    <keyValuePair key="commandsinput_type_tcl_command_here" value="21" description="" />
    <keyValuePair key="expruntreepanel_exp_run_tree_table" value="44" description="" />
    <keyValuePair key="filesetpanel_file_set_panel_tree" value="142" description="" />
-   <keyValuePair key="flownavigatortreepanel_flow_navigator_tree" value="59" description="" />
+   <keyValuePair key="flownavigatortreepanel_flow_navigator_tree" value="60" description="" />
    <keyValuePair key="graphicalview_zoom_in" value="1" description="" />
    <keyValuePair key="graphicalview_zoom_out" value="1" description="" />
    <keyValuePair key="hardwaretreepanel_hardware_tree_table" value="63" description="" />
@@ -835,7 +835,7 @@
    <keyValuePair key="srcchooserpanel_add_or_create_source_file" value="2" description="" />
    <keyValuePair key="srcmenu_ip_hierarchy" value="15" description="" />
    <keyValuePair key="stalerundialog_no" value="1" description="" />
-   <keyValuePair key="syntheticagettingstartedview_recent_projects" value="51" description="" />
+   <keyValuePair key="syntheticagettingstartedview_recent_projects" value="52" description="" />
    <keyValuePair key="syntheticastatemonitor_cancel" value="1" description="" />
    <keyValuePair key="taskbanner_close" value="1" description="" />
    <keyValuePair key="tclconsoleview_tcl_console_code_editor" value="11" description="" />
@@ -852,7 +852,7 @@
    <keyValuePair key="openrecenttarget" value="1" description="" />
    <keyValuePair key="recustomizecore" value="1" description="" />
    <keyValuePair key="refreshserver" value="2" description="" />
-   <keyValuePair key="runbitgen" value="42" description="" />
+   <keyValuePair key="runbitgen" value="43" description="" />
    <keyValuePair key="runsynthesis" value="4" description="" />
    <keyValuePair key="settopnode" value="4" description="" />
    <keyValuePair key="showview" value="8" description="" />
@@ -868,7 +868,7 @@
   </section>
   <section name="other_data" level="2" order="3" description="">
    <keyValuePair key="batchmode" value="33" description="" />
-   <keyValuePair key="guimode" value="53" description="" />
+   <keyValuePair key="guimode" value="55" description="" />
    <keyValuePair key="tclmode" value="1" description="" />
   </section>
   <section name="project_data" level="2" order="4" description="">
